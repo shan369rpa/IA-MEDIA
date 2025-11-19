@@ -1,0 +1,11 @@
+# Bỏ qua các thư mục chứa file tạm và kết quả
+/workspace/
+/data/
+
+# Bỏ qua các file môi trường
+.env
+
+# Bỏ qua các thư mục hệ thống của Python và VSCode
+__pycache__/
+.venv/
+.vscode/

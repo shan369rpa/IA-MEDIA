@@ -1,0 +1,9 @@
+openai-whisper
+librosa
+pydub
+jupyter
+sentence-transformers
+psycopg2-binary
+fastapi
+uvicorn
+python-dotenv
