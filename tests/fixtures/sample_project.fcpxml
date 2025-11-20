@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fcpxml>
+<fcpxml version="1.9">
+    <resources>
+        <asset id="r1" name="raw_video_01.mp4" src="file:///path/to/raw_video_01.mp4" duration="3600s" />
+    </resources>
+    <library>
+        <event name="Test Project">
+            <project name="Test Sequence">
+                <sequence duration="30s">
+                    <spine>
+                        <!-- Clip 1: 10 giây đầu của video edited, lấy từ giây thứ 50 của video raw -->
+                        <asset-clip ref="r1" offset="0s" duration="10s" start="50s" name="Clip A" />
+                        
+                        <!-- Clip 2: 15 giây tiếp theo, bắt đầu từ giây thứ 120 của video raw -->
+                        <asset-clip ref="r1" offset="10s" duration="15s" start="120s" name="Clip B" />
+                    </spine>
+                </sequence>
+            </project>
+        </event>
+    </library>
+</fcpxml>

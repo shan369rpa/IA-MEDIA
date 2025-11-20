@@ -25,3 +25,7 @@ COPY requirements.txt /tmp/pip-tmp/
 #   - rm -rf /tmp/pip-tmp: Xóa thư mục tạm sau khi cài đặt xong để giữ sạch sẽ.
 RUN python3 -m pip install --no-cache-dir -r /tmp/pip-tmp/requirements.txt \
     && rm -rf /tmp/pip-tmp
+# Cài đặt dự án ở chế độ editable
+COPY . /workspaces/IA-MEDIA
+WORKDIR /workspaces/IA-MEDIA
+RUN pip install -e .

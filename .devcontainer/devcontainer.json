@@ -17,7 +17,7 @@
 
 	// Chạy một lệnh sau khi container được tạo
 	// "postCreateCommand": "echo 'Container created successfully!'",
-
+	 "postCreateCommand": "pip install -e .",
 	// Kết nối với tư cách người dùng vscode thay vì root
 	"remoteUser": "vscode"
 }
