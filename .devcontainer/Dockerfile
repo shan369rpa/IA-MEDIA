@@ -11,7 +11,7 @@ FROM mcr.microsoft.com/devcontainers/python:1-3.10-bullseye
 #   - -y: Tự động trả lời "yes" cho các câu hỏi cài đặt.
 #   - --no-install-recommends: Chỉ cài đặt các gói cần thiết, giữ cho image gọn nhẹ.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends ffmpeg git-lfs
+    && apt-get -y install --no-install-recommends ffmpeg git-lfs postgresql-client
 
 # Sao chép file requirements.txt từ máy host vào một thư mục tạm bên trong container.
 # Điều này tối ưu hóa cơ chế cache của Docker. Nếu file requirements.txt không thay đổi,
