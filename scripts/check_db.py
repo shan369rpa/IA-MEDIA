@@ -2,11 +2,6 @@
 import os
 import sys
 
-# Make project root importable so `from src...` works when running the script directly
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ROOT not in sys.path:
-    sys.path.insert(0, ROOT)
-
 from src.database.db_manager import get_db_connection
 
 def main():
