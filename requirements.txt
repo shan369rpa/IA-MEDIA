@@ -32,7 +32,7 @@ pytest
 # Các thư viện cho Giai đoạn 1: Mô hình AI và Vector hóa
 # ==============================================================================
 #sentence-transformers # Một cách dễ dàng để tải và sử dụng các model từ Hugging Face
-#speechbrain           # Framework chứa model embedding `spkrec-ecapa-voxceleb`
+speechbrain           # Framework chứa model embedding `spkrec-ecapa-voxceleb`
 #torch                 # Framework nền tảng cho hầu hết các model AI (Whisper, SpeechBrain...)
 #torchaudio            # Các công cụ xử lý audio dành riêng cho PyTorch
 #numpy                 # Thư viện tính toán khoa học, nền tảng cho vector
@@ -60,5 +60,5 @@ pytest
 # ==============================================================================
 #pytest                # Framework để viết và chạy các bài kiểm thử tự động
 #jupyter               # Để tạo các notebook thử nghiệm và phân tích dữ liệu
-#pandas                # (Tùy chọn) Rất hữu ích cho việc phân tích dữ liệu và log
+pandas                # (Tùy chọn) Rất hữu ích cho việc phân tích dữ liệu và log
 #matplotlib            # (Tùy chọn) Để vẽ biểu đồ, trực quan hóa kết quả phân tích
