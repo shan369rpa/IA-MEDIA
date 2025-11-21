@@ -129,7 +129,7 @@ To support this rich, multi-faceted data model, we will adopt a normalized, mult
 | `transcript` | `TEXT` | Nội dung văn bản đầy đủ của câu. |
 | `start_time_ms`| `BIGINT NOT NULL` | Thời điểm bắt đầu của câu trong video `edited`. |
 | `end_time_ms` | `BIGINT NOT NULL` | Thời điểm kết thúc của câu trong video `edited`. |
-| `embedding` | `VECTOR(1024)` | Vector embedding đại diện cho toàn bộ câu (cho tìm kiếm ngữ nghĩa). |
+| `embedding` | `VECTOR(192)` | Vector embedding đại diện cho toàn bộ câu (cho tìm kiếm ngữ nghĩa). |
 | `acoustic_features` | `JSONB` | Một đối tượng JSON chứa các đặc trưng âm học (RMS, Pitch F0...). |
 | `emotion_label`| `VARCHAR(50)` | Nhãn cảm xúc được phát hiện (ví dụ: 'calm', 'neutral'). |
 | `audio_path_clean` | `TEXT UNIQUE` | Đường dẫn đến file audio `.wav` sạch của câu này. |
@@ -149,8 +149,8 @@ To support this rich, multi-faceted data model, we will adopt a normalized, mult
 | `language` | `VARCHAR(5) NOT NULL` | Mã ngôn ngữ được phát hiện (ví dụ: 'vie', 'eng', 'fra'). |
 | `start_time_ms_edited` | `BIGINT NOT NULL` | Thời điểm bắt đầu của từ trong video `edited`. |
 | `end_time_ms_edited` | `BIGINT NOT NULL` | Thời điểm kết thúc của từ trong video `edited`. |
-| `embedding_clean` | `VECTOR(1024)` | Vector embedding của chunk audio `clean`. |
-| `embedding_error` | `VECTOR(1024)` | Vector embedding của chunk audio `error`. |
+| `embedding_clean` | `VECTOR(192)` | Vector embedding của chunk audio `clean`. |
+| `embedding_error` | `VECTOR(192)` | Vector embedding của chunk audio `error`. |
 | `acoustic_features_diff` | `JSONB` | Một đối tượng JSON chứa sự khác biệt về đặc trưng âm học giữa `clean` và `error`. |
 | `audio_path_clean` | `TEXT UNIQUE` | Đường dẫn đến file audio `.wav` sạch của từ này. |
 | `audio_path_error` | `TEXT UNIQUE` | Đường dẫn đến file audio `.wav` lỗi của từ này. |
