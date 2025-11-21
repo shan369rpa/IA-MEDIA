@@ -9,6 +9,7 @@ uvicorn
 python-dotenv
 pgvector
 pytest
+pytest-mock
 # ==============================================================================
 # CORE & INFRASTRUCTURE
 # Các thư viện cốt lõi và hạ tầng, cần cho tất cả các giai đoạn
