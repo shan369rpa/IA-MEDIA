@@ -1,65 +1,36 @@
+# ==============================================================================
+# REQUIREMENTS FOR PHASE 1: CORE ANALYSIS & VECTORIZATION
+# ==============================================================================
+
+# --- Core & Infrastructure ---
+python-dotenv
+psycopg2-binary
+pgvector
+
+# --- Audio/Video Processing ---
+# Whisper để phiên âm. Sẽ tự động cài đặt torch.
 openai-whisper
+# Librosa và Pydub cho các tác vụ xử lý audio.
 librosa
 pydub
-jupyter
+# ffmpeg-python để tương tác với ffmpeg một cách an toàn.
+ffmpeg-python
+
+# --- AI & Vectorization ---
+# SpeechBrain cho model embedding. Sẽ tự động cài torchaudio.
+speechbrain
+# Sentence-Transformers là một cách tiện lợi để tải và dùng SpeechBrain.
 sentence-transformers
-psycopg2-binary
-fastapi
-uvicorn
-python-dotenv
-pgvector
+
+# --- Data Handling ---
+# Pandas rất cần thiết để tạo và quản lý file metadata.csv.
+pandas
+
+# --- Development & Testing ---
+# Các thư viện này chỉ cần thiết cho môi trường phát triển/test.
 pytest
 pytest-mock
-# ==============================================================================
-# CORE & INFRASTRUCTURE
-# Các thư viện cốt lõi và hạ tầng, cần cho tất cả các giai đoạn
-# ==============================================================================
-#python-dotenv         # Để đọc các biến môi trường từ file .env
-#psycopg2-binary       # Driver để Python kết nối với PostgreSQL
-#pgvector              # Hỗ trợ kiểu dữ liệu VECTOR cho psycopg2
-#requests              # Để thực hiện các yêu cầu HTTP (ví dụ: gọi API nếu cần)
-
-# ==============================================================================
-# PHASE 1: AUDIO PROCESSING & ANALYSIS
-# Các thư viện cho Giai đoạn 1: Xử lý và Phân tích Âm thanh
-# ==============================================================================
-#openai-whisper        # Mô hình Speech-to-Text để phiên âm và lấy timestamp
-#librosa               # Thư viện xử lý tín hiệu âm thanh mạnh mẽ (phát hiện khoảng lặng, clipping...)
-#pydub                 # Thư viện cấp cao để cắt, ghép, và thao tác với file audio
-#ffmpeg-python         # Wrapper của Python cho ffmpeg (thay thế cho việc gọi subprocess)
-
-# ==============================================================================
-# PHASE 1: AI MODELS & VECTORIZATION
-# Các thư viện cho Giai đoạn 1: Mô hình AI và Vector hóa
-# ==============================================================================
-#sentence-transformers # Một cách dễ dàng để tải và sử dụng các model từ Hugging Face
-speechbrain           # Framework chứa model embedding `spkrec-ecapa-voxceleb`
-#torch                 # Framework nền tảng cho hầu hết các model AI (Whisper, SpeechBrain...)
-#torchaudio            # Các công cụ xử lý audio dành riêng cho PyTorch
-#numpy                 # Thư viện tính toán khoa học, nền tảng cho vector
-
-# ==============================================================================
-# PHASE 2: SUGGESTION SYSTEM (LLM & RAG)
-# Các thư viện cho Giai đoạn 2: Hệ thống Gợi ý (LLM & RAG)
-# ==============================================================================
-#openai                # Client để tương tác với API của OpenAI (cho demo Phase 2)
-#langchain             # Framework để xây dựng các ứng dụng RAG và tương tác với LLM
-#transformers          # Để tải và chạy các model LLM tự host (như Llama 3) từ Hugging Face
-#accelerate            # Giúp tối ưu hóa việc chạy các model lớn trên GPU/CPU
-#bitsandbytes          # Dùng để lượng tử hóa (quantize) model, giảm yêu cầu VRAM khi tự host LLM
-
-# ==============================================================================
-# PHASE 3: AUTOMATED CORRECTION & WEB TOOLS
-# Các thư viện cho Giai đoạn 3: Tự động Sửa lỗi & Công cụ Web
-# ==============================================================================
-#fastapi               # Framework để xây dựng API Service cho AI
-#uvicorn               # ASGI server để chạy ứng dụng FastAPI
-
-# ==============================================================================
-# DEVELOPMENT & TESTING
-# Các thư viện cho Phát triển và Kiểm thử
-# ==============================================================================
-#pytest                # Framework để viết và chạy các bài kiểm thử tự động
-#jupyter               # Để tạo các notebook thử nghiệm và phân tích dữ liệu
-pandas                # (Tùy chọn) Rất hữu ích cho việc phân tích dữ liệu và log
-#matplotlib            # (Tùy chọn) Để vẽ biểu đồ, trực quan hóa kết quả phân tích
+# Scipy và soundfile cần thiết để tạo file audio giả trong các bài test.
+scipy
+soundfile
+jupyter # Giữ lại Jupyter để có thể mở và sửa file .ipynb
