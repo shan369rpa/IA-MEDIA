@@ -54,31 +54,31 @@ def extract_audio_pair(raw_video_path: str, edited_video_path: str, workspace_di
     return raw_audio_path, edited_audio_path
 
 
-def cut_video_segment(input_video_path: str, output_video_path: str, start_time: float, duration: float):
-    """Sử dụng ffmpeg để cắt một đoạn video từ file gốc."""
-    if os.path.exists(output_video_path):
-        return True # Trả về True nếu file đã tồn tại
+# def cut_video_segment(input_video_path: str, output_video_path: str, start_time: float, duration: float):
+#     """Sử dụng ffmpeg để cắt một đoạn video từ file gốc."""
+#     if os.path.exists(output_video_path):
+#         return True # Trả về True nếu file đã tồn tại
 
-    try:
-        command = [
-            'ffmpeg',
-            '-ss', str(start_time),
-            '-i', input_video_path,
-            '-t', str(duration),
-            '-c:v', 'libx264', '-preset', 'fast', '-crf', '23', # Codec video phổ biến, chất lượng tốt
-            '-c:a', 'aac', '-b:a', '128k', # Codec audio phổ biến
-            '-movflags', '+faststart', # Tối ưu cho web streaming
-            '-hide_banner', '-loglevel', 'error',
-            output_video_path
-        ]
-        subprocess.run(command, check=True, capture_output=True, text=True)
-        return True
-    except subprocess.CalledProcessError as e:
-        logging.error(f"Lỗi khi cắt video {input_video_path}: {e.stderr}")
-        return False
-    except Exception as e:
-        logging.error(f"Lỗi không xác định khi cắt video: {e}")
-        return False
+#     try:
+#         command = [
+#             'ffmpeg',
+#             '-ss', str(start_time),
+#             '-i', input_video_path,
+#             '-t', str(duration),
+#             '-c:v', 'libx264', '-preset', 'fast', '-crf', '23', # Codec video phổ biến, chất lượng tốt
+#             '-c:a', 'aac', '-b:a', '128k', # Codec audio phổ biến
+#             '-movflags', '+faststart', # Tối ưu cho web streaming
+#             '-hide_banner', '-loglevel', 'error',
+#             output_video_path
+#         ]
+#         subprocess.run(command, check=True, capture_output=True, text=True)
+#         return True
+#     except subprocess.CalledProcessError as e:
+#         logging.error(f"Lỗi khi cắt video {input_video_path}: {e.stderr}")
+#         return False
+#     except Exception as e:
+#         logging.error(f"Lỗi không xác định khi cắt video: {e}")
+#         return False
 
 
 def sanitize_filename(name: str) -> str:
