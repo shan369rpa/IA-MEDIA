@@ -87,7 +87,6 @@ def sanitize_filename(name: str) -> str:
         return ""
     # Chuyển thành chữ thường
     name = name.lower()
-    # Loại bỏ các ký tự đặc biệt, chỉ giữ lại chữ cái, số, và dấu gạch dưới/gạch ngang
     name = re.sub(r'[^\w-]', '', name)
     # Giới hạn độ dài để tránh tên file quá dài trên một số hệ thống file
     return name[:50]
