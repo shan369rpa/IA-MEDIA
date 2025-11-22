@@ -85,19 +85,19 @@ def create_and_save_chunks(
             error_chunk = error_audio[start_ms_raw:end_ms_raw]
             error_chunk.export(error_audio_chunk_path, format="wav")
             
-            # --- CẮT VIDEO ---
-            file_handler.cut_video_segment(
-                input_video_path=clean_video_path,
-                output_video_path=clean_video_chunk_path,
-                start_time=start_time_edited_sec,
-                duration=duration_sec
-            )
-            file_handler.cut_video_segment(
-                input_video_path=error_video_path,
-                output_video_path=error_video_chunk_path,
-                start_time=start_time_raw_sec,
-                duration=duration_sec
-            )
+            # # --- CẮT VIDEO ---
+            # file_handler.cut_video_segment(
+            #     input_video_path=clean_video_path,
+            #     output_video_path=clean_video_chunk_path,
+            #     start_time=start_time_edited_sec,
+            #     duration=duration_sec
+            # )
+            # file_handler.cut_video_segment(
+            #     input_video_path=error_video_path,
+            #     output_video_path=error_video_chunk_path,
+            #     start_time=start_time_raw_sec,
+            #     duration=duration_sec
+            # )
 
             # --- THÊM METADATA VÀO DANH SÁCH ---
             # Lưu đường dẫn tương đối để dễ dàng di chuyển bộ dữ liệu

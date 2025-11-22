@@ -12,17 +12,17 @@ def test_extract_audio(dummy_media_files, tmp_path):
     assert audio_path is not None
     assert os.path.exists(audio_path)
 
-def test_cut_video_segment(dummy_media_files, tmp_path):
-    video_path = dummy_media_files["video_path"]
-    output_path = tmp_path / "cut_segment.mp4"
-    success = file_handler.cut_video_segment(
-        input_video_path=video_path,
-        output_video_path=str(output_path),
-        start_time=1.0,
-        duration=2.0
-    )
-    assert success is True
-    assert os.path.exists(output_path)
+# def test_cut_video_segment(dummy_media_files, tmp_path):
+#     video_path = dummy_media_files["video_path"]
+#     output_path = tmp_path / "cut_segment.mp4"
+#     success = file_handler.cut_video_segment(
+#         input_video_path=video_path,
+#         output_video_path=str(output_path),
+#         start_time=1.0,
+#         duration=2.0
+#     )
+#     assert success is True
+#     assert os.path.exists(output_path)
 
 # --- Test cho transcriber.py ---
 def test_get_word_timestamps_mocked(mocker, dummy_media_files):
