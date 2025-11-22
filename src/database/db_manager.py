@@ -6,9 +6,7 @@ from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 import logging
 # Cần import kiểu dữ liệu vector từ pgvector.
-# Lưu ý: Cần cài đặt `pip install pgvector`
 from pgvector.psycopg2 import register_vector 
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_db_connection():
@@ -85,5 +83,57 @@ def clear_table(conn, table_name: str):
         return True
     except Exception as e:
         logging.error(f"Lỗi khi xóa dữ liệu bảng {table_name}: {e}")
+        conn.rollback()
+        return False
+def get_or_create_source(conn, video_name: str) -> int | None:
+    """
+    Tìm một source theo tên, nếu không có thì tạo mới.
+    Trả về id của source.
+    """
+    try:
+        with conn.cursor() as cur:
+            # Thử tìm trước
+            cur.execute('SELECT id FROM "sources" WHERE video_name = %s', (video_name,))
+            result = cur.fetchone()
+            
+            if result:
+                source_id = result[0]
+                logging.info(f"Source '{video_name}' đã tồn tại với id: {source_id}")
+                return source_id
+            else:
+                # Nếu không có, tạo mới
+                logging.info(f"Source '{video_name}' chưa tồn tại, đang tạo mới...")
+                cur.execute('INSERT INTO "sources" (video_name) VALUES (%s) RETURNING id', (video_name,))
+                source_id = cur.fetchone()[0]
+                conn.commit()
+                logging.info(f"Đã tạo source '{video_name}' với id: {source_id}")
+                return source_id
+    except Exception as e:
+        logging.error(f"Lỗi khi get/create source: {e}")
+        conn.rollback()
+        return None
+
+def insert_words_data(conn, data_tuples: list):
+    """
+    Chèn một danh sách các chunk từ vào bảng `words`.
+    """
+    if not data_tuples:
+        return False
+    
+    query = """
+        INSERT INTO "words" (
+            sentence_id, word_text, language, start_time_ms_edited, end_time_ms_edited,
+            embedding_clean, embedding_error, audio_path_clean, audio_path_error,
+            video_path_clean, video_path_error
+        ) VALUES %s
+    """
+    try:
+        with conn.cursor() as cur:
+            execute_values(cur, query, data_tuples)
+        conn.commit()
+        logging.info(f"Đã chèn thành công {len(data_tuples)} bản ghi vào bảng 'words'.")
+        return True
+    except Exception as e:
+        logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
         conn.rollback()
         return False
