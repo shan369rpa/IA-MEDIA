@@ -1,7 +1,10 @@
 [project]
-name = "ia_media_pipeline"
+name = "ia_media"
 version = "0.1.0"
 
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]  # Tìm packages ngay tại thư mục gốc (để thấy src)
