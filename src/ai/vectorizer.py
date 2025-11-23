@@ -4,11 +4,33 @@ import os
 from dotenv import load_dotenv
 import logging
 import torch
-from speechbrain.pretrained import EncoderClassifier
 import torchaudio
+# ==============================================================================
+# MONKEY PATCH: SỬA LỖI XUNG ĐỘT PHIÊN BẢN (SpeechBrain vs Torchaudio)
+# ==============================================================================
 
+# 1. Ép Torchaudio sử dụng 'soundfile' làm backend. 
+# Đây là backend ổn định nhất, không yêu cầu cài đặt ffmpeg/sox phức tạp ở tầng OS.
+try:
+    torchaudio.set_audio_backend("soundfile")
+except Exception:
+    # Fallback cho các phiên bản torchaudio mới không còn hàm set_audio_backend
+    # Nó sẽ tự động ưu tiên soundfile nếu thư viện này đã được cài đặt.
+    pass
+# Vấn đề: SpeechBrain cũ gọi hàm 'list_audio_backends', nhưng Torchaudio mới đã xóa nó.
+# Giải pháp: Chúng ta tự định nghĩa lại hàm này vào module torchaudio trước khi SpeechBrain chạy.
+if not hasattr(torchaudio, 'list_audio_backends'):
+    def _list_audio_backends():
+        # Trả về danh sách backend giả lập để SpeechBrain vui vẻ
+        return ['ffmpeg', 'sox'] 
+    torchaudio.list_audio_backends = _list_audio_backends
+    logging.warning("⚠️ Đã áp dụng bản vá nóng cho lỗi torchaudio.list_audio_backends")
+# ==============================================================================
 # Biến toàn cục để cache model, tránh tải lại nhiều lần
 # This acts as a simple in-memory cache for the model.
+
+from speechbrain.pretrained import EncoderClassifier
+
 _model = None
 _device = None
 

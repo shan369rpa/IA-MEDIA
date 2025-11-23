@@ -7,6 +7,7 @@ ia_media.egg-info/top_level.txt
 scripts/__init__.py
 scripts/check_db.py
 scripts/generate_mock_data.py
+scripts/generate_repo_map.py
 src/__init__.py
 src/ai/__init__.py
 src/ai/vectorizer.py
