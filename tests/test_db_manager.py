@@ -11,8 +11,8 @@ def db_connection():
     if conn is None:
         pytest.skip("Không thể kết nối đến CSDL, bỏ qua các test DB.")
     
-    # Dọn dẹp trước khi bắt đầu
-    db_manager.clear_table(conn, "audio_chunks")
+    # Dọn dẹp trước khi bắt đầu (bảng words theo schema hiện tại)
+    db_manager.clear_table(conn, "words")
     
     yield conn # Cung cấp kết nối cho các hàm test
     
@@ -22,66 +22,82 @@ def db_connection():
 
 def test_insert_and_clear_data(db_connection):
     """Kiểm tra chức năng chèn và xóa dữ liệu."""
-    # Dữ liệu giả, kích thước vector phải khớp với CSDL (ví dụ 1024)
-    mock_vector = np.random.rand(1024).tolist()
-    
+    # Prepare 192-dim mock vectors to match VECTOR(192) in schema
+    mock_vector = np.random.rand(192).tolist()
+
+    # Prepare data tuples compatible with insert_words_data
     data_to_insert = [
-        ("video1", "word1", 100, 200, "clean", "/path/1", mock_vector),
-        ("video1", "word2", 300, 400, "error", "/path/2", mock_vector)
+        (
+            1, # sentence_id
+            "word1",
+            "vie",
+            100,
+            200,
+            mock_vector,
+            None,
+            "/path/clean1.wav",
+            None,
+            "/path/video_clean1.mp4",
+            None
+        ),
+        (
+            1,
+            "word2",
+            "vie",
+            300,
+            400,
+            mock_vector,
+            None,
+            "/path/clean2.wav",
+            None,
+            "/path/video_clean2.mp4",
+            None
+        )
     ]
-    
+
     # Test chèn
-    success = db_manager.insert_chunk_data(db_connection, data_to_insert)
+    success = db_manager.insert_words_data(db_connection, data_to_insert)
     assert success == True
-    
+
     # Kiểm tra xem dữ liệu có thực sự được chèn vào không
     with db_connection.cursor() as cur:
-        cur.execute('SELECT COUNT(*) FROM "audio_chunks"')
+        cur.execute('SELECT COUNT(*) FROM "words"')
         assert cur.fetchone()[0] == 2
-        
+
     # Test xóa
-    success_clear = db_manager.clear_table(db_connection, "audio_chunks")
+    success_clear = db_manager.clear_table(db_connection, "words")
     assert success_clear == True
-    
+
     with db_connection.cursor() as cur:
-        cur.execute('SELECT COUNT(*) FROM "audio_chunks"')
+        cur.execute('SELECT COUNT(*) FROM "words"')
         assert cur.fetchone()[0] == 0
 
 def test_find_similar_chunks(db_connection):
     """Kiểm tra chức năng tìm kiếm tương đồng vector."""
-    # Tạo 3 vector mẫu
-    vec1 = np.array([1.0, 0.0, 0.0]) # Vector gốc
-    vec2 = np.array([0.9, 0.1, 0.0]) # Gần giống nhất
-    vec3 = np.array([0.0, 1.0, 0.0]) # Khác biệt nhất
-    
-    # Lưu ý: Kích thước vector phải khớp với CSDL. Chúng ta cần một CSDL test riêng
-    # hoặc tạm thời thay đổi kích thước vector trong CSDL thành 3 để test.
-    # Ở đây, giả sử CSDL đã được tạo với VECTOR(3) để test.
-    # TRONG THỰC TẾ, BẠN CẦN THAY ĐỔI KÍCH THƯỚC VECTOR Ở ĐÂY CHO KHỚP 1024
-    
-    # Bỏ qua test này nếu kích thước vector không phải là 3
-    # Lấy kích thước vector từ CSDL để kiểm tra
-    with db_connection.cursor() as cur:
-        cur.execute("SELECT typname, atttypmod FROM pg_type t JOIN pg_attribute a ON t.oid = a.atttypid WHERE a.attrelid = '\"audio_chunks\"'::regclass AND a.attname = 'embedding';")
-        result = cur.fetchone()
-        if result is None or result[1] != 3:
-             pytest.skip("Bỏ qua test tìm kiếm vì kích thước vector không phải là 3.")
+    # Create 3 sample vectors of dimension 192
+    vec1 = np.zeros(192)
+    vec2 = np.concatenate(([0.9, 0.1], np.zeros(190)))
+    vec3 = np.concatenate(([0.0, 1.0], np.zeros(190)))
 
+    # Insert two records into `words` using insert_words_data
     data_to_insert = [
-        ("v", "w_far", 1, 2, "clean", "/far", vec3.tolist()),
-        ("v", "w_close", 3, 4, "clean", "/close", vec2.tolist()),
+        (
+            1, 'w_far', 'vie', 1, 2, vec3.tolist(), None, '/far.wav', None, '/far.mp4', None
+        ),
+        (
+            1, 'w_close', 'vie', 3, 4, vec2.tolist(), None, '/close.wav', None, '/close.mp4', None
+        ),
     ]
-    db_manager.insert_chunk_data(db_connection, data_to_insert)
-    
-    # Tìm các vector gần với vec1
-    results = db_manager.find_similar_chunks(db_connection, vec1.tolist(), limit=2)
-    
-    # Kết quả trả về phải có 2 dòng
+    db_manager.insert_words_data(db_connection, data_to_insert)
+
+    # Find vectors similar to vec1
+    results = db_manager.find_similar_words(db_connection, vec1.tolist(), limit=2)
+
+    # Results must have 2 rows
     assert len(results) == 2
-    
-    # Dòng đầu tiên (gần nhất) phải là của "w_close"
-    # Cột thứ 2 trong kết quả là word_text
-    assert results[0][1] == "w_close"
-    
-    # Dòng thứ hai (xa hơn) phải là của "w_far"
-    assert results[1][1] == "w_far"
+
+    # First row (closest) should be 'w_close'
+    assert results[0][1] == 'w_close'
+
+    # Second row should be 'w_far'
+    assert results[1][1] == 'w_far'

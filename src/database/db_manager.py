@@ -37,39 +37,123 @@ def insert_chunk_data(conn, data_tuples: list):
     if not data_tuples:
         return False
     
-    query = """
-        INSERT INTO "audio_chunks" 
-        (source_video_name, word_text, start_time_ms, end_time_ms, label, chunk_file_path, embedding)
-        VALUES %s
-    """
+    # The repository now uses the normalized schema (sources, sentences, words, anomalies).
+    # Map legacy tuples (source, word, start_ms, end_ms, label, path, vector)
+    # into the `words` table. We will:
+    #  - ensure a `source` exists (get_or_create_source)
+    #  - ensure a `sentence` exists for the time span (create a synthetic sentence if needed)
+    #  - insert or upsert a `words` row that may contain embedding_clean and/or embedding_error
+
+    # Group incoming tuples by (source, start_ms, end_ms, word_text)
+    groups = {}
+    for item in data_tuples:
+        try:
+            source, word, start_ms, end_ms, label, path, vector = item
+        except Exception:
+            logging.warning("Dữ liệu không có định dạng mong đợi, bỏ qua một bản ghi.")
+            continue
+        key = (source, int(start_ms), int(end_ms), word)
+        entry = groups.get(key, {
+            'source': source,
+            'word': word,
+            'start_ms': int(start_ms),
+            'end_ms': int(end_ms),
+            'audio_path_clean': None,
+            'audio_path_error': None,
+            'embedding_clean': None,
+            'embedding_error': None
+        })
+        if label and label.lower() == 'clean':
+            entry['audio_path_clean'] = path
+            entry['embedding_clean'] = vector
+        else:
+            entry['audio_path_error'] = path
+            entry['embedding_error'] = vector
+        groups[key] = entry
+
+    # Prepare rows to insert into words. We need sentence_id for each; create synthetic sentence if needed.
+    rows_to_insert = []
+    for key, e in groups.items():
+        source_name = e['source']
+        # Ensure source exists
+        source_id = get_or_create_source(conn, source_name)
+        if source_id is None:
+            logging.error(f"Không thể xác định source_id cho {source_name}, bỏ qua nhóm {key}.")
+            continue
+
+        # Find or create a sentence covering this interval. For simplicity create a synthetic sentence.
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    'SELECT id FROM "sentences" WHERE source_id = %s AND start_time_ms = %s AND end_time_ms = %s',
+                    (source_id, e['start_ms'], e['end_ms'])
+                )
+                res = cur.fetchone()
+                if res:
+                    sentence_id = res[0]
+                else:
+                    cur.execute(
+                        'INSERT INTO "sentences" (source_id, transcript, start_time_ms, end_time_ms) VALUES (%s, %s, %s, %s) RETURNING id',
+                        (source_id, None, e['start_ms'], e['end_ms'])
+                    )
+                    sentence_id = cur.fetchone()[0]
+                    conn.commit()
+        except Exception as ex:
+            logging.error(f"Lỗi khi tìm/tạo sentence cho source {source_name}: {ex}")
+            conn.rollback()
+            continue
+
+        rows_to_insert.append((
+            sentence_id,
+            e['word'],
+            'und',
+            e['start_ms'],
+            e['end_ms'],
+            e['embedding_clean'],
+            e['embedding_error'],
+            e['audio_path_clean'],
+            e['audio_path_error'],
+            None,
+            None
+        ))
+
+    if not rows_to_insert:
+        logging.error("Không có bản ghi hợp lệ để chèn vào 'words'.")
+        return False
+
     try:
         with conn.cursor() as cur:
-            # execute_values là cách hiệu quả nhất để chèn nhiều dòng
-            execute_values(cur, query, data_tuples)
+            execute_values(cur, """
+                INSERT INTO "words" (
+                    sentence_id, word_text, language, start_time_ms_edited, end_time_ms_edited,
+                    embedding_clean, embedding_error, audio_path_clean, audio_path_error,
+                    video_path_clean, video_path_error
+                ) VALUES %s
+            """, rows_to_insert)
         conn.commit()
-        logging.info(f"Đã chèn thành công {len(data_tuples)} bản ghi.")
+        logging.info(f"Đã chèn thành công {len(rows_to_insert)} bản ghi vào bảng 'words'.")
         return True
     except Exception as e:
-        logging.error(f"Lỗi khi chèn dữ liệu: {e}")
+        logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
         conn.rollback()
         return False
 
 def find_similar_chunks(conn, vector, limit=5):
     """Tìm các chunk có vector gần giống nhất với vector đầu vào."""
-    query = """
-        SELECT id, word_text, label, chunk_file_path, embedding <=> %s AS distance
-        FROM "audio_chunks"
-        ORDER BY distance
-        LIMIT %s
-    """
+    # Prefer words.embedding_clean and embedding_error; return results ordered by distance
     results = []
     try:
         with conn.cursor() as cur:
-            cur.execute(query, (vector, limit))
+            # Search by embedding_clean
+            cur.execute("SELECT id, word_text, embedding_clean <=> %s AS distance FROM \"words\" ORDER BY distance LIMIT %s", (vector, limit))
             results = cur.fetchall()
     except Exception as e:
         logging.error(f"Lỗi khi tìm kiếm vector tương đồng: {e}")
     return results
+
+def find_similar_words(conn, vector, limit=5):
+    """Convenience wrapper to search `words.embedding_clean` by similarity."""
+    return find_similar_chunks(conn, vector, limit)
 
 def clear_table(conn, table_name: str):
     """Xóa tất cả dữ liệu từ một bảng. Rất hữu ích cho việc dọn dẹp sau khi test."""
