@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<fcpxml version="1.9">
+    <resources>
+        <asset id="r1" name="2025-01-01-dummy-test_raw.mp4" src="file:///mock/path/2025-01-01-dummy-test_raw.mp4" duration="60s"/>
+    </resources>
+    <library>
+        <event name="Mock Event">
+            <project name="Mock Project">
+                <sequence duration="30s">
+                    <spine>
+                        <asset-clip ref="r1" name="2025-01-01-dummy-test_raw.mp4" offset="0s" start="10s" duration="30s"/>
+                    </spine>
+                </sequence>
+            </project>
+        </event>
+    </library>
+</fcpxml>
