@@ -101,3 +101,4 @@ Kịch bản này vector hóa các chunk đã được tạo ra và lưu chúng 
 # (This script will be created in a later step)
 # python vectorize_chunks.py
 ```
+ssh -L 6000:localhost:5433 root@180.93.137.58
