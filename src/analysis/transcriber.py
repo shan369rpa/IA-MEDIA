@@ -33,9 +33,16 @@ def get_word_timestamps(audio_path: str) -> list | None:
         for segment in result.get('segments', []):
             all_words.extend(segment.get('words', []))
         
+ # --- SỬA ĐỔI ĐỂ TEST DỮ LIỆU GIẢ ---
         if not all_words:
-             logging.warning("Whisper không tìm thấy từ nào trong file audio.")
-             return []
+             logging.warning("Whisper không tìm thấy từ nào. Đang kích hoạt MOCK DATA cho mục đích test.")
+             # Trả về một từ giả nằm ở giây thứ 5 đến giây thứ 6
+             # Điều này giúp chúng ta test xem chunker có cắt đúng đoạn tương ứng trên file Raw không.
+             return [
+                 {'word': 'test_beep_1', 'start': 5.0, 'end': 5.5, 'confidence': 1.0},
+                 {'word': 'test_beep_2', 'start': 15.0, 'end': 15.5, 'confidence': 1.0}
+             ]
+        # -----------------------------------
 
         logging.info(f"Phiên âm thành công, tìm thấy {len(all_words)} từ.")
         return all_words
