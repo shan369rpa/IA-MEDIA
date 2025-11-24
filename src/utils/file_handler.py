@@ -4,6 +4,7 @@ import os
 import subprocess
 import logging
 import re
+from pydub import AudioSegment # Cần cho việc cắt chunk, có thể dùng lại cho hàm get_duration nếu muốn
 
 def extract_audio(video_path: str, workspace_dir: str) -> str | None:
     """
@@ -90,3 +91,29 @@ def sanitize_filename(name: str) -> str:
     name = re.sub(r'[^\w-]', '', name)
     # Giới hạn độ dài để tránh tên file quá dài trên một số hệ thống file
     return name[:50]
+# Thêm import này vào đầu file file_handler.py
+from pydub import AudioSegment
+
+# ... (đặt hàm này ở cuối file) ...
+
+def get_audio_duration(audio_path: str) -> float:
+    """
+    [Cách 1: Dùng Pydub] Lấy độ dài (duration) của một file audio tính bằng giây.
+    
+    Args:
+        audio_path: Đường dẫn đến file audio.
+        
+    Returns:
+        float: Độ dài của audio tính bằng giây. Trả về 0.0 nếu có lỗi.
+    """
+    try:
+        if not os.path.exists(audio_path):
+            logging.error(f"File audio không tồn tại để lấy duration: {audio_path}")
+            return 0.0
+            
+        audio = AudioSegment.from_file(audio_path)
+        duration_seconds = len(audio) / 1000.0
+        return duration_seconds
+    except Exception as e:
+        logging.error(f"Không thể đọc độ dài file audio bằng Pydub: {audio_path}. Lỗi: {e}")
+        return 0.0
