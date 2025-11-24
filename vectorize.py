@@ -28,6 +28,10 @@ def main_vectorize(chunk_dir: str):
 
     try:
         df = pd.read_csv(metadata_path)
+        # --- FIX QUAN TRỌNG: Chuyển đổi DataFrame thành List of Dictionaries ---
+        # Điều này giúp chúng ta làm việc với biến chuẩn Python (str, int), 
+        # tránh lỗi TypeError khi đưa vào os.path.join
+        records = df.to_dict('records')
         logging.info(f"Step 1/5: Loaded metadata for {len(df)} chunk records.")
     except Exception as e:
         logging.error(f"Failed to read metadata.csv: {e}")
@@ -72,35 +76,44 @@ def main_vectorize(chunk_dir: str):
 
         # Chuẩn bị dữ liệu cho bảng `words`
         words_to_insert = []
-        clean_chunks = video_df[video_df['label'] == 'clean'].set_index('start_ms_edited')
-        error_chunks = video_df[video_df['label'] == 'error'].set_index('start_ms_edited')
+        clean_chunks = video_df[video_df['label'] == 'clean'].set_index('start_ms_edited', drop=False)
+        error_chunks = video_df[video_df['label'] == 'error'].set_index('start_ms_edited', drop=False)
 
         logging.info(f"Step 4/5: Generating embeddings for {len(clean_chunks)} word pairs...")
         for start_ms, clean_row in clean_chunks.iterrows():
             if start_ms in error_chunks.index:
-                error_row = error_chunks.loc[start_ms]
+                # --- SỬA LỖI Ở ĐÂY ---
+                error_data = error_chunks.loc[start_ms]
+                
+                # Kiểm tra nếu kết quả trả về là DataFrame (do trùng index), chỉ lấy dòng đầu tiên
+                if isinstance(error_data, pd.DataFrame):
+                    error_row = error_data.iloc[0]
+                else:
+                    error_row = error_data
+                # ---------------------
 
-                clean_audio_path = os.path.join(chunk_dir, clean_row['audio_path'])
-                error_audio_path = os.path.join(chunk_dir, error_row['audio_path'])
+                # Đảm bảo ép kiểu string cho đường dẫn để tránh lỗi
+                clean_rel_path = str(clean_row['audio_path'])
+                error_rel_path = str(error_row['audio_path'])
+
+                clean_audio_path = os.path.join(chunk_dir, clean_rel_path)
+                error_audio_path = os.path.join(chunk_dir, error_rel_path)
 
                 # Tạo embedding cho cả hai
                 embedding_clean = vectorizer.create_embedding(clean_audio_path, embedding_model)
                 embedding_error = vectorizer.create_embedding(error_audio_path, embedding_model)
 
                 if embedding_clean is not None and embedding_error is not None:
-                    # TODO: Tích hợp logic phân tích đặc trưng âm học ở đây
-                    # TODO: Tích hợp logic nhận diện ngôn ngữ ở đây
-
                     words_to_insert.append((
                         1, # Tạm thời gán sentence_id = 1
                         clean_row['word_text'],
                         'vie', # Tạm thời gán language = 'vie'
                         int(clean_row['start_ms_edited']),
                         int(clean_row['end_ms_edited']),
-                        np.array(embedding_clean), # pgvector cần numpy array
+                        np.array(embedding_clean),
                         np.array(embedding_error),
-                        clean_row['audio_path'],
-                        error_row['audio_path'],
+                        clean_rel_path,
+                        error_rel_path,
                         clean_row['video_path'],
                         error_row['video_path']
                     ))
@@ -129,4 +142,4 @@ if __name__ == '__main__':
     if os.path.exists(TEST_CHUNK_DIR):
         main_vectorize(chunk_dir=TEST_CHUNK_DIR)
     else:
-        print(f"Test chunk directory not found: {TEST_CHUNK_DIR}")
+        print(f"Test chunk directory not found: {TEST_CHUNK_DIR}")  
