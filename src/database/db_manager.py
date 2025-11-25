@@ -5,6 +5,7 @@ import psycopg2
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 import logging
+import numpy as np
 # Cần import kiểu dữ liệu vector từ pgvector.
 from pgvector.psycopg2 import register_vector 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -221,3 +222,36 @@ def insert_words_data(conn, data_tuples: list):
         logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
         conn.rollback()
         return False
+    
+# src/database/db_manager.py (Thêm vào)
+
+def get_word_vectors(conn, word_text: str, limit=50):
+    """
+    Lấy các mẫu vector của một từ cụ thể từ DB.
+    Trả về danh sách các dict: {'label': 'clean'/'error', 'embedding': [...]}
+    """
+    query = """
+        SELECT label, embedding 
+        FROM "words" -- (Hoặc bảng nơi bạn lưu vector)
+        WHERE word_text = %s
+        LIMIT %s
+    """
+    # Lưu ý: Nếu schema mới của bạn chia ra embedding_clean và embedding_error trong cùng 1 row (bảng words),
+    # query sẽ cần sửa lại để union 2 cột đó hoặc select cả hai. 
+    # Giả sử schema đơn giản hoặc đã union:
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT embedding_clean, 'clean' FROM words WHERE word_text = %s LIMIT %s", (word_text, limit))
+            clean_rows = cur.fetchall()
+            
+            cur.execute("SELECT embedding_error, 'error' FROM words WHERE word_text = %s LIMIT %s", (word_text, limit))
+            error_rows = cur.fetchall()
+            
+            results = []
+            for r in clean_rows: results.append({'label': 'clean', 'embedding': np.array(r[0])})
+            for r in error_rows: results.append({'label': 'error', 'embedding': np.array(r[0])})
+            
+            return results
+    except Exception as e:
+        logging.error(f"Lỗi query vector: {e}")
+        return []
