@@ -1,74 +1,78 @@
+# src/utils/fcpxml_generator.py
+
 import xml.etree.ElementTree as ET
+from xml.dom import minidom
+import logging
 import os
 
 class FCPXMLGenerator:
-    def __init__(self, video_path, video_duration_seconds, frame_rate=60):
+    def __init__(self, video_path: str, video_duration_sec: float):
         self.video_path = os.path.abspath(video_path)
-        self.duration_seconds = video_duration_seconds
-        self.frame_rate = frame_rate
-        self.markers = []
+        self.duration_sec = video_duration_sec
+        self.frame_rate = 24 # Mặc định, nên lấy từ mediainfo nếu có thể
+        self.timebase = 2400 # Timebase chuẩn của FCP (ví dụ 24fps * 100)
 
-    def add_marker(self, start_seconds, label, note=""):
-        """Thêm một marker vào danh sách chờ."""
-        self.markers.append({
-            "start": start_seconds,
-            "label": label,
-            "note": note
-        })
+    def _sec_to_fcptime(self, seconds: float) -> str:
+        """Chuyển giây sang định dạng phân số của FCPXML (vd: 1200/2400s)."""
+        value = int(seconds * self.timebase)
+        return f"{value}/{self.timebase}s"
 
-    def _seconds_to_frame_str(self, seconds):
-        """Chuyển đổi giây sang định dạng phân số của FCPXML (ví dụ: "3600/600s")."""
-        total_frames = int(seconds * self.frame_rate * 100) # Nhân thêm hệ số để chính xác
-        # FCPXML thường dùng mẫu số (timescale) là frame_rate * n
-        timescale = self.frame_rate * 100
-        return f"{total_frames}/{timescale}s"
+    def generate(self, markers: list, output_path: str):
+        """
+        Tạo file FCPXML chứa các markers.
+        markers: List các dict {'start': float, 'name': str, 'note': str}
+        """
+        try:
+            # 1. Cấu trúc gốc
+            root = ET.Element("fcpxml", version="1.9")
+            
+            # 2. Resources (Định nghĩa file video gốc)
+            resources = ET.SubElement(root, "resources")
+            format_id = "r1"
+            # Định nghĩa format video
+            ET.SubElement(resources, "format", id=format_id, width="1920", height="1080", 
+                          frameDuration=self._sec_to_fcptime(1/self.frame_rate))
+            
+            # Định nghĩa asset (file video)
+            asset_id = "r2"
+            duration_fcp = self._sec_to_fcptime(self.duration_sec)
+            ET.SubElement(resources, "asset", id=asset_id, name=os.path.basename(self.video_path), 
+                          src=f"file://{self.video_path}", start="0s", duration=duration_fcp, hasVideo="1", format=format_id)
 
-    def generate_xml(self, output_path):
-        """Tạo và lưu file .fcpxml."""
-        
-        # 1. Cấu trúc cơ bản
-        fcpxml = ET.Element("fcpxml", version="1.9")
-        resources = ET.SubElement(fcpxml, "resources")
-        
-        # 2. Định nghĩa Asset (File video gốc)
-        # format="r1" là định dạng (sẽ định nghĩa sau hoặc FCP tự hiểu)
-        asset_duration_str = self._seconds_to_frame_str(self.duration_seconds)
-        asset = ET.SubElement(resources, "asset", id="r1", src=f"file://{self.video_path}", duration=asset_duration_str)
-        
-        # 3. Thư viện & Sự kiện
-        library = ET.SubElement(fcpxml, "library")
-        event = ET.SubElement(library, "event", name="AI Detected Errors")
-        project = ET.SubElement(event, "project", name=f"Analysis: {os.path.basename(self.video_path)}")
-        sequence = ET.SubElement(project, "sequence", duration=asset_duration_str)
-        spine = ET.SubElement(sequence, "spine")
-        
-        # 4. Clip chính (Chứa các markers)
-        # offset="0s" start="0s" duration=...
-        asset_clip = ET.SubElement(spine, "asset-clip", ref="r1", offset="0s", name=os.path.basename(self.video_path), duration=asset_duration_str)
-        
-        # 5. Chèn Markers
-        for m in self.markers:
-            start_str = self._seconds_to_frame_str(m['start'])
-            # Marker trong FCPXML: <marker start="..." duration="..." value="..." note="..."/>
-            # value hiển thị như tên marker trên timeline
-            ET.SubElement(asset_clip, "marker", start=start_str, duration="100/6000s", value=m['label'], note=m['note'])
+            # 3. Library / Event / Project Structure
+            library = ET.SubElement(root, "library")
+            event = ET.SubElement(library, "event", name="AI Detected Errors")
+            project = ET.SubElement(event, "project", name="Error Review Timeline")
+            sequence = ET.SubElement(project, "sequence", duration=duration_fcp, format=format_id, tcStart="0s", tcFormat="NDF")
+            spine = ET.SubElement(sequence, "spine")
 
-        # 6. Lưu file
-        # Lấy thư mục chứa file
-        output_dir = os.path.dirname(output_path)
+            # 4. Clip chính (Chứa video và các marker)
+            asset_clip = ET.SubElement(spine, "asset-clip", name=os.path.basename(self.video_path), 
+                                       ref=asset_id, duration=duration_fcp, start="0s", offset="0s")
 
-        # Kiểm tra và tạo thư mục nếu chưa có
-        if output_dir and not os.path.exists(output_dir):
-            os.makedirs(output_dir, exist_ok=True)
+            # 5. Thêm Markers vào trong Clip
+            for m in markers:
+                start_seconds = m.get('start', 0)
+                marker_name = m.get('name', 'AI Marker')
+                marker_note = m.get('note', 'Auto detected by IA MEDIA')
+                
+                # duration của marker (cho To-Do marker thì không cần thiết lắm, nhưng có thể để nhỏ)
+                # Quan trọng: completed="0" biến nó thành To-Do Marker
+                ET.SubElement(asset_clip, "marker", 
+                              start=self._sec_to_fcptime(start_seconds), 
+                              duration="1/2400s", 
+                              value=marker_name, 
+                              completed="0", 
+                              note=marker_note)
 
-        # Kiểm tra và tạo file nếu chưa có
-        if not os.path.exists(output_path):
-            with open(output_path, 'w',encoding="UTF-8") as f:
-                # Nếu muốn tạo file rỗng hoặc thêm nội dung mặc định
-                f.write("")  # Hoặc bạn có thể viết dữ liệu mặc định vào đây
-                f.close()
-        tree = ET.ElementTree(fcpxml)
-        # Pretty print (thụt đầu dòng) để dễ đọc (tùy chọn)
-        ET.indent(tree, space="    ", level=0)
-        tree.write(output_path, encoding="UTF-8", xml_declaration=True)
-        return output_path
+            # 6. Xuất ra file đẹp
+            xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="    ")
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(xml_str)
+            
+            logging.info(f"Đã tạo FCPXML thành công tại: {output_path}")
+            return True
+
+        except Exception as e:
+            logging.exception(f"Lỗi khi tạo FCPXML: {e}")
+            return False

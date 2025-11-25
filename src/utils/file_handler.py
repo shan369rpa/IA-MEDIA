@@ -4,6 +4,7 @@ import os
 import subprocess
 import logging
 import re
+import io
 from pydub import AudioSegment # Cần cho việc cắt chunk, có thể dùng lại cho hàm get_duration nếu muốn
 
 def extract_audio(video_path: str, workspace_dir: str) -> str | None:
@@ -117,3 +118,28 @@ def get_audio_duration(audio_path: str) -> float:
     except Exception as e:
         logging.error(f"Không thể đọc độ dài file audio bằng Pydub: {audio_path}. Lỗi: {e}")
         return 0.0
+# src/utils/file_handler.py (Thêm vào cuối file)
+
+
+def load_audio_segment(audio_path: str) -> AudioSegment | None:
+    """Tải toàn bộ file audio vào bộ nhớ."""
+    try:
+        return AudioSegment.from_wav(audio_path)
+    except Exception as e:
+        logging.error(f"Lỗi tải audio {audio_path}: {e}")
+        return None
+
+def extract_audio_chunk_memory(audio_segment: AudioSegment, start_ms: int, end_ms: int) -> str | None:
+    """
+    Cắt một đoạn audio và lưu ra file tạm để xử lý (Vector/Signal).
+    Trả về đường dẫn đến file tạm.
+    """
+    try:
+        chunk = audio_segment[start_ms:end_ms]
+        # Lưu vào thư mục tmp của hệ thống
+        temp_path = f"/tmp/temp_chunk_{start_ms}_{end_ms}.wav"
+        chunk.export(temp_path, format="wav")
+        return temp_path
+    except Exception as e:
+        logging.error(f"Lỗi cắt chunk: {e}")
+        return None

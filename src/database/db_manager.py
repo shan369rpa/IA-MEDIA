@@ -5,6 +5,7 @@ import psycopg2
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 import logging
+import numpy as np
 # Cần import kiểu dữ liệu vector từ pgvector.
 from pgvector.psycopg2 import register_vector 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -221,47 +222,36 @@ def insert_words_data(conn, data_tuples: list):
         logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
         conn.rollback()
         return False
-
-# Thêm vào src/database/db_manager.py
-
-def analyze_word_vector(conn, word_text: str, target_vector: list, limit=5):
-    """
-    So sánh vector mới với các vector đã lưu trong DB của cùng từ đó.
-    Trả về khoảng cách trung bình đến nhóm Clean và nhóm Error.
-    """
-    # Chuyển list thành string định dạng vector cho SQL
-    vector_str = str(target_vector)
     
+# src/database/db_manager.py (Thêm vào)
+
+def get_word_vectors(conn, word_text: str, limit=50):
+    """
+    Lấy các mẫu vector của một từ cụ thể từ DB.
+    Trả về danh sách các dict: {'label': 'clean'/'error', 'embedding': [...]}
+    """
     query = """
-        SELECT 
-            (embedding_clean <=> %s) as dist_clean,
-            (embedding_error <=> %s) as dist_error
-        FROM words 
+        SELECT label, embedding 
+        FROM "words" -- (Hoặc bảng nơi bạn lưu vector)
         WHERE word_text = %s
-        -- Chỉ lấy những bản ghi có cả 2 vector (để so sánh công bằng)
-        AND embedding_error IS NOT NULL 
-        ORDER BY dist_error ASC -- Tìm những lỗi giống nhất trước
-        LIMIT %s;
+        LIMIT %s
     """
-    
+    # Lưu ý: Nếu schema mới của bạn chia ra embedding_clean và embedding_error trong cùng 1 row (bảng words),
+    # query sẽ cần sửa lại để union 2 cột đó hoặc select cả hai. 
+    # Giả sử schema đơn giản hoặc đã union:
     try:
         with conn.cursor() as cur:
-            cur.execute(query, (vector_str, vector_str, word_text, limit))
-            rows = cur.fetchall()
+            cur.execute("SELECT embedding_clean, 'clean' FROM words WHERE word_text = %s LIMIT %s", (word_text, limit))
+            clean_rows = cur.fetchall()
             
-            if not rows:
-                return None # Từ này chưa từng xuất hiện trong DB
+            cur.execute("SELECT embedding_error, 'error' FROM words WHERE word_text = %s LIMIT %s", (word_text, limit))
+            error_rows = cur.fetchall()
             
-            # Tính trung bình khoảng cách
-            avg_dist_clean = sum(r[0] for r in rows) / len(rows)
-            avg_dist_error = sum(r[1] for r in rows) / len(rows)
+            results = []
+            for r in clean_rows: results.append({'label': 'clean', 'embedding': np.array(r[0])})
+            for r in error_rows: results.append({'label': 'error', 'embedding': np.array(r[0])})
             
-            return {
-                "avg_dist_clean": avg_dist_clean,
-                "avg_dist_error": avg_dist_error,
-                "sample_count": len(rows)
-            }
-            
+            return results
     except Exception as e:
-        logging.error(f"Lỗi khi phân tích vector: {e}")
-        return None
+        logging.error(f"Lỗi query vector: {e}")
+        return []

@@ -39,6 +39,7 @@ def detect_errors_in_video(video_path: str, output_xml_path: str, workspace_dir:
         
         # Cắt chunk nhỏ để vector hóa
         chunk_path = os.path.join(temp_chunk_dir, f"{start}_{end}.wav")
+        file_handler.cut_audio_segment(audio_path, chunk_path, start, end) 
         # (Giả định có hàm cắt audio đơn giản trong file_handler, hoặc dùng pydub trực tiếp ở đây)
         # ... Code cắt audio ...
         # Ví dụ dùng file_handler.cut_audio_segment(audio_path, chunk_path, start, end) 

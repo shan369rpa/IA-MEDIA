@@ -4,68 +4,53 @@ import librosa
 import numpy as np
 import logging
 
-# Cấu hình ngưỡng (Thresholds) - Cần tinh chỉnh thực tế
-CLIPPING_THRESHOLD = 0.99  # Biên độ gần tối đa (1.0)
-LOW_VOLUME_RMS = 0.01      # Ngưỡng năng lượng quá thấp
-NOISE_DIFF_RATIO = 1.5     # Nếu RMS của error gấp 1.5 lần clean -> Khả năng cao là nhiễu
+class SignalAnalyzer:
+    def __init__(self, sample_rate=16000):
+        self.sr = sample_rate
 
-def analyze_audio_defects(clean_path: str, error_path: str) -> dict:
-    """
-    Phân tích và so sánh cặp audio clean/error để phát hiện các lỗi kỹ thuật.
-    
-    Returns:
-        dict: Chứa 'label' (loại lỗi phát hiện được) và 'metrics' (các chỉ số).
-    """
-    result = {
-        "label": "error", # Nhãn mặc định nếu không phát hiện lỗi kỹ thuật cụ thể
-        "details": {}
-    }
+    def analyze_chunk(self, audio_path: str) -> dict:
+        """
+        Phân tích tín hiệu âm thanh để tìm các lỗi kỹ thuật.
+        Trả về dictionary chứa các cờ lỗi và thông số.
+        """
+        result = {
+            "is_clipping": False,
+            "is_silence": False,
+            "is_noise_spike": False,
+            "rms_energy": 0.0,
+            "max_amplitude": 0.0
+        }
 
-    try:
-        # 1. Tải audio (librosa tải về dạng float32 từ -1 đến 1)
-        # sr=None để giữ nguyên tần số mẫu gốc (thường là 16kHz)
-        y_clean, sr_clean = librosa.load(clean_path, sr=None)
-        y_error, sr_error = librosa.load(error_path, sr=None)
-
-        # --- KIỂM TRA LỖI KỸ THUẬT TRÊN FILE ERROR ---
-
-        # A. Kiểm tra Clipping (Vỡ tiếng)
-        # Nếu có mẫu nào đạt biên độ tuyệt đối > 0.99
-        max_amp = np.max(np.abs(y_error))
-        if max_amp >= CLIPPING_THRESHOLD:
-            result["label"] = "error_clipping"
-            result["details"]["max_amplitude"] = float(max_amp)
-            return result
-
-        # B. Tính năng lượng trung bình (RMS - Root Mean Square)
-        rms_clean = np.sqrt(np.mean(y_clean**2))
-        rms_error = np.sqrt(np.mean(y_error**2))
-        
-        result["details"]["rms_clean"] = float(rms_clean)
-        result["details"]["rms_error"] = float(rms_error)
-
-        # C. Kiểm tra Âm lượng quá nhỏ (Low Volume)
-        if rms_error < LOW_VOLUME_RMS:
-            result["label"] = "error_low_volume"
-            return result
-
-        # D. So sánh chênh lệch năng lượng (Noise Spike)
-        # Nếu file lỗi ồn hơn file sạch đáng kể
-        if rms_clean > 0: # Tránh chia cho 0
-            ratio = rms_error / rms_clean
-            result["details"]["energy_ratio"] = float(ratio)
+        try:
+            # Tải audio (librosa load nhanh hơn cho phân tích tín hiệu)
+            y, _ = librosa.load(audio_path, sr=self.sr)
             
-            if ratio > NOISE_DIFF_RATIO:
-                result["label"] = "error_noise_spike"
-                return result
+            if len(y) == 0: return result
 
-        # E. Fallback: Nếu không dính lỗi kỹ thuật, ta tạm gán là lỗi phát âm
-        # (Việc xác nhận lỗi phát âm chính xác sẽ do vector embedding đảm nhiệm sau này)
-        result["label"] = "error_pronunciation"
+            # 1. Phân tích Clipping (Vỡ tiếng)
+            max_amp = np.max(np.abs(y))
+            result["max_amplitude"] = float(max_amp)
+            # Ngưỡng clipping thường gần 1.0 (nếu float) hoặc 32767 (nếu int16)
+            # Ở đây librosa load ra float [-1, 1]
+            if max_amp >= 0.99: 
+                result["is_clipping"] = True
+
+            # 2. Phân tích Năng lượng (RMS)
+            rms = librosa.feature.rms(y=y)[0]
+            avg_rms = float(np.mean(rms))
+            result["rms_energy"] = avg_rms
+
+            # 3. Phân tích Khoảng lặng (Silence)
+            # Ngưỡng im lặng tùy thuộc vào môi trường, ví dụ dưới 0.005
+            if avg_rms < 0.005:
+                result["is_silence"] = True
+
+            # 4. Phân tích Noise Spike (Tiếng ồn đột ngột)
+            # Nếu năng lượng đỉnh (peak) lớn gấp nhiều lần năng lượng trung bình
+            if avg_rms > 0 and (np.max(rms) / avg_rms) > 5.0:
+                result["is_noise_spike"] = True
+
+        except Exception as e:
+            logging.error(f"Lỗi phân tích tín hiệu {audio_path}: {e}")
         
-        return result
-
-    except Exception as e:
-        logging.error(f"Lỗi khi phân tích tín hiệu audio: {e}")
-        # Trả về mặc định nếu lỗi
         return result
