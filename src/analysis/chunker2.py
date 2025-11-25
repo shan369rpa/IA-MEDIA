@@ -113,3 +113,53 @@ def create_and_save_chunks(
 
     logging.info(f"Hoàn tất {source_video_name}: {processed_word_count} chunks.")
     return processed_word_count
+# src/analysis/signal_analyzer.py
+
+from pydub import AudioSegment
+import logging
+
+# Cấu hình ngưỡng (Thresholds)
+CLIPPING_THRESHOLD_DB = -0.1      # Gần mức 0dB là vỡ tiếng
+NOISE_DIFF_THRESHOLD_DB = 3.0     # Nếu đoạn lỗi to hơn đoạn sạch > 3dB -> Khả năng là tiếng ồn/gai âm
+LOW_VOLUME_DIFF_THRESHOLD_DB = 5.0 # Nếu đoạn lỗi nhỏ hơn đoạn sạch > 5dB -> Khả năng là bị nhỏ tiếng/mất tiếng
+
+def analyze_segment(clean_chunk: AudioSegment, error_chunk: AudioSegment) -> str:
+    """
+    Phân tích tín hiệu của error_chunk so với clean_chunk để xác định loại lỗi cụ thể.
+    
+    Priority (Thứ tự ưu tiên phát hiện):
+    1. Clipping (Vỡ tiếng nghiêm trọng)
+    2. Noise Spike (Tiếng ồn lớn đột ngột)
+    3. Low Volume (Âm lượng quá nhỏ)
+    4. Pronunciation (Mặc định - nếu tín hiệu kỹ thuật ổn nhưng vẫn bị đánh dấu là khác biệt)
+    
+    Returns:
+        str: Nhãn lỗi ('error_clipping', 'error_noise_spike', 'error_low_volume', 'error_pronunciation')
+    """
+    
+    # 1. Kiểm tra Clipping (Vỡ tiếng)
+    # Pydub trả về max_dBFS (Decibels relative to Full Scale)
+    if error_chunk.max_dBFS >= CLIPPING_THRESHOLD_DB:
+        return "error_clipping"
+
+    # Lấy độ lớn âm thanh trung bình (dBFS)
+    clean_db = clean_chunk.dBFS
+    error_db = error_chunk.dBFS
+
+    # Tính chênh lệch năng lượng
+    diff = error_db - clean_db
+
+    # 2. Kiểm tra Noise Spike (Lỗi ồn, gai âm)
+    # Nếu đoạn lỗi to hơn đoạn sạch đáng kể, thường là do tiếng ho, va đập, hoặc tiếng ồn nền tăng vọt
+    if diff > NOISE_DIFF_THRESHOLD_DB:
+        return "error_noise_spike"
+
+    # 3. Kiểm tra Low Volume (Âm lượng nhỏ)
+    # Nếu đoạn lỗi nhỏ hơn đoạn sạch đáng kể (clean > error)
+    # Lưu ý: diff sẽ là số âm, nên ta so sánh clean - error
+    if (clean_db - error_db) > LOW_VOLUME_DIFF_THRESHOLD_DB:
+        return "error_low_volume"
+
+    # 4. Nếu không dính các lỗi kỹ thuật tín hiệu trên
+    # Thì sự khác biệt (do align map chỉ ra) khả năng cao nằm ở chất lượng giọng nói/phát âm
+    return "error_pronunciation"
