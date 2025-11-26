@@ -1,6 +1,8 @@
 # **IA MEDIA Project - Intelligent Automation for Media Processing**
 ## **Dự án IA MEDIA - Tự động hóa Thông minh cho Xử lý Truyền thông**
-
+[![Status](https://img.shields.io/badge/Status-Phase%201%20Demo%20Ready-green)]()
+[![Python](https://img.shields.io/badge/Python-3.10-blue)]()
+[![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey)]()
 ---
 
 ## **1. Overview / Tổng quan**
@@ -61,18 +63,35 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 
 ---
 
-## 3. Current Status: Foundation & Infrastructure Complete / Giai đoạn Hiện tại: Hoàn thành Nền tảng & Hạ tầng
+## 3. Current Status: Phase 1 Demo Ready / Trạng thái Hiện tại: Sẵn sàng Demo Giai đoạn 1
 
-**We have successfully completed the infrastructure setup and detailed design phase of the project.**
-**Chúng ta đã hoàn thành xuất sắc giai đoạn thiết lập hạ tầng và thiết kế chi tiết của dự án.**
+**We have successfully implemented the Core Analysis Pipeline.**
+**Chúng ta đã thực hiện thành công Pipeline Phân tích Lõi.**
 
-### Accomplishments / Thành tựu Đã đạt được:
+### ✅ Accomplishments / Thành tựu:
+-   **Infrastructure:** Database `ia-media-db-pgvector` is live and secure.
+-   **Core Logic:** `main.py` (Analysis) and `vectorize.py` (Ingestion) utilize modular architecture.
+-   **Parsing:** Advanced FCPXML parsing logic to map edited video timestamps back to raw source footage.
+-   **AI Integration:** Integrated `OpenAI Whisper` for transcription and `SpeechBrain` for phonetic embedding.
+-   **Execution:** A comprehensive Google Colab Notebook is ready for batch processing.
 
--   **✅ Development Environment Ready:** A fully configured GitHub Codespace is operational.
--   **✅ Dedicated Database Deployed:** A new, independent PostgreSQL container (`ia-media-db-pgvector`) with the `pgvector` extension is running and accessible.
--   **✅ Advanced Data Schema Finalized:** A detailed, multi-table relational schema has been designed and implemented (`sources`, `sentences`, `words`, `anomalies`).
--   **✅ Tooling Integrated:** NocoDB is successfully connected to our new database for project management.
--   **✅ Comprehensive Documentation:** Core project documentation (`GUIDE.md`, `DATA_STRATEGY.md`, etc.) has been created.
+### 🚧 Next Steps / Bước Tiếp theo:
+-   Run the end-to-end pipeline on the first batch of real data (3-5 videos).
+-   Verify the quality of generated chunks and vector search results.
+
+---
+
+## 4. Project Structure / Cấu trúc Dự án
+
+See [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) for a detailed file tree.
+*Xem [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) để biết chi tiết cây thư mục.*
+
+-   `src/`: Source code (`analysis`, `database`, `utils`, `ai`).
+-   `notebooks/`: Jupyter Notebooks for Google Colab execution.
+-   `server_configs/`: Postgres configuration files.
+-   `tests/`: Unit tests.
+
+---
 
 ### Next Immediate Step / Bước Tiếp theo:
 
