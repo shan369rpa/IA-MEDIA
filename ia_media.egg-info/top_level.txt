@@ -1,0 +1,8 @@
+IA_PineLine_Assistant
+data
+documents
+scripts
+server_configs
+src
+tests
+workspace

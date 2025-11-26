@@ -1,0 +1,23 @@
+{
+	"name": "IA MEDIA", // Tên dự án sẽ hiển thị trong VS Code
+	"build": {
+		"dockerfile": "Dockerfile", // Chỉ cho Codespaces biết cần sử dụng Dockerfile của chúng ta
+		"context": ".." // Ngữ cảnh build là thư mục cha (thư mục gốc của repo)
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python", // Cài sẵn extension Python cho VS Code
+				"ms-toolsai.jupyter" // Cài sẵn extension Jupyter Notebook
+			]
+		}
+	},
+	// Chuyển tiếp cổng để chạy các ứng dụng web (như FastAPI) sau này
+	"forwardPorts": [8000],
+
+	// Chạy một lệnh sau khi container được tạo
+	// "postCreateCommand": "echo 'Container created successfully!'",
+	 "postCreateCommand": "pip install -e .",
+	// Kết nối với tư cách người dùng vscode thay vì root
+	"remoteUser": "vscode"
+}

@@ -1,0 +1,196 @@
+{
+  "name": "IA_MEDIA - AI Context Updater (idempotent)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ia-context-updater",
+        "responseMode": "onReceived",
+        "responseData": "OK"
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, title, status, assignee, updated_at FROM tasks ORDER BY updated_at DESC LIMIT 50;"
+      },
+      "name": "Postgres (NocoDB)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [520, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "const fs = require('fs');\nconst repoPath = '/workspaces/IA-MEDIA/IA_PineLine_Assistant';\nlet projectContext = '';\nlet systemTemplate = '';\ntry {\n  projectContext = fs.readFileSync(`${repoPath}/PROJECT_CONTEXT.md`, 'utf8');\n  systemTemplate = fs.readFileSync(`${repoPath}/SYSTEM_MESSAGE.md`, 'utf8');\n} catch (e) {\n  // Allow env override for environments where repo isn't mounted\n  projectContext = process.env.PROJECT_CONTEXT_CONTENT || '';\n  systemTemplate = process.env.SYSTEM_MESSAGE_TEMPLATE || '';\n}\nreturn [{ json: { projectContext, systemTemplate, webhook: $input.all()[0] || {} } }];"
+      },
+      "name": "Load Templates (FS or ENV)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [360, 400]
+    },
+    {
+      "parameters": {
+        "functionCode": "/* Build markdown progress report from Postgres rows (n8n gives rows in input[0].json) */\nconst rows = $input.all()[0] && $input.all()[0].json && Array.isArray($input.all()[0].json) ? $input.all()[0].json : [];\nlet report = '';\nif(!rows || rows.length === 0) {\n  report = 'No tasks returned from DB. Please verify SQL and credentials.';\n} else {\n  report = '| id | title | status | assignee | updated_at |\\n|---:|---|---|---|---:|\\n';\n  rows.forEach(r => {\n    const id = r.id || '';\n    const title = (r.title || r.name || '').toString().replace(/\\|/g,'\\\\|');\n    const status = r.status || '';\n    const assignee = r.assignee || '';\n    const updated = r.updated_at || '';\n    report += `| ${id} | ${title} | ${status} | ${assignee} | ${updated} |\\n`;\n  });\n}\nreturn [{ json: { progressReport: report } }];"
+      },
+      "name": "Build Progress Report",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [760, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "/* Merge template placeholders and remove Part 3 when no commit info */\nconst tpl = $input.item.json.systemTemplate || '';\nconst ctx = $input.item.json.projectContext || '';\nconst progress = $input.all()[1].json.progressReport || '';\nconst webhook = $input.item.json.webhook || {};\nlet out = tpl.replace('{{PROJECT_CONTEXT_CONTENT}}', ctx).replace('{{NOCODB_PROGRESS_REPORT}}', progress);\n// Attempt to extract GitHub push commit info if webhook has it\nlet commitAuthor = '';\nlet commitMessage = '';\nlet commitUrl = '';\ntry {\n  const body = webhook[0] && webhook[0].json ? webhook[0].json : webhook;\n  if(body && body.commits && body.commits.length) {\n    const c = body.commits[0];\n    commitAuthor = c.author && c.author.name ? c.author.name : '';\n    commitMessage = c.message || '';\n    commitUrl = c.url || '';\n  }\n} catch (e) {}\nif(commitAuthor) {\n  out = out.replace('{{GITHUB_COMMIT_AUTHOR}}', commitAuthor);\n  out = out.replace('{{GITHUB_COMMIT_MESSAGE}}', commitMessage);\n  out = out.replace('{{GITHUB_COMMIT_URL}}', commitUrl);\n} else {\n  // Remove the whole Part 3 block to avoid leaving placeholders\n  out = out.replace(/\\n### \\*\\*Part 3[\\s\\S]*?### \\*\\*Part 4:/, '\\n### **Part 4: User\\\\'s Action Prompt / Phần 4: Prompt Hành động của Người dùng\\n');\n}\nreturn [{ json: { finalDoc: out } }];"
+      },
+      "name": "Merge Template",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1060, 250]
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "query": "name = 'IA_MEDIA_AI_CONTEXT.gdoc' and trashed = false",
+        "additionalFields": {}
+      },
+      "name": "Google Drive - Find Doc",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 1,
+      "position": [1320, 200]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "resource": "document",
+        "documentId": "={{ $json[\"files\"] && $json[\"files\"].length ? $json[\"files\"][0].id : '' }}",
+        "content": "={{ $json[\"finalDoc\"] || $input.item.json.finalDoc }}",
+        "additionalFields": {}
+      },
+      "name": "Google Docs - Update (if exists)",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [1580, 220]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "document",
+        "title": "IA_MEDIA_AI_CONTEXT.gdoc",
+        "content": "={{ $json[\"finalDoc\"] || $input.item.json.finalDoc }}",
+        "additionalFields": {}
+      },
+      "name": "Google Docs - Create",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [1580, 360]
+    },
+    {
+      "parameters": {
+        "functionCode": "/* Decide: if Find returned a file -> update node, else create node. This function prepares input for update/create nodes. */\nconst find = $input.all()[0] && $input.all()[0].json ? $input.all()[0].json : {};\nconst finalDoc = $input.all().find(i=>i.json && i.json.finalDoc) ? $input.all().find(i=>i.json && i.json.finalDoc).json.finalDoc : (find.finalDoc || '');\nlet fileId = '';\nif(find && find.files && find.files.length) fileId = find.files[0].id;\nreturn [{ json: { fileId, finalDoc } }];"
+      },
+      "name": "Decide Update/Create",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1440, 290]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Load Templates (FS or ENV",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postgres (NocoDB)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres (NocoDB)": {
+      "main": [
+        [
+          {
+            "node": "Build Progress Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Templates (FS or ENV)": {
+      "main": [
+        [
+          {
+            "node": "Merge Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Progress Report": {
+      "main": [
+        [
+          {
+            "node": "Merge Template",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Template": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Find Doc",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Decide Update/Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Find Doc": {
+      "main": [
+        [
+          {
+            "node": "Decide Update/Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide Update/Create": {
+      "main": [
+        [
+          {
+            "node": "Google Docs - Update (if exists)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Docs - Create",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

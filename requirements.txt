@@ -1,0 +1,36 @@
+# ==============================================================================
+# REQUIREMENTS FOR PHASE 1: CORE ANALYSIS & VECTORIZATION
+# ==============================================================================
+
+# --- Core & Infrastructure ---
+python-dotenv
+psycopg2-binary
+pgvector
+
+# --- Audio/Video Processing ---
+# Whisper để phiên âm. Sẽ tự động cài đặt torch.
+openai-whisper
+# Librosa và Pydub cho các tác vụ xử lý audio.
+librosa
+pydub
+# ffmpeg-python để tương tác với ffmpeg một cách an toàn.
+ffmpeg-python
+
+# --- AI & Vectorization ---
+# SpeechBrain cho model embedding. Sẽ tự động cài torchaudio.
+speechbrain
+# Sentence-Transformers là một cách tiện lợi để tải và dùng SpeechBrain.
+sentence-transformers
+
+# --- Data Handling ---
+# Pandas rất cần thiết để tạo và quản lý file metadata.csv.
+pandas
+
+# --- Development & Testing ---
+# Các thư viện này chỉ cần thiết cho môi trường phát triển/test.
+pytest
+pytest-mock
+# Scipy và soundfile cần thiết để tạo file audio giả trong các bài test.
+scipy
+soundfile
+jupyter # Giữ lại Jupyter để có thể mở và sửa file .ipynb

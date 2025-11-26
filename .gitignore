@@ -1,0 +1,43 @@
+# Bỏ qua các thư mục chứa file tạm và kết quả
+/workspace/
+/data/
+
+# Build / runtime outputs
+failed_batches/
+logs/
+logs/*.log
+
+# Audio/chunk/embedding storage (large binary outputs)
+workspace/chunks/
+workspace/embeddings/
+workspace/audio/
+
+# Model artifacts
+models/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+
+# Bỏ qua các file môi trường
+.env
+
+# Bỏ qua các thư mục hệ thống của Python và VSCode
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.cache/
+.venv/
+.idea/
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Misc
+.DS_Store
+Thumbs.db
+*~
+*.swp
