@@ -57,8 +57,8 @@ We employ a **Hybrid Cloud Architecture** to maximize performance while minimizi
 
 ## 4. Project Structure / Cấu trúc Dự án
 
-See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for a detailed file tree.
-*Xem [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) để biết chi tiết cây thư mục.*
+See [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) for a detailed file tree.
+*Xem [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) để biết chi tiết cây thư mục.*
 
 -   `src/`: Source code (`analysis`, `database`, `utils`, `ai`).
 -   `notebooks/`: Jupyter Notebooks for Google Colab execution.
@@ -101,17 +101,17 @@ We use **Google Colab** as the production engine.
 
 ## 6. Documentation / Tài liệu
 
-*   **[GUIDE.md](./GUIDE.md):** Operational commands (SSH Tunneling, DB management).
+*   **[GUIDE.md](./documents/GUIDE.md):** Operational commands (SSH Tunneling, DB management).
 *   **[DATA_STRATEGY.md](./documents/DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
-*   **[COMPUTE_STRATEGY.md](./COMPUTE_STRATEGY.md):** Analysis of compute platforms.
-*   **[STORAGE_ANALYSIS.md](./STORAGE_ANALYSIS.md):** Storage cost and architecture analysis.
-*   **[FILE_NAMING_CONVENTION.md](./FILE_NAMING_CONVENTION.md):** Rules for naming source files.
-*   **[GIT_CONVENTION.md](./GIT_CONVENTION.md):** Branching and commit standards.
+*   **[COMPUTE_STRATEGY.md](./documents/COMPUTE_STRATEGY.md):** Analysis of compute platforms.
+*   **[STORAGE_ANALYSIS.md](./documents/STORAGE_ANALYSIS.md):** Storage cost and architecture analysis.
+*   **[FILE_NAMING_CONVENTION.md](./documents/FILE_NAMING_CONVENTION.md):** Rules for naming source files.
+*   **[GIT_CONVENTION.md](./documents/GIT_CONVENTION.md):** Branching and commit standards.
 
 ---
 
 ## 7. Contact & Contribution
 
-This is an open-source project. Contributions are welcome! Please read [GIT_CONVENTION.md](./GIT_CONVENTION.md) before submitting a Pull Request.
+This is an open-source project. Contributions are welcome! Please read [GIT_CONVENTION.md](./documents/GIT_CONVENTION.md) before submitting a Pull Request.
 
-*Đây là một dự án mã nguồn mở. Hoan nghênh mọi sự đóng góp! Vui lòng đọc [GIT_CONVENTION.md](./GIT_CONVENTION.md) trước khi gửi Pull Request.*
+*Đây là một dự án mã nguồn mở. Hoan nghênh mọi sự đóng góp! Vui lòng đọc [GIT_CONVENTION.md](./documents/GIT_CONVENTION.md) trước khi gửi Pull Request.*
