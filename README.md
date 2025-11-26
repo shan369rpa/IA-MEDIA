@@ -22,7 +22,7 @@
 ---
 
 ## **2. Development Roadmap / Lộ trình Phát triển**
-
+*   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking(**nên đọc tài liệu này trước**).
 The project will be implemented in 3 main phases, with each phase delivering a significant upgrade and immediate value.
 
 ### **Phase 1: Automated Error Detection System**
@@ -81,16 +81,14 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 
 ---
 
-## 4. Project Structure / Cấu trúc Dự án
-
-See [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) for a detailed file tree.
-*Xem [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) để biết chi tiết cây thư mục.*
-
--   `src/`: Source code (`analysis`, `database`, `utils`, `ai`).
--   `notebooks/`: Jupyter Notebooks for Google Colab execution.
--   `server_configs/`: Postgres configuration files.
--   `tests/`: Unit tests.
-
+## 4. Documentation / Tài liệu
+*   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking.
+*   **[GUIDE.md](./documents/GUIDE.md):** Operational commands (SSH Tunneling, DB management).
+*   **[DATA_STRATEGY.md](./documents/DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
+*   **[COMPUTE_STRATEGY.md](./documents/COMPUTE_STRATEGY.md):** Analysis of compute platforms.
+*   **[STORAGE_ANALYSIS.md](./documents/STORAGE_ANALYSIS.md):** Storage cost and architecture analysis.
+*   **[FILE_NAMING_CONVENTION.md](./documents/FILE_NAMING_CONVENTION.md):** Rules for naming source files.
+*   **[GIT_CONVENTION.md](./documents/GIT_CONVENTION.md):** Branching and commit standards.
 ---
 
 ### Next Immediate Step / Bước Tiếp theo:
