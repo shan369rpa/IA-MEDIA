@@ -64,11 +64,16 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 ---
 
 ## 3. Current Status: Phase 1 Demo Ready / Trạng thái Hiện tại: Sẵn sàng Demo Giai đoạn 1
+### **Demo Objectives / Mục tiêu Demo:**
+1.  **Prove Core Logic:** Successfully build a script that can analyze a pair of videos (raw and edited) and extract micro-audio chunks (word-level) for analysis.
+2.  **Build Phonetic Dictionary:** Vectorize the extracted audio chunks and store them in a VectorDB (PostgreSQL + pgvector) to create a "signature" for "correct" and "incorrect" pronunciations.
+3.  **Complete End-to-End Pipeline:** Integrate the logic into a Dockerized API service, deploy it to a cloud environment (RunPod), and orchestrate the workflow with n8n.
+4.  **Generate Valuable Output:** Demonstrate that the system can produce a usable FCPXML file with To-Do Markers that editors can immediately use.
 
 **We have successfully implemented the Core Analysis Pipeline.**
 **Chúng ta đã thực hiện thành công Pipeline Phân tích Lõi.**
-
 ### ✅ Accomplishments / Thành tựu:
+-   **Technical Documentation**: Create Technical Documentation throughout the project.
 -   **Infrastructure:** Database `ia-media-db-pgvector` is live and secure.
 -   **Core Logic:** `main.py` (Analysis) and `vectorize.py` (Ingestion) utilize modular architecture.
 -   **Parsing:** Advanced FCPXML parsing logic to map edited video timestamps back to raw source footage.
@@ -79,9 +84,7 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 -   Run the end-to-end pipeline on the first batch of real data (3-5 videos).
 -   Verify the quality of generated chunks and vector search results.
 
----
-
-## 4. Documentation / Tài liệu
+## 4. Technical Documentation / Tài liệu kỹ thuật
 *   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking.
 *   **[GUIDE.md](./documents/GUIDE.md):** Operational commands (SSH Tunneling, DB management).
 *   **[DATA_STRATEGY.md](./documents/DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
@@ -90,18 +93,6 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 *   **[FILE_NAMING_CONVENTION.md](./documents/FILE_NAMING_CONVENTION.md):** Rules for naming source files.
 *   **[GIT_CONVENTION.md](./documents/GIT_CONVENTION.md):** Branching and commit standards.
 ---
-
-### Next Immediate Step / Bước Tiếp theo:
-
-The project is now in a **"Waiting for Data"** state. The next phase will focus on **implementing the core analysis pipeline** (`main.py`) to process the first batch of sample videos.
-*Dự án hiện đang ở trạng thái **"Chờ Dữ liệu"**. Giai đoạn tiếp theo sẽ tập trung vào việc **hiện thực hóa pipeline phân tích lõi** (`main.py`) để xử lý lô video mẫu đầu tiên.*
-
-
-### **Demo Objectives / Mục tiêu Demo:**
-1.  **Prove Core Logic:** Successfully build a script that can analyze a pair of videos (raw and edited) and extract micro-audio chunks (word-level) for analysis.
-2.  **Build Phonetic Dictionary:** Vectorize the extracted audio chunks and store them in a VectorDB (PostgreSQL + pgvector) to create a "signature" for "correct" and "incorrect" pronunciations.
-3.  **Complete End-to-End Pipeline:** Integrate the logic into a Dockerized API service, deploy it to a cloud environment (RunPod), and orchestrate the workflow with n8n.
-4.  **Generate Valuable Output:** Demonstrate that the system can produce a usable FCPXML file with To-Do Markers that editors can immediately use.
 
 ### **Technology Stack / Công nghệ Sử dụng:**
 -   **Language / Ngôn ngữ:** Python 3.10
