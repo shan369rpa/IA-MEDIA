@@ -1,94 +1,117 @@
-# **IA MEDIA Project - Intelligent Automation for Media Processing**
-## **Dự án IA MEDIA - Tự động hóa Thông minh cho Xử lý Truyền thông**
+# IA MEDIA Project - Intelligent Automation for Media Processing
+## Dự án IA MEDIA - Tự động hóa Thông minh cho Xử lý Truyền thông
+
+[![Status](https://img.shields.io/badge/Status-Phase%201%20Demo%20Ready-green)]()
+[![Python](https://img.shields.io/badge/Python-3.10-blue)]()
+[![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey)]()
 
 ---
 
-## **1. Overview / Tổng quan**
+## 1. Overview / Tổng quan
 
-**IA MEDIA** is a strategic initiative to leverage **I**ntelligent **A**utomation to address challenges in the post-production workflow for the video dharma talks of Zen Master Thich Nhat Hanh. The core objective is to build an intelligent system capable of automating repetitive tasks, enhancing the editorial team's efficiency, standardizing product quality, and significantly shortening the project completion timeline.
+**IA MEDIA** is a strategic, open-source initiative to leverage **I**ntelligent **A**utomation to address challenges in the post-production workflow for video dharma talks.
 
--   **The Problem:** The manual editing process, especially the task of searching for micro-audio errors (pronunciation, phonemes, final sounds), consumes the majority of working hours (estimated >50%). This reduces productivity and extends the project timeline.
--   **The Solution:** To build an IA-powered pipeline that acts as an "intelligent editorial assistant," helping to identify, suggest, and ultimately, automatically correct audio errors.
+Our goal is to build a system that acts as an "Intelligent Editorial Assistant," capable of:
+1.  **Automated Error Detection:** Finding pronunciation errors, noise, and bad cuts without manual listening.
+2.  **Data Enrichment:** Creating a rich, multi-modal dataset (Audio-Text-Video) for AI research.
+3.  **Future Expansion:** Serving as a foundation for Voice Cloning and TTS applications.
 
-***
+***IA MEDIA** là một sáng kiến chiến lược, mã nguồn mở nhằm ứng dụng **T**ự động hóa **T**hông minh (**I**ntelligent **A**utomation) để giải quyết các thách thức trong quy trình hậu kỳ video pháp thoại.*
 
-**IA MEDIA** là một sáng kiến chiến lược nhằm ứng dụng **T**ự động hóa **T**hông minh (**I**ntelligent **A**utomation) để giải quyết các thách thức trong quy trình hậu kỳ video pháp thoại của Thiền sư Thích Nhat Hạnh. Mục tiêu cốt lõi là xây dựng một hệ thống thông minh có khả năng tự động hóa các tác vụ lặp đi lặp lại, nâng cao hiệu suất làm việc của đội ngũ biên tập, chuẩn hóa chất lượng sản phẩm và rút ngắn đáng kể thời gian hoàn thành dự án.
-
--   **Vấn đề:** Quy trình chỉnh sửa thủ công, đặc biệt là việc dò tìm các lỗi âm thanh vi mô (phát âm, âm vị, âm đuôi), tiêu tốn phần lớn thời gian làm việc (ước tính >50%), làm giảm năng suất và kéo dài tiến độ dự án.
--   **Giải pháp:** Xây dựng một pipeline được vận hành bởi IA, hoạt động như một "trợ lý biên tập thông minh", giúp xác định, gợi ý và tiến tới tự động khắc phục các lỗi âm thanh.
-
----
-
-## **2. Development Roadmap / Lộ trình Phát triển**
-
-The project will be implemented in 3 main phases, with each phase delivering a significant upgrade and immediate value.
-
-### **Phase 1: Automated Error Detection System**
--   **Objective:** Build a system capable of "listening" to and analyzing entire videos, then automatically generating a list of potential errors with precise timestamps.
--   **Key Features:** Detect pronunciation/phonetic errors, technical issues (noise, clicks, clipping, volume), and pacing errors (long silences, filler words).
--   **Deliverable:** An FCPXML file with "To-Do Markers," allowing editors to import it directly into Final Cut Pro and jump to each error without manual searching.
--   **Impact:** Eliminates the manual search process, **boosting efficiency by an estimated 30-40%**.
-
-### **Phase 2: Interactive Correction Suggestion System**
--   **Objective:** Upgrade the system from an "error spotter" to an "expert advisor" that can propose effective correction methods.
--   **Key Features:** Integrate a Large Language Model (LLM) with RAG techniques, build a knowledge base from past edits and editor expertise, and implement a feedback loop for continuous learning.
--   **Impact:** Reduces decision-making time, standardizes quality. **Total efficiency boost estimated at 50-60%**.
-
-### **Phase 3: Automated Correction**
--   **Objective:** Achieve the highest level of automation, where the system can perform basic and complex correction tasks on its own.
--   **Key Features:** Rule-based automation (removing filler words) and AI-powered automation (replacing faulty audio with clean samples, applying dynamic EQ).
--   **Impact:** Shifts the editor's role from a "doer" to a "quality supervisor." **Total efficiency boost estimated at 70-80%**.
-
-***
-
-Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai đoạn là một bản nâng cấp mang lại giá trị gia tăng rõ rệt.
-
-### **Giai đoạn 1: Hệ thống Tự động Phát hiện Lỗi**
--   **Mục tiêu:** Xây dựng một hệ thống có khả năng "nghe" và phân tích toàn bộ video, sau đó tự động tạo ra một danh sách các lỗi tiềm ẩn kèm theo timestamp chính xác.
--   **Chức năng chính:** Phát hiện lỗi phát âm/âm vị, lỗi kỹ thuật (tiếng ồn, click, vỡ tiếng, âm lượng), và lỗi nhịp điệu (khoảng lặng dài, từ đệm).
--   **Kết quả đầu ra:** Một file định dạng FCPXML chứa các "To-Do Markers", cho phép biên tập viên nhập trực tiếp vào Final Cut Pro và nhảy đến chính xác từng vị trí lỗi.
--   **Tác động:** Loại bỏ hoàn toàn công đoạn dò tìm thủ công, **tăng hiệu suất ước tính 30-40%**.
-
-### **Giai đoạn 2: Hệ thống Gợi ý Khắc phục Tương tác**
--   **Mục tiêu:** Nâng cấp hệ thống từ một "người chỉ điểm" thành một "cố vấn chuyên môn", có khả năng đề xuất các phương án sửa lỗi hiệu quả.
--   **Chức năng chính:** Tích hợp Mô hình Ngôn ngữ lớn (LLM) với kỹ thuật RAG, xây dựng "kho tri thức" từ dữ liệu cũ và kinh nghiệm của biên tập viên, xây dựng cơ chế thu thập phản hồi để hệ thống tự học.
--   **Tác động:** Giảm thời gian ra quyết định, chuẩn hóa chất lượng. **Tăng hiệu suất tổng cộng ước tính 50-60%**.
-
-### **Giai đoạn 3: Tự động Khắc phục Lỗi**
--   **Mục tiêu:** Đưa hệ thống đến mức độ tự động hóa cao nhất, có khả năng tự thực hiện các thao tác sửa lỗi cơ bản và phức tạp.
--   **Chức năng chính:** Tự động hóa dựa trên luật (xóa từ đệm) và dựa trên AI (tự động thay thế âm thanh, áp dụng EQ).
--   **Tác động:** Chuyển vai trò của biên tập viên thành người giám sát chất lượng. **Tăng hiệu suất tổng cộng ước tính 70-80%**.
+*Mục tiêu của chúng tôi là xây dựng một hệ thống hoạt động như "Trợ lý Biên tập Thông minh", có khả năng:*
+1.  ***Tự động Phát hiện Lỗi:** Tìm lỗi phát âm, tiếng ồn, và các vết cắt lỗi mà không cần nghe thủ công.*
+2.  ***Làm giàu Dữ liệu:** Tạo ra bộ dữ liệu đa phương thức (Âm thanh-Văn bản-Video) phong phú cho nghiên cứu AI.*
+3.  ***Mở rộng Tương lai:** Làm nền tảng cho các ứng dụng Voice Cloning và TTS.*
 
 ---
 
-## 3. Current Status: Foundation & Infrastructure Complete / Giai đoạn Hiện tại: Hoàn thành Nền tảng & Hạ tầng
+## 2. System Architecture / Kiến trúc Hệ thống
 
-**We have successfully completed the infrastructure setup and detailed design phase of the project.**
-**Chúng ta đã hoàn thành xuất sắc giai đoạn thiết lập hạ tầng và thiết kế chi tiết của dự án.**
+We employ a **Hybrid Cloud Architecture** to maximize performance while minimizing costs:
+*Chúng tôi áp dụng **Kiến trúc Đám mây Lai** để tối đa hóa hiệu suất trong khi giảm thiểu chi phí:*
 
-### Accomplishments / Thành tựu Đã đạt được:
+*   **Compute Layer (Google Colab):** Utilizing free T4 GPUs for heavy lifting (Whisper transcription, Embedding generation).
+*   **Storage Layer (Google Drive):** Staging area for raw videos and processed chunk archives.
+*   **Database Layer (Self-hosted PostgreSQL):** Storing persistent vector embeddings and metadata with `pgvector`, accessed securely via **SSH Tunneling**.
+*   **Development Layer (GitHub Codespaces):** Central environment for coding, testing, and CI/CD.
 
--   **✅ Development Environment Ready:** A fully configured GitHub Codespace is operational.
--   **✅ Dedicated Database Deployed:** A new, independent PostgreSQL container (`ia-media-db-pgvector`) with the `pgvector` extension is running and accessible.
--   **✅ Advanced Data Schema Finalized:** A detailed, multi-table relational schema has been designed and implemented (`sources`, `sentences`, `words`, `anomalies`).
--   **✅ Tooling Integrated:** NocoDB is successfully connected to our new database for project management.
--   **✅ Comprehensive Documentation:** Core project documentation (`GUIDE.md`, `DATA_STRATEGY.md`, etc.) has been created.
+---
 
-### Next Immediate Step / Bước Tiếp theo:
+## 3. Current Status: Phase 1 Demo Ready / Trạng thái Hiện tại: Sẵn sàng Demo Giai đoạn 1
 
-The project is now in a **"Waiting for Data"** state. The next phase will focus on **implementing the core analysis pipeline** (`main.py`) to process the first batch of sample videos.
-*Dự án hiện đang ở trạng thái **"Chờ Dữ liệu"**. Giai đoạn tiếp theo sẽ tập trung vào việc **hiện thực hóa pipeline phân tích lõi** (`main.py`) để xử lý lô video mẫu đầu tiên.*
+**We have successfully implemented the Core Analysis Pipeline.**
+**Chúng tôi đã thực hiện thành công Pipeline Phân tích Lõi.**
 
+### ✅ Accomplishments / Thành tựu:
+-   **Infrastructure:** Database `ia-media-db-pgvector` is live and secure.
+-   **Core Logic:** `main.py` (Analysis) and `vectorize.py` (Ingestion) utilize modular architecture.
+-   **Parsing:** Advanced FCPXML parsing logic to map edited video timestamps back to raw source footage.
+-   **AI Integration:** Integrated `OpenAI Whisper` for transcription and `SpeechBrain` for phonetic embedding.
+-   **Execution:** A comprehensive Google Colab Notebook is ready for batch processing.
 
-### **Demo Objectives / Mục tiêu Demo:**
-1.  **Prove Core Logic:** Successfully build a script that can analyze a pair of videos (raw and edited) and extract micro-audio chunks (word-level) for analysis.
-2.  **Build Phonetic Dictionary:** Vectorize the extracted audio chunks and store them in a VectorDB (PostgreSQL + pgvector) to create a "signature" for "correct" and "incorrect" pronunciations.
-3.  **Complete End-to-End Pipeline:** Integrate the logic into a Dockerized API service, deploy it to a cloud environment (RunPod), and orchestrate the workflow with n8n.
-4.  **Generate Valuable Output:** Demonstrate that the system can produce a usable FCPXML file with To-Do Markers that editors can immediately use.
+### 🚧 Next Steps / Bước Tiếp theo:
+-   Run the end-to-end pipeline on the first batch of real data (3-5 videos).
+-   Verify the quality of generated chunks and vector search results.
 
-### **Technology Stack / Công nghệ Sử dụng:**
--   **Language / Ngôn ngữ:** Python 3.10
--   **AI/ML:** OpenAI Whisper, Sentence Transformers (Hugging Face), Pytorch
--   **Audio Processing / Xử lý Âm thanh:** FFmpeg, Librosa, Pydub
--   **Infrastructure / Hạ tầng:** GitHub Codespaces (Development), Docker, RunPod (GPU Deployment), PostgreSQL + pgvector
--   **Orchestration / Điều phối:** n8n
+---
+
+## 4. Project Structure / Cấu trúc Dự án
+
+See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for a detailed file tree.
+*Xem [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) để biết chi tiết cây thư mục.*
+
+-   `src/`: Source code (`analysis`, `database`, `utils`, `ai`).
+-   `notebooks/`: Jupyter Notebooks for Google Colab execution.
+-   `server_configs/`: Postgres configuration files.
+-   `tests/`: Unit tests.
+
+---
+
+## 5. Getting Started / Bắt đầu
+
+### For Developers (Local Setup)
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/shan369rpa/IA-MEDIA.git
+    ```
+2.  **Setup Environment:**
+    -   Open in **GitHub Codespaces** (Recommended - Pre-configured Docker container).
+    -   Or install dependencies: `pip install -r requirements.txt`.
+    -   Install local package: `pip install -e .`
+3.  **Configure Secrets:**
+    -   Copy `.env.example` to `.env`.
+    -   Fill in your Database credentials and paths.
+4.  **Testing:**
+    ```bash
+    pytest
+    ```
+
+### For Processing (Running a Batch)
+
+We use **Google Colab** as the production engine.
+*Chúng tôi sử dụng **Google Colab** làm công cụ sản xuất.*
+
+1.  Upload source videos and FCPXML to **Google Drive** (`/IA_MEDIA_PROJECT/source_data/`).
+2.  Open `notebooks/demo_pipeline.ipynb` in Google Colab.
+3.  Upload your SSH Key (`id_rsa_colab`) and `.env` file to Drive (`/IA_MEDIA_PROJECT/secrets/`).
+4.  Run the Notebook cells to execute the pipeline.
+
+---
+
+## 6. Documentation / Tài liệu
+
+*   **[GUIDE.md](./GUIDE.md):** Operational commands (SSH Tunneling, DB management).
+*   **[DATA_STRATEGY.md](./DATA_STRATEGY_V2_FINAL.md):** Deep dive into data chunking and enrichment strategy.
+*   **[COMPUTE_STRATEGY.md](./COMPUTE_STRATEGY.md):** Analysis of compute platforms.
+*   **[STORAGE_ANALYSIS.md](./STORAGE_ANALYSIS.md):** Storage cost and architecture analysis.
+*   **[FILE_NAMING_CONVENTION.md](./FILE_NAMING_CONVENTION.md):** Rules for naming source files.
+*   **[GIT_CONVENTION.md](./GIT_CONVENTION.md):** Branching and commit standards.
+
+---
+
+## 7. Contact & Contribution
+
+This is an open-source project. Contributions are welcome! Please read [GIT_CONVENTION.md](./GIT_CONVENTION.md) before submitting a Pull Request.
+
+*Đây là một dự án mã nguồn mở. Hoan nghênh mọi sự đóng góp! Vui lòng đọc [GIT_CONVENTION.md](./GIT_CONVENTION.md) trước khi gửi Pull Request.*
