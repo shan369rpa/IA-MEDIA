@@ -73,6 +73,7 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 **We have successfully implemented the Core Analysis Pipeline.**
 **Chúng ta đã thực hiện thành công Pipeline Phân tích Lõi.**
 ### ✅ Accomplishments / Thành tựu:
+-   **Technical Documentation**: Create Technical Documentation throughout the project.
 -   **Infrastructure:** Database `ia-media-db-pgvector` is live and secure.
 -   **Core Logic:** `main.py` (Analysis) and `vectorize.py` (Ingestion) utilize modular architecture.
 -   **Parsing:** Advanced FCPXML parsing logic to map edited video timestamps back to raw source footage.
@@ -83,7 +84,7 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 -   Run the end-to-end pipeline on the first batch of real data (3-5 videos).
 -   Verify the quality of generated chunks and vector search results.
 
-## 4. Documentation / Tài liệu
+## 4. Technical Documentation / Tài liệu kỹ thuật
 *   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking.
 *   **[GUIDE.md](./documents/GUIDE.md):** Operational commands (SSH Tunneling, DB management).
 *   **[DATA_STRATEGY.md](./documents/DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
