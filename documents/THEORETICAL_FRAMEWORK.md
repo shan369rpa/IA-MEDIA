@@ -23,6 +23,7 @@ $$N (Lỗi) \approx V_{raw} - V_{edited}$$
 Hệ thống không học "thế nào là hay", mà nó học **"Editor đã vứt bỏ cái gì và giữ lại cái gì"**.
 
 ### **3. Các Kỹ thuật Chunking Đa tầng (Multi-layered Chunking)**
+**Read more at [DATA_STRATEGY.md](./DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
 
 Để AI hiểu được, chúng ta không thể đưa cả video 1 tiếng vào. Chúng ta phải chia nhỏ (chunk) nó ra theo các tầng ý nghĩa khác nhau. Chúng ta áp dụng 3 tầng chunking:
 
@@ -55,7 +56,6 @@ Hệ thống không học "thế nào là hay", mà nó học **"Editor đã v�
 *   **Mục tiêu:** Phát hiện các tạp âm môi trường không phải tiếng người.
 *   **Kỹ thuật:** Sử dụng mô hình phân loại âm thanh (Audio Event Detection) để quét toàn bộ file raw.
 *   **Cơ chế:** Tự động khoanh vùng các đoạn có tiếng: *Ho, Cười, Viết bảng, Tiếng chuông, Va chạm Micro*.
-
 ---
 
 ### **4. Chiến lược Áp dụng (Strategy: From 700 to 300)**
