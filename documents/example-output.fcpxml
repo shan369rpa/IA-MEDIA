@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE fcpxml>
+<fcpxml version="1.9">
+    <resources>
+        <asset id="r1" src="file:///path/to/raw_video.mp4" duration="3600s" />
+    </resources>
+    <library>
+        <event name="AI Detected Errors">
+            <project name="Analysis Report">
+                <sequence>
+                    <spine>
+                        <asset-clip ref="r1" name="Raw Video">
+                            <!-- MARKER 1: Lỗi phát âm -->
+                            <marker start="1205/60s" duration="10/60s" 
+                                    value="[PRON] Lỗi đuôi /t/ - 'bát'" 
+                                    note="Độ tin cậy: 92%. Nghe giống 'bash'. Gợi ý: Kiểm tra file gốc." 
+                                    completed="0"/>
+                            
+                            <!-- MARKER 2: Lỗi âm lượng -->
+                            <marker start="4500/60s" duration="60/60s" 
+                                    value="[VOL] Âm lượng quá nhỏ" 
+                                    note="RMS: 0.005 (-40dB). Cần gain up." 
+                                    completed="0"/>
+                                    
+                            <!-- MARKER 3: Tiếng ồn -->
+                            <marker start="8200/60s" duration="20/60s" 
+                                    value="[NOISE] Tiếng ồn/Ho" 
+                                    note="Không nhận diện được lời nói. Có âm thanh lớn đột ngột." 
+                                    completed="0"/>
+                        </asset-clip>
+                    </spine>
+                </sequence>
+            </project>
+        </event>
+    </library>
+</fcpxml>

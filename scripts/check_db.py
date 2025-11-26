@@ -1,5 +1,4 @@
 # scripts/check_db.py
-import os
 import sys
 
 from src.database.db_manager import get_db_connection

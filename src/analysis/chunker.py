@@ -3,85 +3,161 @@
 from pydub import AudioSegment
 import os
 import logging
-from src.utils import fcpxml_parser # Import hàm chuyển đổi thời gian
-from src.utils.file_handler import sanitize_filename # Import hàm làm sạch tên file
+import pandas as pd
+from src.utils import fcpxml_parser, file_handler
+# [MỚI] Import module phân tích
+from src.analysis import signal_analyzer 
 
 def create_and_save_chunks(
     clean_audio_path: str,
     error_audio_path: str,
+    clean_video_path: str, # Giữ tham số để tương thích, không dùng
+    error_video_path: str, # Giữ tham số để tương thích, không dùng
     time_map: list,
     word_timestamps: list,
-    output_dir: str
+    output_dir: str,
+    source_video_name: str
 ) -> int:
     """
-    Duyệt qua danh sách word_timestamps, chuyển đổi thời gian sang file raw,
-    sau đó cắt và lưu các cặp audio chunk (clean/error).
-
-    Args:
-        clean_audio_path (str): Đường dẫn đến file audio đã chỉnh sửa (sạch).
-        error_audio_path (str): Đường dẫn đến file audio thô (lỗi).
-        time_map (list): Bản đồ thời gian được phân tích từ FCPXML.
-        word_timestamps (list): Danh sách các đối tượng từ từ Whisper.
-        output_dir (str): Thư mục để lưu các chunk được tạo ra.
-
-    Returns:
-        int: Số lượng cặp chunk đã được tạo thành công.
+    Cắt audio chunks và tự động gán nhãn lỗi kỹ thuật.
     """
-    logging.info("Bắt đầu quá trình cắt và lưu audio chunks...")
+    logging.info(f"Bắt đầu quá trình cắt và phân tích chunks cho: {source_video_name}")
     
     try:
         clean_audio = AudioSegment.from_wav(clean_audio_path)
         error_audio = AudioSegment.from_wav(error_audio_path)
-        logging.info("Đã tải thành công 2 file audio 'clean' và 'error'.")
+        logging.info(f"Bắt đầu quá trình cắt và lưu chunks cho video: {source_video_name}")
+
     except Exception as e:
-        logging.error(f"Không thể tải file audio bằng pydub: {e}")
+        logging.error(f"Không thể tải file audio: {e}")
         return 0
 
-    chunk_count = 0
-    os.makedirs(output_dir, exist_ok=True)
+    metadata_records = []
+    processed_word_count = 0
+    
+    # Tạo thư mục
+    clean_audio_dir = os.path.join(output_dir, "clean", "audio", source_video_name)
+    error_audio_dir = os.path.join(output_dir, "error", "audio", source_video_name)
+    
+    os.makedirs(clean_audio_dir, exist_ok=True)
+    os.makedirs(error_audio_dir, exist_ok=True)
 
     for word_info in word_timestamps:
         word_text = word_info['word'].strip()
         start_time_edited_sec = word_info['start']
         end_time_edited_sec = word_info['end']
 
-        # Bỏ qua các từ quá ngắn hoặc không có nội dung
+        # Bỏ 0.150s vì quá ngắn để phân tích
         if (end_time_edited_sec - start_time_edited_sec < 0.150) or not word_text:
             continue
 
-        # Chuyển đổi thời gian sang hệ quy chiếu của file raw
         start_time_raw_sec = fcpxml_parser.convert_edited_to_raw_time(start_time_edited_sec, time_map)
         
-        # Chỉ xử lý nếu từ này nằm trong một clip được ánh xạ
         if start_time_raw_sec is not None:
             duration_sec = end_time_edited_sec - start_time_edited_sec
-            end_time_raw_sec = start_time_raw_sec + duration_sec
-
-            # Chuyển đổi sang mili giây cho pydub
+            
+            sanitized_word = file_handler.sanitize_filename(word_text)
             start_ms_edited = int(start_time_edited_sec * 1000)
             end_ms_edited = int(end_time_edited_sec * 1000)
+            base_chunk_filename = f"{start_ms_edited}_{end_ms_edited}_{sanitized_word}"
+
+            # 1. Đường dẫn file
+            clean_chunk_path = os.path.join(clean_audio_dir, f"{base_chunk_filename}.wav")
+            error_chunk_path = os.path.join(error_audio_dir, f"{base_chunk_filename}.wav")
+
+            # 2. Cắt và Lưu Audio
+            clean_seg = clean_audio[start_ms_edited:end_ms_edited]
+            clean_seg.export(clean_chunk_path, format="wav")
+
             start_ms_raw = int(start_time_raw_sec * 1000)
-            end_ms_raw = int(end_time_raw_sec * 1000)
+            end_ms_raw = int((start_time_raw_sec + duration_sec) * 1000)
+            error_seg = error_audio[start_ms_raw:end_ms_raw]
+            error_seg.export(error_chunk_path, format="wav")
+            
+            # 3. [MỚI] Phân tích Tín hiệu để Gán nhãn
+            analysis_result = signal_analyzer.analyze_audio_defects(clean_chunk_path, error_chunk_path)
+            detected_label = analysis_result["label"] # Ví dụ: 'error_clipping', 'error_pronunciation'
+            analysis_details = analysis_result["details"]
 
-            # Cắt chunk
-            clean_chunk = clean_audio[start_ms_edited:end_ms_edited]
-            error_chunk = error_audio[start_ms_raw:end_ms_raw]
+            # 4. Lưu Metadata
+            rel_clean_path = os.path.relpath(clean_chunk_path, output_dir)
+            rel_error_path = os.path.relpath(error_chunk_path, output_dir)
 
-            # Chuẩn bị đường dẫn lưu file
-            sanitized_word = sanitize_filename(word_text)
-            if not sanitized_word:
-                continue
+            # Record cho Clean
+            metadata_records.append({
+                "source_video": source_video_name,
+                "word_text": word_text,
+                "start_ms": start_ms_edited,
+                "end_ms": end_ms_edited,
+                "label": "clean",
+                "audio_path": rel_clean_path,
+                "details": "" # Clean thì không cần details lỗi
+            })
             
-            word_dir = os.path.join(output_dir, sanitized_word)
-            os.makedirs(word_dir, exist_ok=True)
+            # Record cho Error (với nhãn chi tiết)
+            metadata_records.append({
+                "source_video": source_video_name,
+                "word_text": word_text,
+                "start_ms": start_ms_edited, # Dùng time edited để mapping
+                "end_ms": end_ms_edited,
+                "label": detected_label, # <--- NHÃN CHI TIẾT Ở ĐÂY
+                "audio_path": rel_error_path,
+                "details": str(analysis_details) # Lưu các chỉ số RMS/MaxAmp để tham khảo
+            })
             
-            chunk_filename = f"{start_ms_edited}_{end_ms_edited}.wav"
-            
-            # Lưu các file chunk
-            clean_chunk.export(os.path.join(word_dir, "clean_" + chunk_filename), format="wav")
-            error_chunk.export(os.path.join(word_dir, "error_" + chunk_filename), format="wav")
-            
-            chunk_count += 1
+            processed_word_count += 1
     
-    logging.info(f"Hoàn tất, đã xử lý và lưu được {chunk_count} cặp chunk.")
-    return chunk_count
+    if metadata_records:
+        metadata_path = os.path.join(output_dir, "metadata.csv")
+        # Thêm cột mới 'details' vào DataFrame
+        df = pd.DataFrame(metadata_records)
+        df.to_csv(metadata_path, index=False, mode='a', header=not os.path.exists(metadata_path))
+
+    logging.info(f"Hoàn tất {source_video_name}: {processed_word_count} chunks.")
+    return processed_word_count
+
+# Cấu hình ngưỡng (Thresholds)
+CLIPPING_THRESHOLD_DB = -0.1      # Gần mức 0dB là vỡ tiếng
+NOISE_DIFF_THRESHOLD_DB = 3.0     # Nếu đoạn lỗi to hơn đoạn sạch > 3dB -> Khả năng là tiếng ồn/gai âm
+LOW_VOLUME_DIFF_THRESHOLD_DB = 5.0 # Nếu đoạn lỗi nhỏ hơn đoạn sạch > 5dB -> Khả năng là bị nhỏ tiếng/mất tiếng
+
+def analyze_segment(clean_chunk: AudioSegment, error_chunk: AudioSegment) -> str:
+    """
+    Phân tích tín hiệu của error_chunk so với clean_chunk để xác định loại lỗi cụ thể.
+    
+    Priority (Thứ tự ưu tiên phát hiện):
+    1. Clipping (Vỡ tiếng nghiêm trọng)
+    2. Noise Spike (Tiếng ồn lớn đột ngột)
+    3. Low Volume (Âm lượng quá nhỏ)
+    4. Pronunciation (Mặc định - nếu tín hiệu kỹ thuật ổn nhưng vẫn bị đánh dấu là khác biệt)
+    
+    Returns:
+        str: Nhãn lỗi ('error_clipping', 'error_noise_spike', 'error_low_volume', 'error_pronunciation')
+    """
+    
+    # 1. Kiểm tra Clipping (Vỡ tiếng)
+    # Pydub trả về max_dBFS (Decibels relative to Full Scale)
+    if error_chunk.max_dBFS >= CLIPPING_THRESHOLD_DB:
+        return "error_clipping"
+
+    # Lấy độ lớn âm thanh trung bình (dBFS)
+    clean_db = clean_chunk.dBFS
+    error_db = error_chunk.dBFS
+
+    # Tính chênh lệch năng lượng
+    diff = error_db - clean_db
+
+    # 2. Kiểm tra Noise Spike (Lỗi ồn, gai âm)
+    # Nếu đoạn lỗi to hơn đoạn sạch đáng kể, thường là do tiếng ho, va đập, hoặc tiếng ồn nền tăng vọt
+    if diff > NOISE_DIFF_THRESHOLD_DB:
+        return "error_noise_spike"
+
+    # 3. Kiểm tra Low Volume (Âm lượng nhỏ)
+    # Nếu đoạn lỗi nhỏ hơn đoạn sạch đáng kể (clean > error)
+    # Lưu ý: diff sẽ là số âm, nên ta so sánh clean - error
+    if (clean_db - error_db) > LOW_VOLUME_DIFF_THRESHOLD_DB:
+        return "error_low_volume"
+
+    # 4. Nếu không dính các lỗi kỹ thuật tín hiệu trên
+    # Thì sự khác biệt (do align map chỉ ra) khả năng cao nằm ở chất lượng giọng nói/phát âm
+    return "error_pronunciation"

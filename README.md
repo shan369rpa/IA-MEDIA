@@ -1,9 +1,9 @@
-# IA MEDIA Project - Intelligent Automation for Media Processing
-## Dự án IA MEDIA - Tự động hóa Thông minh cho Xử lý Truyền thông
-
+# **IA MEDIA Project - Intelligent Automation for Media Processing**
+## **Dự án IA MEDIA - Tự động hóa Thông minh cho Xử lý Truyền thông**
 [![Status](https://img.shields.io/badge/Status-Phase%201%20Demo%20Ready-green)]()
 [![Python](https://img.shields.io/badge/Python-3.10-blue)]()
 [![License](https://img.shields.io/badge/License-Apache%202.0-lightgrey)]()
+---
 
 ---
 
@@ -18,22 +18,14 @@ Our goal is to build a system that acts as an "Intelligent Editorial Assistant,"
 
 ***IA MEDIA** là một sáng kiến chiến lược, mã nguồn mở nhằm ứng dụng **T**ự động hóa **T**hông minh (**I**ntelligent **A**utomation) để giải quyết các thách thức trong quy trình hậu kỳ video pháp thoại.*
 
-*Mục tiêu của chúng tôi là xây dựng một hệ thống hoạt động như "Trợ lý Biên tập Thông minh", có khả năng:*
-1.  ***Tự động Phát hiện Lỗi:** Tìm lỗi phát âm, tiếng ồn, và các vết cắt lỗi mà không cần nghe thủ công.*
-2.  ***Làm giàu Dữ liệu:** Tạo ra bộ dữ liệu đa phương thức (Âm thanh-Văn bản-Video) phong phú cho nghiên cứu AI.*
-3.  ***Mở rộng Tương lai:** Làm nền tảng cho các ứng dụng Voice Cloning và TTS.*
+-   **Vấn đề:** Quy trình chỉnh sửa thủ công, đặc biệt là việc dò tìm các lỗi âm thanh vi mô (phát âm, âm vị, âm đuôi), tiêu tốn phần lớn thời gian làm việc (ước tính >50%), làm giảm năng suất và kéo dài tiến độ dự án.
+-   **Giải pháp:** Xây dựng một pipeline được vận hành bởi IA, hoạt động như một "trợ lý biên tập thông minh", giúp xác định, gợi ý và tiến tới tự động khắc phục các lỗi âm thanh. 
+*   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking(**Tài liệu cần đọc**).
 
 ---
 
-## 2. System Architecture / Kiến trúc Hệ thống
-
-We employ a **Hybrid Cloud Architecture** to maximize performance while minimizing costs:
-*Chúng tôi áp dụng **Kiến trúc Đám mây Lai** để tối đa hóa hiệu suất trong khi giảm thiểu chi phí:*
-
-*   **Compute Layer (Google Colab):** Utilizing free T4 GPUs for heavy lifting (Whisper transcription, Embedding generation).
-*   **Storage Layer (Google Drive):** Staging area for raw videos and processed chunk archives.
-*   **Database Layer (Self-hosted PostgreSQL):** Storing persistent vector embeddings and metadata with `pgvector`, accessed securely via **SSH Tunneling**.
-*   **Development Layer (GitHub Codespaces):** Central environment for coding, testing, and CI/CD.
+## **2. Development Roadmap / Lộ trình Phát triển**
+The project will be implemented in 3 main phases, with each phase delivering a significant upgrade and immediate value.
 
 ---
 
@@ -67,27 +59,33 @@ See [PROJECT_STRUCTURE.md](./documents/PROJECT_STRUCTURE.md) for a detailed file
 
 ---
 
-## 5. Getting Started / Bắt đầu
+## 3. Current Status: Phase 1 Demo Ready / Trạng thái Hiện tại: Sẵn sàng Demo Giai đoạn 1
 
-### For Developers (Local Setup)
+**We have successfully implemented the Core Analysis Pipeline.**
+**Chúng ta đã thực hiện thành công Pipeline Phân tích Lõi.**
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/shan369rpa/IA-MEDIA.git
-    ```
-2.  **Setup Environment:**
-    -   Open in **GitHub Codespaces** (Recommended - Pre-configured Docker container).
-    -   Or install dependencies: `pip install -r requirements.txt`.
-    -   Install local package: `pip install -e .`
-3.  **Configure Secrets:**
-    -   Copy `.env.example` to `.env`.
-    -   Fill in your Database credentials and paths.
-4.  **Testing:**
-    ```bash
-    pytest
-    ```
+### ✅ Accomplishments / Thành tựu:
+-   **Infrastructure:** Database `ia-media-db-pgvector` is live and secure.
+-   **Core Logic:** `main.py` (Analysis) and `vectorize.py` (Ingestion) utilize modular architecture.
+-   **Parsing:** Advanced FCPXML parsing logic to map edited video timestamps back to raw source footage.
+-   **AI Integration:** Integrated `OpenAI Whisper` for transcription and `SpeechBrain` for phonetic embedding.
+-   **Execution:** A comprehensive Google Colab Notebook is ready for batch processing.
 
-### For Processing (Running a Batch)
+### 🚧 Next Steps / Bước Tiếp theo:
+-   Run the end-to-end pipeline on the first batch of real data (3-5 videos).
+-   Verify the quality of generated chunks and vector search results.
+
+---
+
+## 4. Documentation / Tài liệu
+*   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking.
+*   **[GUIDE.md](./documents/GUIDE.md):** Operational commands (SSH Tunneling, DB management).
+*   **[DATA_STRATEGY.md](./documents/DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
+*   **[COMPUTE_STRATEGY.md](./documents/COMPUTE_STRATEGY.md):** Analysis of compute platforms.
+*   **[STORAGE_ANALYSIS.md](./documents/STORAGE_ANALYSIS.md):** Storage cost and architecture analysis.
+*   **[FILE_NAMING_CONVENTION.md](./documents/FILE_NAMING_CONVENTION.md):** Rules for naming source files.
+*   **[GIT_CONVENTION.md](./documents/GIT_CONVENTION.md):** Branching and commit standards.
+---
 
 We use **Google Colab** as the production engine.
 *Chúng tôi sử dụng **Google Colab** làm công cụ sản xuất.*
@@ -115,3 +113,9 @@ We use **Google Colab** as the production engine.
 This is an open-source project. Contributions are welcome! Please read [GIT_CONVENTION.md](./documents/GIT_CONVENTION.md) before submitting a Pull Request.
 
 *Đây là một dự án mã nguồn mở. Hoan nghênh mọi sự đóng góp! Vui lòng đọc [GIT_CONVENTION.md](./documents/GIT_CONVENTION.md) trước khi gửi Pull Request.*
+### **Technology Stack / Công nghệ Sử dụng:**
+-   **Language / Ngôn ngữ:** Python 3.10
+-   **AI/ML:** OpenAI Whisper, Sentence Transformers (Hugging Face), Pytorch
+-   **Audio Processing / Xử lý Âm thanh:** FFmpeg, Librosa, Pydub
+-   **Infrastructure / Hạ tầng:** GitHub Codespaces (Development), Docker, RunPod (GPU Deployment), PostgreSQL + pgvector
+-   **Orchestration / Điều phối:** n8n
