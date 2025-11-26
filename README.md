@@ -17,12 +17,12 @@
 **IA MEDIA** là một sáng kiến chiến lược nhằm ứng dụng **T**ự động hóa **T**hông minh (**I**ntelligent **A**utomation) để giải quyết các thách thức trong quy trình hậu kỳ video pháp thoại của Thiền sư Thích Nhat Hạnh. Mục tiêu cốt lõi là xây dựng một hệ thống thông minh có khả năng tự động hóa các tác vụ lặp đi lặp lại, nâng cao hiệu suất làm việc của đội ngũ biên tập, chuẩn hóa chất lượng sản phẩm và rút ngắn đáng kể thời gian hoàn thành dự án.
 
 -   **Vấn đề:** Quy trình chỉnh sửa thủ công, đặc biệt là việc dò tìm các lỗi âm thanh vi mô (phát âm, âm vị, âm đuôi), tiêu tốn phần lớn thời gian làm việc (ước tính >50%), làm giảm năng suất và kéo dài tiến độ dự án.
--   **Giải pháp:** Xây dựng một pipeline được vận hành bởi IA, hoạt động như một "trợ lý biên tập thông minh", giúp xác định, gợi ý và tiến tới tự động khắc phục các lỗi âm thanh.
+-   **Giải pháp:** Xây dựng một pipeline được vận hành bởi IA, hoạt động như một "trợ lý biên tập thông minh", giúp xác định, gợi ý và tiến tới tự động khắc phục các lỗi âm thanh. 
+*   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking(**Tài liệu cần đọc**).
 
 ---
 
 ## **2. Development Roadmap / Lộ trình Phát triển**
-*   **[THEORETICAL_FRAMEWORK.md](./documents/THEORETICAL_FRAMEWORK.md):** Theoretical basic and Multi-layered Chunking(**nên đọc tài liệu này trước**).
 The project will be implemented in 3 main phases, with each phase delivering a significant upgrade and immediate value.
 
 ### **Phase 1: Automated Error Detection System**
