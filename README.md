@@ -102,7 +102,7 @@ We use **Google Colab** as the production engine.
 ## 6. Documentation / Tài liệu
 
 *   **[GUIDE.md](./GUIDE.md):** Operational commands (SSH Tunneling, DB management).
-*   **[DATA_STRATEGY.md](./DATA_STRATEGY_V2_FINAL.md):** Deep dive into data chunking and enrichment strategy.
+*   **[DATA_STRATEGY.md](./documents/DATA_STRATEGY.md):** Deep dive into data chunking and enrichment strategy.
 *   **[COMPUTE_STRATEGY.md](./COMPUTE_STRATEGY.md):** Analysis of compute platforms.
 *   **[STORAGE_ANALYSIS.md](./STORAGE_ANALYSIS.md):** Storage cost and architecture analysis.
 *   **[FILE_NAMING_CONVENTION.md](./FILE_NAMING_CONVENTION.md):** Rules for naming source files.
