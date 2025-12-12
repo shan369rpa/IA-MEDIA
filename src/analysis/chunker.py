@@ -4,6 +4,7 @@ from pydub import AudioSegment
 import os
 import logging
 import pandas as pd
+import json # Import thêm json để lưu cột details
 from src.utils import fcpxml_parser, file_handler
 # [MỚI] Import module phân tích
 from src.analysis import signal_analyzer 
@@ -76,8 +77,21 @@ def create_and_save_chunks(
             
             # 3. [MỚI] Phân tích Tín hiệu để Gán nhãn
             analysis_result = signal_analyzer.analyze_audio_defects(clean_chunk_path, error_chunk_path)
-            detected_label = analysis_result["label"] # Ví dụ: 'error_clipping', 'error_pronunciation'
-            analysis_details = analysis_result["details"]
+            defects = analysis_result.get("detected_defects", [])
+            if len(defects) > 0:
+                # Nếu tìm thấy lỗi kỹ thuật (clipping, noise...), lấy lỗi đầu tiên làm nhãn chính
+                detected_label = defects[0] 
+            else:
+                # Nếu không có lỗi kỹ thuật rõ ràng, gán nhãn là lỗi phát âm (mặc định)
+                # Vì đây là sự khác biệt giữa Clean và Raw mà editor đã phải sửa
+                detected_label = "error_pronunciation"
+            error_details = {
+                "rms_diff": abs(analysis_result.get("rms_clean", 0) - analysis_result.get("rms_error", 0)),
+                "max_amp": analysis_result.get("max_amp_error", 0),
+                "defects_list": defects
+            }
+            # detected_label = analysis_result["label"] # Ví dụ: 'error_clipping', 'error_pronunciation'
+            # analysis_details = analysis_result["details"]
 
             # 4. Lưu Metadata
             rel_clean_path = os.path.relpath(clean_chunk_path, output_dir)
@@ -91,7 +105,7 @@ def create_and_save_chunks(
                 "end_ms": end_ms_edited,
                 "label": "clean",
                 "audio_path": rel_clean_path,
-                "details": "" # Clean thì không cần details lỗi
+                "details": json.dumps({})
             })
             
             # Record cho Error (với nhãn chi tiết)
@@ -102,7 +116,7 @@ def create_and_save_chunks(
                 "end_ms": end_ms_edited,
                 "label": detected_label, # <--- NHÃN CHI TIẾT Ở ĐÂY
                 "audio_path": rel_error_path,
-                "details": str(analysis_details) # Lưu các chỉ số RMS/MaxAmp để tham khảo
+                "details": json.dumps(error_details) # Lưu chi tiết kỹ thuật
             })
             
             processed_word_count += 1
