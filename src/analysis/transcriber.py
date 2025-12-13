@@ -1,52 +1,153 @@
 # src/analysis/transcriber.py
-import whisper
+
 import logging
 import os
-import torch
-from dotenv import load_dotenv
 
-_whisper_model = None
+from dotenv import load_dotenv
+# ==============================================================================
+# PHẦN KHẮC PHỤC LỖI CUDA/CUDNN TRÊN WINDOWS
+# Đoạn code này phải được chạy TRƯỚC TẤT CẢ các lệnh import khác
+# ==============================================================================
+import sys
+
+def _configure_cuda_path():
+    """
+    Tìm và thêm các thư mục bin của CUDA/cuDNN được cài đặt bởi pip
+    vào biến môi trường PATH để Windows có thể tìm thấy các file .dll.
+    """
+    # Lấy đường dẫn đến thư mục site-packages của môi trường ảo
+    # Ví dụ: C:\Users\Admin\Documents\GitHub\IA-MEDIA\venv\Lib\site-packages
+    site_packages_path = next((p for p in sys.path if 'site-packages' in p), None)
+    
+    if not site_packages_path:
+        logging.warning("Không tìm thấy thư mục site-packages. Bỏ qua cấu hình CUDA PATH.")
+        return
+
+    # Các thư mục con chứa file .dll của nvidia
+    cuda_bin_dirs = [
+        os.path.join(site_packages_path, "nvidia", "cuda_runtime", "bin"),
+        os.path.join(site_packages_path, "nvidia", "cudnn", "bin"),
+        # Thêm các thư mục khác nếu cần, ví dụ cublas...
+        os.path.join(site_packages_path, "nvidia", "cublas", "bin"),
+    ]
+
+    # Lấy biến PATH hiện tại
+    current_path = os.environ.get("PATH", "")
+    
+    paths_to_add = []
+    for d in cuda_bin_dirs:
+        if os.path.isdir(d) and d not in current_path:
+            paths_to_add.append(d)
+            
+    if paths_to_add:
+        logging.info(f"Đang thêm các đường dẫn CUDA/cuDNN vào PATH: {paths_to_add}")
+        # Thêm các đường dẫn mới vào đầu biến PATH
+        os.environ["PATH"] = ";".join(paths_to_add) + ";" + current_path
+    else:
+        logging.info("Các đường dẫn CUDA/cuDNN đã có trong PATH.")
+
+# Chạy hàm cấu hình ngay lập tức
+_configure_cuda_path()
+# ==============================================================================
+# KẾT THÚC PHẦN KHẮC PHỤC LỖI
+# ==============================================================================
+# Cấu hình logging
+import whisperx
+
+import torch
+import gc # Garbage collection để quản lý VRAM
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_word_timestamps(audio_path: str) -> list | None:
-    global _whisper_model
+    """
+    Sử dụng WhisperX để phiên âm và thực hiện Forced Alignment
+    để lấy timestamp chính xác tuyệt đối cho từng từ.
+    
+    Args:
+        audio_path (str): Đường dẫn file audio .wav (16kHz).
+        
+    Returns:
+        list: Danh sách các từ với timestamp chính xác.
+    """
     load_dotenv()
-
+    
     if not os.path.exists(audio_path):
-        logging.error(f"File audio không tồn tại, không thể phiên âm: {audio_path}")
+        logging.error(f"File audio không tồn tại: {audio_path}")
         return None
-    try:
-        if _whisper_model is None:
-            model_name = os.getenv("WHISPER_MODEL", "base")
-            logging.info(f"Đang tải model Whisper: '{model_name}'...")
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-            logging.info(f"Whisper sẽ chạy trên thiết bị: {device.upper()}")
-            _whisper_model = whisper.load_model(model_name, device=device)
-            logging.info("Tải model Whisper thành công.")
-        
-        logging.info(f"Bắt đầu phiên âm file: {os.path.basename(audio_path)}...")
-        
-        # SỬ DỤNG PHƯƠNG PHÁP CHÍNH THỨC VÀ ĐÁNG TIN CẬY
-        result = _whisper_model.transcribe(audio_path, word_timestamps=True)
-        
-        all_words = []
-        # Trích xuất danh sách các từ từ kết quả
-        for segment in result.get('segments', []):
-            all_words.extend(segment.get('words', []))
-        
- # --- SỬA ĐỔI ĐỂ TEST DỮ LIỆU GIẢ ---
-        if not all_words:
-             logging.warning("Whisper không tìm thấy từ nào. Đang kích hoạt MOCK DATA cho mục đích test.")
-             # Trả về một từ giả nằm ở giây thứ 5 đến giây thứ 6
-             # Điều này giúp chúng ta test xem chunker có cắt đúng đoạn tương ứng trên file Raw không.
-             return [
-                 {'word': 'test_beep_1', 'start': 5.0, 'end': 5.5, 'confidence': 1.0},
-                 {'word': 'test_beep_2', 'start': 15.0, 'end': 15.5, 'confidence': 1.0}
-             ]
-        # -----------------------------------
 
-        logging.info(f"Phiên âm thành công, tìm thấy {len(all_words)} từ.")
-        return all_words
+    # --- CẤU HÌNH ---
+    # Dùng model lớn nhất vì bạn có GPU 4070 Ti (12GB VRAM đủ sức chạy large-v2)
+    # large-v2 thường ổn định hơn large-v3 cho alignment ở thời điểm hiện tại
+    model_size = os.getenv("WHISPER_MODEL", "large-v2") 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    batch_size = 16 # Tăng tốc độ xử lý trên GPU
+    compute_type = "float16" # Tối ưu cho GPU RTX 40 series
+
+    logging.info(f"Đang chạy WhisperX trên thiết bị: {device.upper()}")
+
+    try:
+        # --- BƯỚC 1: TRANSCRIBE (Lấy văn bản) ---
+        logging.info(f"1. Loading Whisper model ({model_size})...")
+        model = whisperx.load_model(model_size, device, compute_type=compute_type)
+        
+        logging.info(f"   Bắt đầu phiên âm file: {os.path.basename(audio_path)}...")
+        audio = whisperx.load_audio(audio_path)
+        
+        # initial_prompt giúp định hướng ngữ cảnh Phật giáo
+        # prompt = "Pháp thoại của Thiền sư Thích Nhất Hạnh. Các từ khóa: chánh niệm, tưới tẩm, hạt giống, hạnh phúc, khổ đau, tăng thân, làng mai."
+        
+        result = model.transcribe(audio, batch_size=batch_size, language="vi"
+        # , initial_prompt=prompt
+        )
+        logging.info(f"   Phiên âm thô hoàn tất. Đang giải phóng VRAM...")
+
+        # Dọn dẹp model transcribe để lấy chỗ cho model align
+        del model
+        gc.collect()
+        torch.cuda.empty_cache()
+
+        # --- BƯỚC 2: FORCED ALIGNMENT (Căn chỉnh thời gian) ---
+        logging.info("2. Loading Alignment model...")
+        
+        # WhisperX tự động chọn model alignment tốt nhất cho ngôn ngữ (thường là wav2vec2)
+        # "facebook/wav2vec2-base" là một lựa chọn an toàn khác nếu model VinAI lỗi
+        VINAUDIO_ALIGN_MODEL = "facebook/wav2vec2-large-960h-lv60-self"
+        
+        logging.info(f"   Using custom alignment model: {VINAUDIO_ALIGN_MODEL}")
+        try:
+            model_a, metadata = whisperx.load_align_model(
+                language_code="vi", # Vẫn giữ language code là "vi"
+                device=device,
+                model_name=VINAUDIO_ALIGN_MODEL # Thêm tham số model_name
+            )
+            logging.info("   Đang căn chỉnh thời gian (Forced Alignment)...")
+            aligned_result = whisperx.align(result["segments"], model_a, metadata, audio, device, return_char_alignments=False)
+        except ValueError as e:
+            # Fallback (Phòng hờ): Nếu model trên vẫn lỗi, dùng model mặc định của WhisperX
+            logging.warning(f"Failed to load custom alignment model: {e}. Falling back to default.")
+            model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=device)
+            aligned_result = whisperx.align(result["segments"], model_a, metadata, audio, device, return_char_alignments=False)
+
+        # Dọn dẹp model align
+        del model_a
+        gc.collect()
+        torch.cuda.empty_cache()
+
+        # --- BƯỚC 3: TỔNG HỢP KẾT QUẢ ---
+        all_words = []
+        for segment in aligned_result["segments"]:
+            if "words" in segment:
+                all_words.extend(segment["words"])
+        
+        # Lọc bỏ các từ thiếu timestamp (trường hợp hiếm gặp)
+        valid_words = [w for w in all_words if 'start' in w and 'end' in w]
+
+        logging.info(f"Hoàn tất! Tìm thấy {len(valid_words)} từ với timestamp chính xác.")
+        return valid_words
 
     except Exception as e:
-        logging.exception(f"Lỗi không xác định trong quá trình phiên âm Whisper.")
+        logging.error(f"Lỗi nghiêm trọng trong WhisperX: {e}")
+        # In ra log chi tiết để debug
+        import traceback
+        traceback.print_exc()
         return None
