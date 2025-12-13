@@ -29,116 +29,6 @@ def get_db_connection():
         logging.error(f"Lỗi kết nối CSDL: {e}")
         return None
 
-def insert_chunk_data(conn, data_tuples: list):
-    """
-    Chèn một danh sách các audio chunk vào CSDL một cách hiệu quả.
-    data_tuples là một list của các tuple, ví dụ:
-    [(source, word, start_ms, end_ms, label, path, vector), ...]
-    """
-    if not data_tuples:
-        return False
-    
-    # The repository now uses the normalized schema (sources, sentences, words, anomalies).
-    # Map legacy tuples (source, word, start_ms, end_ms, label, path, vector)
-    # into the `words` table. We will:
-    #  - ensure a `source` exists (get_or_create_source)
-    #  - ensure a `sentence` exists for the time span (create a synthetic sentence if needed)
-    #  - insert or upsert a `words` row that may contain embedding_clean and/or embedding_error
-
-    # Group incoming tuples by (source, start_ms, end_ms, word_text)
-    groups = {}
-    for item in data_tuples:
-        try:
-            source, word, start_ms, end_ms, label, path, vector = item
-        except Exception:
-            logging.warning("Dữ liệu không có định dạng mong đợi, bỏ qua một bản ghi.")
-            continue
-        key = (source, int(start_ms), int(end_ms), word)
-        entry = groups.get(key, {
-            'source': source,
-            'word': word,
-            'start_ms': int(start_ms),
-            'end_ms': int(end_ms),
-            'audio_path_clean': None,
-            'audio_path_error': None,
-            'embedding_clean': None,
-            'embedding_error': None
-        })
-        if label and label.lower() == 'clean':
-            entry['audio_path_clean'] = path
-            entry['embedding_clean'] = vector
-        else:
-            entry['audio_path_error'] = path
-            entry['embedding_error'] = vector
-        groups[key] = entry
-
-    # Prepare rows to insert into words. We need sentence_id for each; create synthetic sentence if needed.
-    rows_to_insert = []
-    for key, e in groups.items():
-        source_name = e['source']
-        # Ensure source exists
-        source_id = get_or_create_source(conn, source_name)
-        if source_id is None:
-            logging.error(f"Không thể xác định source_id cho {source_name}, bỏ qua nhóm {key}.")
-            continue
-
-        # Find or create a sentence covering this interval. For simplicity create a synthetic sentence.
-        try:
-            with conn.cursor() as cur:
-                cur.execute(
-                    'SELECT id FROM "sentences" WHERE source_id = %s AND start_time_ms = %s AND end_time_ms = %s',
-                    (source_id, e['start_ms'], e['end_ms'])
-                )
-                res = cur.fetchone()
-                if res:
-                    sentence_id = res[0]
-                else:
-                    cur.execute(
-                        'INSERT INTO "sentences" (source_id, transcript, start_time_ms, end_time_ms) VALUES (%s, %s, %s, %s) RETURNING id',
-                        (source_id, None, e['start_ms'], e['end_ms'])
-                    )
-                    sentence_id = cur.fetchone()[0]
-                    conn.commit()
-        except Exception as ex:
-            logging.error(f"Lỗi khi tìm/tạo sentence cho source {source_name}: {ex}")
-            conn.rollback()
-            continue
-
-        rows_to_insert.append((
-            sentence_id,
-            e['word'],
-            'und',
-            e['start_ms'],
-            e['end_ms'],
-            e['embedding_clean'],
-            e['embedding_error'],
-            e['audio_path_clean'],
-            e['audio_path_error'],
-            None,
-            None
-        ))
-
-    if not rows_to_insert:
-        logging.error("Không có bản ghi hợp lệ để chèn vào 'words'.")
-        return False
-
-    try:
-        with conn.cursor() as cur:
-            execute_values(cur, """
-                INSERT INTO "words" (
-                    sentence_id, word_text, language, start_time_ms_edited, end_time_ms_edited,
-                    embedding_clean, embedding_error, audio_path_clean, audio_path_error,
-                    video_path_clean, video_path_error
-                ) VALUES %s
-            """, rows_to_insert)
-        conn.commit()
-        logging.info(f"Đã chèn thành công {len(rows_to_insert)} bản ghi vào bảng 'words'.")
-        return True
-    except Exception as e:
-        logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
-        conn.rollback()
-        return False
-
 def find_similar_chunks(conn, vector, limit=5):
     """Tìm các chunk có vector gần giống nhất với vector đầu vào."""
     # Prefer words.embedding_clean and embedding_error; return results ordered by distance
@@ -255,3 +145,227 @@ def get_word_vectors(conn, word_text: str, limit=50):
     except Exception as e:
         logging.error(f"Lỗi query vector: {e}")
         return []
+def insert_words_and_get_ids(conn, words_data: list) -> dict:
+    """
+    Chèn một danh sách các từ vào bảng `words` và trả về một map
+    giữa start_ms_edited và word_id mới được tạo.
+    """
+    if not words_data:
+        return {}
+    
+    id_map = {}
+    query = """
+        INSERT INTO "words" (
+            sentence_id, word_text, language, start_time_ms_edited, end_time_ms_edited,
+            embedding_clean, embedding_error, audio_path_clean, audio_path_error, 
+            video_path_clean, video_path_error
+        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id, start_time_ms_edited
+    """
+    try:
+        with conn.cursor() as cur:
+            for d in words_data:
+                # --- SỬA LỖI Ở ĐÂY ---
+                # Chuyển đổi dictionary `d` thành một tuple `data_tuple`
+                # theo đúng thứ tự các cột trong câu lệnh INSERT
+                data_tuple = (
+                    d["sentence_id"],
+                    d["word_text"],
+                    d["language"],
+                    d["start_time_ms_edited"],
+                    d["end_time_ms_edited"],
+                    d["embedding_clean"],
+                    d["embedding_error"],
+                    d["audio_path_clean"],
+                    d["audio_path_error"],
+                    d.get("video_path_clean"), # Dùng .get() để an toàn nếu key không tồn tại
+                    d.get("video_path_error")
+                )
+                
+                # Truyền tuple vào lệnh execute
+                cur.execute(query, data_tuple)
+                
+                # Lấy lại id và start_ms từ kết quả RETURNING
+                word_id, start_ms = cur.fetchone()
+                id_map[start_ms] = word_id
+                
+        conn.commit()
+        logging.info(f"Đã chèn {len(id_map)} bản ghi vào 'words' và lấy ID.")
+        return id_map
+    except Exception as e:
+        logging.error(f"Lỗi khi chèn vào 'words' và lấy ID: {e}")
+        conn.rollback()
+        return {}
+def insert_word_slices(conn, slices_data: list):
+    """
+    Chèn dữ liệu sliding window.
+    slices_data: list of tuples (word_id, source_type, slice_index, embedding)
+    """
+    if not slices_data: return False
+    
+    query = """
+        INSERT INTO "word_slices" (word_id, source_type, slice_index, embedding)
+        VALUES %s
+    """
+    try:
+        with conn.cursor() as cur:
+            execute_values(cur, query, slices_data, page_size=500) # Dùng page_size cho list lớn
+        conn.commit()
+        logging.info(f"Đã chèn {len(slices_data)} lát cắt vào 'word_slices'.")
+        return True
+    except Exception as e:
+        logging.error(f"Lỗi insert word_slices: {e}")
+        conn.rollback()
+        return False
+
+def insert_chunk_data(conn, data_tuples: list):
+    """
+    Chèn một danh sách các audio chunk vào CSDL một cách hiệu quả.
+    data_tuples là một list của các tuple, ví dụ:
+    [(source, word, start_ms, end_ms, label, path, vector), ...]
+    """
+    if not data_tuples:
+        return False
+    
+    # The repository now uses the normalized schema (sources, sentences, words, anomalies).
+    # Map legacy tuples (source, word, start_ms, end_ms, label, path, vector)
+    # into the `words` table. We will:
+    #  - ensure a `source` exists (get_or_create_source)
+    #  - ensure a `sentence` exists for the time span (create a synthetic sentence if needed)
+    #  - insert or upsert a `words` row that may contain embedding_clean and/or embedding_error
+
+    # Group incoming tuples by (source, start_ms, end_ms, word_text)
+    groups = {}
+    for item in data_tuples:
+        try:
+            source, word, start_ms, end_ms, label, path, vector = item
+        except Exception:
+            logging.warning("Dữ liệu không có định dạng mong đợi, bỏ qua một bản ghi.")
+            continue
+        key = (source, int(start_ms), int(end_ms), word)
+        entry = groups.get(key, {
+            'source': source,
+            'word': word,
+            'start_ms': int(start_ms),
+            'end_ms': int(end_ms),
+            'audio_path_clean': None,
+            'audio_path_error': None,
+            'embedding_clean': None,
+            'embedding_error': None
+        })
+        if label and label.lower() == 'clean':
+            entry['audio_path_clean'] = path
+            entry['embedding_clean'] = vector
+        else:
+            entry['audio_path_error'] = path
+            entry['embedding_error'] = vector
+        groups[key] = entry
+
+    # Prepare rows to insert into words. We need sentence_id for each; create synthetic sentence if needed.
+    rows_to_insert = []
+    for key, e in groups.items():
+        source_name = e['source']
+        # Ensure source exists
+        source_id = get_or_create_source(conn, source_name)
+        if source_id is None:
+            logging.error(f"Không thể xác định source_id cho {source_name}, bỏ qua nhóm {key}.")
+            continue
+
+        # Find or create a sentence covering this interval. For simplicity create a synthetic sentence.
+        try:
+            with conn.cursor() as cur:
+                cur.execute(
+                    'SELECT id FROM "sentences" WHERE source_id = %s AND start_time_ms = %s AND end_time_ms = %s',
+                    (source_id, e['start_ms'], e['end_ms'])
+                )
+                res = cur.fetchone()
+                if res:
+                    sentence_id = res[0]
+                else:
+                    cur.execute(
+                        'INSERT INTO "sentences" (source_id, transcript, start_time_ms, end_time_ms) VALUES (%s, %s, %s, %s) RETURNING id',
+                        (source_id, None, e['start_ms'], e['end_ms'])
+                    )
+                    sentence_id = cur.fetchone()[0]
+                    conn.commit()
+        except Exception as ex:
+            logging.error(f"Lỗi khi tìm/tạo sentence cho source {source_name}: {ex}")
+            conn.rollback()
+            continue
+
+        rows_to_insert.append((
+            sentence_id,
+            e['word'],
+            'und',
+            e['start_ms'],
+            e['end_ms'],
+            e['embedding_clean'],
+            e['embedding_error'],
+            e['audio_path_clean'],
+            e['audio_path_error'],
+            None,
+            None
+        ))
+
+    if not rows_to_insert:
+        logging.error("Không có bản ghi hợp lệ để chèn vào 'words'.")
+        return False
+
+    try:
+        with conn.cursor() as cur:
+            execute_values(cur, """
+                INSERT INTO "words" (
+                    sentence_id, word_text, language, start_time_ms_edited, end_time_ms_edited,
+                    embedding_clean, embedding_error, audio_path_clean, audio_path_error,
+                    video_path_clean, video_path_error
+                ) VALUES %s
+            """, rows_to_insert)
+        conn.commit()
+        logging.info(f"Đã chèn thành công {len(rows_to_insert)} bản ghi vào bảng 'words'.")
+        return True
+    except Exception as e:
+        logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
+        conn.rollback()
+        return False
+
+def get_or_create_sentence(conn, source_id: int, transcript: str, start_ms: int, end_ms: int) -> int | None:
+    """
+    Tìm một 'sentence' theo source_id và transcript, nếu không có thì tạo mới.
+    Trong giai đoạn demo, nó dùng để tạo một 'câu cha' giả cho cả video.
+    
+    Args:
+        conn: Đối tượng kết nối CSDL.
+        source_id (int): ID của video nguồn từ bảng 'sources'.
+        transcript (str): Nội dung văn bản của câu (trong demo là một chuỗi định danh).
+        start_ms (int): Thời gian bắt đầu giả.
+        end_ms (int): Thời gian kết thúc giả.
+
+    Returns:
+        int | None: ID của bản ghi 'sentence', hoặc None nếu có lỗi.
+    """
+    try:
+        with conn.cursor() as cur:
+            # 1. Thử tìm xem 'câu cha' giả này đã tồn tại cho video này chưa.
+            #    Chúng ta dùng transcript làm khóa định danh duy nhất cho sự tồn tại.
+            cur.execute('SELECT id FROM "sentences" WHERE source_id = %s AND transcript = %s', (source_id, transcript))
+            result = cur.fetchone()
+            
+            # 2. Nếu đã tồn tại, trả về ID của nó
+            if result:
+                sentence_id = result[0]
+                logging.debug(f"Sentence placeholder đã tồn tại cho source {source_id} với id: {sentence_id}")
+                return sentence_id
+            # 3. Nếu chưa tồn tại, tạo mới
+            else:
+                logging.info(f"Đang tạo sentence placeholder cho source_id {source_id}...")
+                cur.execute(
+                    'INSERT INTO "sentences" (source_id, transcript, start_time_ms, end_time_ms) VALUES (%s, %s, %s, %s) RETURNING id',
+                    (source_id, transcript, start_ms, end_ms)
+                )
+                sentence_id = cur.fetchone()[0]
+                conn.commit() # Commit transaction để lưu bản ghi mới
+                logging.info(f"Đã tạo sentence placeholder với id: {sentence_id}")
+                return sentence_id
+    except Exception as e:
+        logging.error(f"Lỗi khi get/create sentence: {e}")
+        conn.rollback() # Rollback nếu có lỗi
+        return None
