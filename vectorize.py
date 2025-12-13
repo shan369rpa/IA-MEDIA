@@ -86,7 +86,7 @@ def main_vectorize(chunk_dir: str):
                         "sentence_id": sentence_id,
                         "word_text": clean_row['word_text'],
                         "language": 'vie', # TODO: Tích hợp Language ID
-                        "start_time_ms_edited": int(clean_row['start_ms']),
+                        "start_time_ms_edited": int(start_ms),
                         "end_time_ms_edited": int(clean_row['end_ms']),
                         "embedding_clean": np.array(embedding_clean),
                         "embedding_error": np.array(embedding_error),
