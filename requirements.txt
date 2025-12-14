@@ -50,3 +50,8 @@ soundfile
 pytest
 pytest-mock
 jupyter
+
+# Libraries for Data Analysis and Visualization
+scikit-learn
+matplotlib
+seaborn

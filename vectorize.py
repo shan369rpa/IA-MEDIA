@@ -95,6 +95,7 @@ def main_vectorize(chunk_dir: str):
                         # Giữ lại các cột video_path nếu có trong metadata, nếu không sẽ là None
                         "video_path_clean": clean_row.get('video_path'), 
                         "video_path_error": error_row.get('video_path'),
+                        "label": str(error_row['label'])  # Lấy nhãn lỗi từ error_row
                     })
 
         # 5. Chèn dữ liệu vào CSDL

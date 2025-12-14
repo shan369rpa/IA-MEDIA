@@ -158,7 +158,7 @@ def insert_words_and_get_ids(conn, words_data: list) -> dict:
         INSERT INTO "words" (
             sentence_id, word_text, language, start_time_ms_edited, end_time_ms_edited,
             embedding_clean, embedding_error, audio_path_clean, audio_path_error, 
-            video_path_clean, video_path_error
+            video_path_clean, video_path_error, label
         ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id, start_time_ms_edited
     """
     try:
@@ -178,7 +178,8 @@ def insert_words_and_get_ids(conn, words_data: list) -> dict:
                     d["audio_path_clean"],
                     d["audio_path_error"],
                     d.get("video_path_clean"), # Dùng .get() để an toàn nếu key không tồn tại
-                    d.get("video_path_error")
+                    d.get("video_path_error"),
+                    d.get("label") # Thêm label
                 )
                 
                 # Truyền tuple vào lệnh execute

@@ -6,7 +6,7 @@
 failed_batches/
 logs/
 logs/*.log
-
+*.pkl
 # Audio/chunk/embedding storage (large binary outputs)
 workspace/chunks/
 workspace/embeddings/
