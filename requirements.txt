@@ -1,36 +1,52 @@
 # ==============================================================================
-# REQUIREMENTS FOR PHASE 1: CORE ANALYSIS & VECTORIZATION
+# IA MEDIA - PHASE 1 REQUIREMENTS (STABLE)
+# This file defines the exact dependencies for a stable Phase 1 environment.
+# Install PyTorch GPU manually first, then install this file.
 # ==============================================================================
 
-# --- Core & Infrastructure ---
-python-dotenv
-psycopg2-binary
-pgvector
+# --- Core Infrastructure ---
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+pgvector==0.2.4
 
-# --- Audio/Video Processing ---
-# Whisper để phiên âm. Sẽ tự động cài đặt torch.
-openai-whisper
-# Librosa và Pydub cho các tác vụ xử lý audio.
-librosa
-pydub
-# ffmpeg-python để tương tác với ffmpeg một cách an toàn.
-ffmpeg-python
+# --- Media Processing ---
+librosa==0.10.1 # Pinning to a known stable version
+pydub==0.25.1
+ffmpeg-python==0.2.0
 
 # --- AI & Vectorization ---
-# SpeechBrain cho model embedding. Sẽ tự động cài torchaudio.
-speechbrain
-# Sentence-Transformers là một cách tiện lợi để tải và dùng SpeechBrain.
-sentence-transformers
 
-# --- Data Handling ---
-# Pandas rất cần thiết để tạo và quản lý file metadata.csv.
-pandas
+# PyTorch stack (MUST be installed manually with the correct CUDA version first)
+# torch==2.3.1+cu121
+# torchvision==0.18.1+cu121
+# torchaudio==2.3.1+cu121
 
-# --- Development & Testing ---
-# Các thư viện này chỉ cần thiết cho môi trường phát triển/test.
-pytest
-pytest-mock
-# Scipy và soundfile cần thiết để tạo file audio giả trong các bài test.
+# WhisperX and its critical, pinned dependencies
+# We pin these to the versions that we know work together.
+numpy<2.0.0,>=1.26.0
+pandas<2.3.0,>=2.2.0
+transformers==4.36.2 # Critical pin to avoid torch.load vulnerability check
+faster-whisper==1.0.1 # Pin to a stable version
+pyannote.audio==3.1.1 # Pin to avoid API breaking changes
+# Other WhisperX dependencies that need pinning
+nltk==3.8.1
+av==11.0.0
+ctranslate2==3.24.1
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+
+# Install WhisperX from git source
+git+https://github.com/m-bain/whisperx.git@d32ec3e3012ec4c0934f4088424c32f3f038b249
+
+# Other AI libraries
+speechbrain==1.0.0
+sentence-transformers==2.2.2 # Stable version compatible with older transformers
+
+# --- Data Handling & Testing ---
+# These are less sensitive to versions
 scipy
 soundfile
-jupyter # Giữ lại Jupyter để có thể mở và sửa file .ipynb
+pytest
+pytest-mock
+jupyter

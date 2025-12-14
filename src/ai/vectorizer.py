@@ -113,7 +113,57 @@ def create_embedding(audio_path: str, model: EncoderClassifier) -> list | None:
     except Exception as e:
         logging.error(f"Lỗi khi tạo embedding cho file {audio_path}: {e}")
         return None
+# --- [BỔ SUNG MỚI] ---
+def create_sliding_window_embeddings(
+    audio_path: str, 
+    model: EncoderClassifier, 
+    window_len: float = 0.1, # 100ms
+    step: float = 0.05       # 50ms
+) -> list | None:
+    """
+    Tạo một chuỗi các vector embedding bằng cách trượt cửa sổ trên file audio.
+    Trả về danh sách các vector con.
+    """
+    if not os.path.exists(audio_path):
+        return None
+    try:
+        device = _get_device()
+        signal, fs = torchaudio.load(audio_path)
+        
+        if signal.shape[0] > 1:
+            signal = signal.mean(dim=0, keepdim=True)
+            
+        if fs != 16000:
+            resampler = torchaudio.transforms.Resample(fs, 16000).to(device)
+            signal = resampler(signal.to(device))
+        else:
+            signal = signal.to(device)
 
+        window_samples = int(window_len * 16000)
+        step_samples = int(step * 16000)
+        total_samples = signal.shape[1]
+
+        if total_samples < window_samples:
+            return None # Bỏ qua nếu file quá ngắn
+
+        # Dùng unfold để tạo cửa sổ trượt cực nhanh trên Tensor
+        windows = signal.unfold(1, window_samples, step_samples)
+        windows = windows.permute(1, 0, 2)
+        
+        # Xử lý theo batch để tiết kiệm VRAM
+        batch_size = 128
+        all_vectors = []
+        for i in range(0, windows.size(0), batch_size):
+            batch = windows[i:i+batch_size]
+            with torch.no_grad(): # Tối ưu hóa, không cần tính gradient
+                embeddings = model.encode_batch(batch)
+            vectors = embeddings.squeeze(1).cpu().numpy().tolist()
+            all_vectors.extend(vectors)
+            
+        return all_vectors
+    except Exception as e:
+        logging.error(f"Lỗi xử lý audio sliding window cho {audio_path}: {e}")
+        return None
 if __name__ == '__main__':
     # Phần này để chạy test nhanh cho module
     print("Chạy test nhanh cho module vectorizer...")

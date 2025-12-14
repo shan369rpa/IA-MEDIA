@@ -22,7 +22,7 @@ models/
 
 # Bỏ qua các file môi trường
 .env
-
+venv/
 # Bỏ qua các thư mục hệ thống của Python và VSCode
 __pycache__/
 *.py[cod]

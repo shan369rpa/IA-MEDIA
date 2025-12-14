@@ -54,3 +54,55 @@ class SignalAnalyzer:
             logging.error(f"Lỗi phân tích tín hiệu {audio_path}: {e}")
         
         return result
+
+# --- HÀM MODULE-LEVEL ĐƯỢC GỌI TỪ CHUNKER.PY ---
+
+def analyze_audio_defects(clean_chunk_path: str, error_chunk_path: str) -> dict:
+    """
+    So sánh file clean và file error (raw) để xác định các lỗi cụ thể.
+    Hàm này được gọi trực tiếp từ chunker.py.
+    
+    Returns:
+        dict: Chứa các thông tin phân tích và cờ báo lỗi.
+    """
+    analyzer = SignalAnalyzer()
+    
+    # 1. Phân tích riêng lẻ từng file
+    # File clean (đã sửa) dùng làm chuẩn
+    clean_stats = analyzer.analyze_chunk(clean_chunk_path)
+    # File error (raw) là file cần tìm lỗi
+    error_stats = analyzer.analyze_chunk(error_chunk_path)
+    
+    analysis_report = {
+        "rms_clean": clean_stats["rms_energy"],
+        "rms_error": error_stats["rms_energy"],
+        "max_amp_error": error_stats["max_amplitude"],
+        "detected_defects": [] # Danh sách các lỗi phát hiện được
+    }
+
+    # 2. Logic so sánh để gán nhãn lỗi
+    
+    # Lỗi A: Clipping (Vỡ tiếng)
+    # Chỉ đánh dấu lỗi nếu file Raw bị vỡ tiếng còn file Clean thì không (hoặc đỡ hơn)
+    if error_stats["is_clipping"] and not clean_stats["is_clipping"]:
+        analysis_report["detected_defects"].append("error_clipping")
+        
+    # Lỗi B: Noise Spike (Tiếng động lạ đột ngột: ho, va đập)
+    # Nếu file Raw có gai nhiễu mà file Clean không có -> Editor đã cắt bỏ nó
+    if error_stats["is_noise_spike"] and not clean_stats["is_noise_spike"]:
+        analysis_report["detected_defects"].append("error_noise_spike")
+
+    # Lỗi C: Low Volume (Âm lượng quá nhỏ)
+    # Nếu năng lượng file Raw quá nhỏ so với ngưỡng chuẩn (ví dụ 0.02)
+    # Và nhỏ hơn đáng kể so với file Clean (trường hợp editor đã gain volume lên)
+    if error_stats["rms_energy"] < 0.02 and clean_stats["rms_energy"] > 0.05:
+        analysis_report["detected_defects"].append("error_low_volume")
+
+    # Lỗi D: Silence (Khoảng lặng bất thường)
+    if error_stats["is_silence"] and not clean_stats["is_silence"]:
+        analysis_report["detected_defects"].append("error_missing_audio")
+
+    # Nếu không phát hiện lỗi kỹ thuật cụ thể nào, nhưng đây là cặp clean/error
+    # Có thể để trống hoặc đánh dấu là 'potential_pronunciation_issue' ở bước vector hóa sau này
+    
+    return analysis_report
