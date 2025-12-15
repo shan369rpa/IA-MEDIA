@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<fcpxml version="1.9">
+  <resources>
+    <format id="r1" name="FFVideoFormat1080p25" frameDuration="1/25s" width="1920" height="1080"/>
+    <asset id="r2" name="2004.09.19.LH.VN.dong to to canh chay_raw.mp4" src="file://C:/Users/Admin/Documents/GitHub/IA-MEDIA/data/Batch_01/2004.09.19.LH.VN.dong to to canh chay_raw.mp4" start="0s" duration="1467840/600s" hasVideo="1" hasAudio="1" format="r1"/>
+  </resources>
+  <library>
+    <event name="AI Analysis - 2025-12-15">
+      <project name="Errors for 2004.09.19.LH.VN.dong to to canh chay_raw.mp4">
+        <sequence duration="1467840/600s" format="r1">
+          <spine>
+            <asset-clip ref="r2" name="2004.09.19.LH.VN.dong to to canh chay_raw.mp4" offset="0s" duration="1467840/600s"/>
+            <marker start="82706/600s" duration="72/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'ngưỡng'" completed="0"/>
+            <marker start="129515/600s" duration="23/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'về'" completed="0"/>
+            <marker start="201474/600s" duration="2798/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'buộc.'" completed="0"/>
+            <marker start="213557/600s" duration="1369/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'chúng'" completed="0"/>
+            <marker start="279848/600s" duration="1141/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'cầu'" completed="0"/>
+            <marker start="287588/600s" duration="48/600s" value="[AI-VOLUME] Vấn đề tiềm ẩn tại từ: 'trẻ'" completed="0"/>
+            <marker start="299247/600s" duration="1405/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'ta.'" completed="0"/>
+            <marker start="356769/600s" duration="48/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'dởm,'" completed="0"/>
+            <marker start="364058/600s" duration="4531/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'cầu'" completed="0"/>
+            <marker start="398784/600s" duration="4170/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'cũng'" completed="0"/>
+            <marker start="538615/600s" duration="3773/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'gì'" completed="0"/>
+            <marker start="582399/600s" duration="4576/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'dày,'" completed="0"/>
+            <marker start="659215/600s" duration="4828/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'mũi,'" completed="0"/>
+            <marker start="672607/600s" duration="2463/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'đó'" completed="0"/>
+            <marker start="713075/600s" duration="1009/600s" value="[AI-SPIKE] Vấn đề tiềm ẩn tại từ: 'tư'" completed="0"/>
+            <marker start="727538/600s" duration="1152/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'lại.'" completed="0"/>
+            <marker start="795339/600s" duration="936/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'của'" completed="0"/>
+            <marker start="803249/600s" duration="1897/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'bạn.'" completed="0"/>
+            <marker start="850328/600s" duration="1225/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'ngã,'" completed="0"/>
+            <marker start="881428/600s" duration="756/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'đọc'" completed="0"/>
+            <marker start="977285/600s" duration="60/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'không'" completed="0"/>
+            <marker start="977357/600s" duration="23/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'có'" completed="0"/>
+            <marker start="1016038/600s" duration="48/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'diện'" completed="0"/>
+            <marker start="1017948/600s" duration="1285/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'nó.'" completed="0"/>
+            <marker start="1101246/600s" duration="1537/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'cái'" completed="0"/>
+            <marker start="1149572/600s" duration="288/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'bão'" completed="0"/>
+            <marker start="1161624/600s" duration="120/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'giúp'" completed="0"/>
+            <marker start="1256836/600s" duration="721/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'mà'" completed="0"/>
+            <marker start="1293434/600s" duration="96/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'bao'" completed="0"/>
+            <marker start="1393917/600s" duration="937/600s" value="[AI-AUDIO] Vấn đề tiềm ẩn tại từ: 'hết.'" completed="0"/>
+          </spine>
+        </sequence>
+      </project>
+    </event>
+  </library>
+</fcpxml>

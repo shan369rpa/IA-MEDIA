@@ -6,7 +6,7 @@
 failed_batches/
 logs/
 logs/*.log
-
+# *.pkl
 # Audio/chunk/embedding storage (large binary outputs)
 workspace/chunks/
 workspace/embeddings/
@@ -23,6 +23,7 @@ models/
 # Bỏ qua các file môi trường
 .env
 venv/
+veenv/
 # Bỏ qua các thư mục hệ thống của Python và VSCode
 __pycache__/
 *.py[cod]

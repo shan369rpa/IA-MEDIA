@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<fcpxml version="1.10">
+  <resources>
+    <format id="r1" name="FFVideoFormat1080p25" frameDuration="1/25s" width="1920" height="1080"/>
+    <asset id="r2" name="2004.09.19.LH.VN.dong to to canh chay_raw.mp4" src="file://C:/Users/Admin/Documents/GitHub/IA-MEDIA/data/Batch_01/2004.09.19.LH.VN.dong to to canh chay_raw.mp4" start="0s" duration="1467840/600s" hasVideo="1" hasAudio="1" format="r1"/>
+  </resources>
+  <library>
+    <event name="AI Analysis - 2025-12-15">
+      <keyword name="AI-Pronunciation" start="0s" duration="1467840/600s"/>
+      <keyword name="AI-Clipping" start="0s" duration="1467840/600s"/>
+      <keyword name="AI-Noise" start="0s" duration="1467840/600s"/>
+      <keyword name="AI-Volume" start="0s" duration="1467840/600s"/>
+      <keyword name="AI-Audio-General" start="0s" duration="1467840/600s"/>
+      <project name="AI Errors for 2004.09.19.LH.VN.dong to to canh chay_raw.mp4">
+        <sequence duration="1467840/600s" format="r1">
+          <spine>
+            <asset-clip ref="r2" name="2004.09.19.LH.VN.dong to to canh chay_raw.mp4" offset="0s" duration="1467840/600s">
+              <marker start="82706/600s" duration="72/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 1">
+                <keyword start="82706/600s" duration="72/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="129515/600s" duration="23/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 2">
+                <keyword start="129515/600s" duration="23/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="201474/600s" duration="2798/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 3">
+                <keyword start="201474/600s" duration="2798/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="213557/600s" duration="1369/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 4">
+                <keyword start="213557/600s" duration="1369/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="279848/600s" duration="1141/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 5">
+                <keyword start="279848/600s" duration="1141/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="287588/600s" duration="48/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 6">
+                <keyword start="287588/600s" duration="48/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="299247/600s" duration="1405/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 7">
+                <keyword start="299247/600s" duration="1405/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="356769/600s" duration="48/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 8">
+                <keyword start="356769/600s" duration="48/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="364058/600s" duration="4531/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 9">
+                <keyword start="364058/600s" duration="4531/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="398784/600s" duration="4170/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 10">
+                <keyword start="398784/600s" duration="4170/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="538615/600s" duration="3773/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 11">
+                <keyword start="538615/600s" duration="3773/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="582399/600s" duration="4576/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 12">
+                <keyword start="582399/600s" duration="4576/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="659215/600s" duration="4828/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 13">
+                <keyword start="659215/600s" duration="4828/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="672607/600s" duration="2463/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 14">
+                <keyword start="672607/600s" duration="2463/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="713075/600s" duration="1009/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 15">
+                <keyword start="713075/600s" duration="1009/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="727538/600s" duration="1152/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 16">
+                <keyword start="727538/600s" duration="1152/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="795339/600s" duration="936/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 17">
+                <keyword start="795339/600s" duration="936/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="803249/600s" duration="1897/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 18">
+                <keyword start="803249/600s" duration="1897/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="850328/600s" duration="1225/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 19">
+                <keyword start="850328/600s" duration="1225/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="881428/600s" duration="756/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 20">
+                <keyword start="881428/600s" duration="756/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="977285/600s" duration="60/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 21">
+                <keyword start="977285/600s" duration="60/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="977357/600s" duration="23/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 22">
+                <keyword start="977357/600s" duration="23/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1016038/600s" duration="48/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 23">
+                <keyword start="1016038/600s" duration="48/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1017948/600s" duration="1285/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 24">
+                <keyword start="1017948/600s" duration="1285/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1101246/600s" duration="1537/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 25">
+                <keyword start="1101246/600s" duration="1537/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1149572/600s" duration="288/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 26">
+                <keyword start="1149572/600s" duration="288/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1161624/600s" duration="120/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 27">
+                <keyword start="1161624/600s" duration="120/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1256836/600s" duration="721/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 28">
+                <keyword start="1256836/600s" duration="721/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1293434/600s" duration="96/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 29">
+                <keyword start="1293434/600s" duration="96/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+              <marker start="1393917/600s" duration="937/600s" value="Lỗi audio tại từ: ''" completed="0" note="Marker ID: 30">
+                <keyword start="1393917/600s" duration="937/600s" value="AI-Audio-General" note="Yellow"/>
+              </marker>
+            </asset-clip>
+          </spine>
+        </sequence>
+      </project>
+    </event>
+  </library>
+</fcpxml>

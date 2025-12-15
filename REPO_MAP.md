@@ -163,3 +163,8 @@ IA-MEDIA/
   `https://raw.githubusercontent.com/shan369rpa/IA-MEDIA/chore/first-pipeline-run-mock-data/documents/STORAGE_ANALYSIS.md`
 - **documents/TODO.md**:
   `https://raw.githubusercontent.com/shan369rpa/IA-MEDIA/chore/first-pipeline-run-mock-data/documents/TODO.md`
+ssh -L 6000:localhost:5433 root@180.93.137.58
+scp ./migrations/002_create_word_slices_table.sql root@180.93.137.58:/root/
+docker cp /root/002_create_word_slices_table.sql ia-media-db-pgvector:/tmp/migration_002.sql
+docker exec -it ia-media-db-pgvector psql -U ia_media_admin -d ia_media_db -f /tmp/migration_002.sql
+docker exec ia-media-db-pgvector rm /tmp/migration_002.sql

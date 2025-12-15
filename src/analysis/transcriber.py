@@ -1,61 +1,11 @@
 # src/analysis/transcriber.py
 
-import logging
-import os
-
-from dotenv import load_dotenv
-# ==============================================================================
-# PHẦN KHẮC PHỤC LỖI CUDA/CUDNN TRÊN WINDOWS
-# Đoạn code này phải được chạy TRƯỚC TẤT CẢ các lệnh import khác
-# ==============================================================================
-import sys
-
-def _configure_cuda_path():
-    """
-    Tìm và thêm các thư mục bin của CUDA/cuDNN được cài đặt bởi pip
-    vào biến môi trường PATH để Windows có thể tìm thấy các file .dll.
-    """
-    # Lấy đường dẫn đến thư mục site-packages của môi trường ảo
-    # Ví dụ: C:\Users\Admin\Documents\GitHub\IA-MEDIA\venv\Lib\site-packages
-    site_packages_path = next((p for p in sys.path if 'site-packages' in p), None)
-    
-    if not site_packages_path:
-        logging.warning("Không tìm thấy thư mục site-packages. Bỏ qua cấu hình CUDA PATH.")
-        return
-
-    # Các thư mục con chứa file .dll của nvidia
-    cuda_bin_dirs = [
-        os.path.join(site_packages_path, "nvidia", "cuda_runtime", "bin"),
-        os.path.join(site_packages_path, "nvidia", "cudnn", "bin"),
-        # Thêm các thư mục khác nếu cần, ví dụ cublas...
-        os.path.join(site_packages_path, "nvidia", "cublas", "bin"),
-    ]
-
-    # Lấy biến PATH hiện tại
-    current_path = os.environ.get("PATH", "")
-    
-    paths_to_add = []
-    for d in cuda_bin_dirs:
-        if os.path.isdir(d) and d not in current_path:
-            paths_to_add.append(d)
-            
-    if paths_to_add:
-        logging.info(f"Đang thêm các đường dẫn CUDA/cuDNN vào PATH: {paths_to_add}")
-        # Thêm các đường dẫn mới vào đầu biến PATH
-        os.environ["PATH"] = ";".join(paths_to_add) + ";" + current_path
-    else:
-        logging.info("Các đường dẫn CUDA/cuDNN đã có trong PATH.")
-
-# Chạy hàm cấu hình ngay lập tức
-_configure_cuda_path()
-# ==============================================================================
-# KẾT THÚC PHẦN KHẮC PHỤC LỖI
-# ==============================================================================
-# Cấu hình logging
 import whisperx
-
 import torch
-import gc # Garbage collection để quản lý VRAM
+import gc
+from dotenv import load_dotenv
+import os
+import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_word_timestamps(audio_path: str) -> list | None:
