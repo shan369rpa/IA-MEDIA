@@ -96,7 +96,7 @@ def create_and_save_chunks(
             # 4. Lưu Metadata
             rel_clean_path = os.path.relpath(clean_chunk_path, output_dir)
             rel_error_path = os.path.relpath(error_chunk_path, output_dir)
-
+            pair_id = f"{source_video_name}_{start_ms_edited}"
             # Record cho Clean
             metadata_records.append({
                 "source_video": source_video_name,
@@ -105,7 +105,8 @@ def create_and_save_chunks(
                 "end_ms": end_ms_edited,
                 "label": "clean",
                 "audio_path": rel_clean_path,
-                "details": json.dumps({})
+                "details": json.dumps({}),
+                "pair_id": pair_id # <-- Thêm cột mới
             })
             
             # Record cho Error (với nhãn chi tiết)
@@ -116,7 +117,8 @@ def create_and_save_chunks(
                 "end_ms": end_ms_edited,
                 "label": detected_label, # <--- NHÃN CHI TIẾT Ở ĐÂY
                 "audio_path": rel_error_path,
-                "details": json.dumps(error_details) # Lưu chi tiết kỹ thuật
+                "details": json.dumps(error_details), # Lưu chi tiết kỹ thuật
+                "pair_id": pair_id # <-- Thêm cột mới
             })
             
             processed_word_count += 1

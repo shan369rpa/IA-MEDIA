@@ -24,3 +24,4 @@ WORKSPACE = "./workspace"
 
 # Chạy
 detect_errors_in_video(VIDEO_PATH, OUTPUT_XML, WORKSPACE)
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121

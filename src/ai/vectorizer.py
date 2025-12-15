@@ -144,23 +144,41 @@ def create_sliding_window_embeddings(
         total_samples = signal.shape[1]
 
         if total_samples < window_samples:
-            return None # Bỏ qua nếu file quá ngắn
+            logging.debug(f"File quá ngắn, tạo 1 embedding duy nhất: {audio_path}")
+            # Tái sử dụng `signal` đã có trong RAM
+            embeddings = model.encode_batch(signal.to(_get_device()))
+            vector = embeddings.squeeze().cpu().numpy().tolist()
+            return [vector] # Trả về list chứa 1 vector duy nhất
 
         # Dùng unfold để tạo cửa sổ trượt cực nhanh trên Tensor
-        windows = signal.unfold(1, window_samples, step_samples)
-        windows = windows.permute(1, 0, 2)
+        try: 
+            windows = signal.unfold(1, window_samples, step_samples)
+            windows = windows.permute(1, 0, 2)
         
-        # Xử lý theo batch để tiết kiệm VRAM
-        batch_size = 128
-        all_vectors = []
-        for i in range(0, windows.size(0), batch_size):
-            batch = windows[i:i+batch_size]
-            with torch.no_grad(): # Tối ưu hóa, không cần tính gradient
-                embeddings = model.encode_batch(batch)
-            vectors = embeddings.squeeze(1).cpu().numpy().tolist()
-            all_vectors.extend(vectors)
-            
-        return all_vectors
+            # Xử lý theo batch để tiết kiệm VRAM
+            batch_size = 128
+            all_vectors = []
+            for i in range(0, windows.size(0), batch_size):
+                batch = windows[i:i+batch_size]
+                with torch.no_grad(): # Tối ưu hóa, không cần tính gradient
+                    embeddings = model.encode_batch(batch)
+                vectors = embeddings.squeeze(1).cpu().numpy().tolist()
+                all_vectors.extend(vectors)
+                
+            return all_vectors
+
+        except RuntimeError as e:
+            # Bắt chính xác lỗi RuntimeError liên quan đến padding
+            if "padding" in str(e):
+                logging.warning(f"Lỗi padding khi unfold file {os.path.basename(audio_path)}. Tạo 1 embedding duy nhất làm fallback.")
+                # Giải pháp thay thế: Nếu unfold lỗi, chỉ tạo 1 vector cho cả từ
+                embeddings = model.encode_batch(signal)
+                vector = embeddings.squeeze().cpu().numpy().tolist()
+                return [vector]
+            else:
+                # Nếu là lỗi RuntimeError khác, báo lỗi như bình thường
+                raise e
+                
     except Exception as e:
         logging.error(f"Lỗi xử lý audio sliding window cho {audio_path}: {e}")
         return None

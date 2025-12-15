@@ -90,6 +90,17 @@ CREATE TABLE "anomalies" (
 );
 \echo '    - Bảng "anomalies" đã được tạo.'
 
+-- --- [BỔ SUNG MỚI] Bảng `word_slices` ---
+CREATE TABLE IF NOT EXISTS "word_slices" (
+    "id" SERIAL PRIMARY KEY,
+    "word_id" INTEGER NOT NULL REFERENCES "words"("id") ON DELETE CASCADE,
+    "source_type" VARCHAR(10) NOT NULL CHECK ("source_type" IN ('clean', 'error')),
+    "slice_index" INTEGER NOT NULL,
+    "embedding" VECTOR(192),
+    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+COMMENT ON TABLE "word_slices" IS '{"uit":"Grid","v":"1.0"}';
+\echo '    - Bảng "word_slices" đã được tạo.'
 
 -- -----------------------------------------------------------------------------
 -- BƯỚC 3: TẠO CÁC INDEX ĐỂ TĂNG TỐC
@@ -97,6 +108,8 @@ CREATE TABLE "anomalies" (
 \echo '--> BƯỚC 3: Đang tạo các index...'
 
 -- Index cho tìm kiếm vector
+CREATE INDEX ON "word_slices" USING ivfflat ("embedding" vector_cosine_ops) WITH (lists = 100);
+CREATE INDEX ON "word_slices" ("word_id");
 CREATE INDEX ON "sentences" USING ivfflat ("embedding" vector_cosine_ops) WITH (lists = 100);
 CREATE INDEX ON "words" USING ivfflat ("embedding_clean" vector_cosine_ops) WITH (lists = 100);
 CREATE INDEX ON "words" USING ivfflat ("embedding_error" vector_cosine_ops) WITH (lists = 100);

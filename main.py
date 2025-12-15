@@ -1,14 +1,24 @@
 # main.py
-
+# ==============================================================================
+# BƯỚC 0: CẤU HÌNH MÔI TRƯỜNG - PHẢI LÀ ĐIỀU ĐẦU TIÊN ĐƯỢC THỰC HIỆN
+# ==============================================================================
+import sys
 import os
+# Thêm đường dẫn gốc vào sys.path một cách an toàn
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '.'))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+from src.utils.environment import setup_environment
+setup_environment()
+# ==============================================================================
+
+# BÂY GIỜ MỚI IMPORT CÁC THƯ VIỆN CÒN LẠI
 import glob
 import logging
 from dotenv import load_dotenv
 
-# Import các module chức năng từ thư mục src
 from src.utils import file_handler, fcpxml_parser
 from src.analysis import transcriber, chunker
-
 # Di chuyển cấu hình logging ra ngoài để có thể tái sử dụng
 # force=True rất quan trọng khi chạy trong môi trường như Colab, nơi logging có thể đã được cấu hình trước
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - [%(levelname)s] - %(message)s', force=True)
