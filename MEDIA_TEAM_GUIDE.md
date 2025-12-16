@@ -84,7 +84,7 @@ Sau khi import, một Project mới sẽ xuất hiện. Hãy mở Project đó l
     -   Đặt tên file, ví dụ `[Tên-Video]_feedback_by_[Tên-Của-Bạn].fcpxml`.
     -   **Gửi lại file XML mới này cho chúng tôi.**
 
-File feedback này là vô giá, nó giúp chúng tôi hiểu được AI đang "suy nghĩ" đúng hay sai, từ đó dạy cho nó ngày càng tốt hơn.
+File feedback này giúp chúng tôi hiểu được AI đang "suy nghĩ" đúng hay sai, từ đó dạy cho nó ngày càng tốt hơn.
 
 Chúng tôi hiểu rằng công cụ này còn mới và có thể có nhiều gợi ý không chính xác. Rất mong nhận được sự kiên nhẫn và những góp ý thẳng thắn từ các bạn.
 
