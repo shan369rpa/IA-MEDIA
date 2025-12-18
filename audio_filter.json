@@ -1,0 +1,56 @@
+[
+  {
+    "session_id": "1992.11.22-giác ngộ có sẵn trong ta",
+    "start": 0.0,
+    "end": 0.5839166666666666,
+    "type": "audio_filter",
+    "details": {
+      "name": "Audio Crossfade"
+    }
+  },
+  {
+    "session_id": "1992.11.22-giác ngộ có sẵn trong ta",
+    "start": 3.4200833333333334,
+    "end": 12.303958333333334,
+    "type": "audio_filter",
+    "details": {
+      "name": "Gain"
+    }
+  },
+  {
+    "session_id": "1992.11.22-giác ngộ có sẵn trong ta",
+    "start": 3.4200833333333334,
+    "end": 12.303958333333334,
+    "type": "audio_filter",
+    "details": {
+      "name": "Compressor"
+    }
+  },
+  {
+    "session_id": "1992.11.22-giác ngộ có sẵn trong ta",
+    "start": 3.4200833333333334,
+    "end": 12.303958333333334,
+    "type": "audio_filter",
+    "details": {
+      "name": "Channel EQ"
+    }
+  },
+  {
+    "session_id": "2004.09.19-đối phó với cơn bão trong lòng",
+    "start": 39.2,
+    "end": 86.83333333333334,
+    "type": "audio_filter",
+    "details": {
+      "name": "Rumble Reducer"
+    }
+  },
+  {
+    "session_id": "2014.07.29-hãy thương nhau đi",
+    "start": 3.5035,
+    "end": 208.49995833333332,
+    "type": "audio_filter",
+    "details": {
+      "name": "DeEsser 2"
+    }
+  }
+]
