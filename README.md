@@ -63,26 +63,38 @@ Dự án sẽ được triển khai theo 3 giai đoạn chính, với mỗi giai
 
 ---
 
-## 3. Current Status: Phase 1 Demo COMPLETED / Trạng thái Hiện tại: Demo Giai đoạn 1 HOÀN THÀNH
+## 3. Current Status: Phase 1 Foundation Complete & Pivoting to v3 Architecture / Trạng thái Hiện tại: Hoàn thành Nền tảng & Chuyển hướng sang Kiến trúc v3
 
-**We have successfully completed a full end-to-end demonstration of the entire Phase 1 pipeline, from raw video input to a final FCPXML "To-Do List" output.**
-**Chúng ta đã thực thi thành công một bản demo hoàn chỉnh từ đầu đến cuối cho toàn bộ Giai đoạn 1, từ video thô đầu vào cho đến file FCPXML "To-Do List" đầu ra.**
+**We have successfully built and validated all core components of the initial data pipeline. A successful end-to-end run on sample data has generated thousands of labeled audio chunks and a preliminary classifier model.**
+***Chúng ta đã xây dựng và xác thực thành công tất cả các thành phần cốt lõi của pipeline dữ liệu ban đầu. Một lần chạy thử từ đầu đến cuối trên dữ liệu mẫu đã tạo ra hàng ngàn audio chunk được gán nhãn và một mô hình phân loại sơ bộ.***
 
-### Key Accomplishments / Thành tựu Chính Đã đạt được:
+### Key Accomplishments to Date / Thành tựu Chính Đã đạt được:
+-   ✅ **Infrastructure Ready:** A stable local development environment (Windows + GPU) and a dedicated PostgreSQL + pgvector database are fully operational.
+    - ***Hạ tầng Sẵn sàng:*** *Môi trường phát triển local ổn định và CSDL chuyên dụng đã hoạt động hoàn chỉnh.*
+-   ✅ **Initial Data Ingestion:** Successfully processed a full video, performing FCPXML parsing, WhisperX transcription, chunking, and vectorization, ingesting over 2,290 records into the database.
+    - ***Nhập liệu Ban đầu:*** *Đã xử lý thành công một video hoàn chỉnh, thực hiện phân tích FCPXML, phiên âm WhisperX, chunking, và vector hóa, nhập liệu hơn 2,290 bản ghi vào CSDL.*
+-   ✅ **Proof-of-Concept Model:** Successfully trained a baseline `KNeighborsClassifier` model (`error_classifier.pkl`) and generated a proof-of-concept FCPXML To-Do List.
+    - ***Mô hình Proof-of-Concept:*** *Đã huấn luyện thành công một mô hình `KNeighborsClassifier` cơ bản và tạo ra được một file FCPXML To-Do List mẫu.*
 
--   ✅ **End-to-End Pipeline Execution:** Successfully processed a sample video, performing FCPXML parsing, WhisperX transcription with forced alignment, audio chunking, and vectorization. **2,290 records** were successfully ingested into the PostgreSQL database.
-    - ***Thực thi Pipeline Từ-đầu-đến-cuối:*** *Đã xử lý thành công một video mẫu, thực hiện phân tích FCPXML, phiên âm và căn chỉnh bằng WhisperX, cắt chunk audio, và vector hóa. **2,290 bản ghi** đã được nhập thành công vào CSDL PostgreSQL.*
+### Strategic Pivot to v3.0 (Event-Driven Architecture) / Chuyển hướng Chiến lược sang v3.0 (Kiến trúc Hướng sự kiện)
 
--   ✅ **Machine Learning Model Trained:** Successfully trained a `KNeighborsClassifier` model on the generated data to classify different types of audio defects. The trained model (`error_classifier.pkl`) is now ready for inference.
-    - ***Mô hình Học máy được Huấn luyện:*** *Đã huấn luyện thành công một mô hình `KNeighborsClassifier` trên dữ liệu được tạo ra để phân loại các loại lỗi âm thanh khác nhau. Mô hình đã huấn luyện (`error_classifier.pkl`) hiện đã sẵn sàng để suy luận.*
+Through deep analysis of FCPXML files, we discovered a wealth of explicit editing information (noise reduction, EQ, volume automation, etc.). To leverage this, we are upgrading the project to a more robust **"Event-Driven" architecture**.
+*Thông qua phân tích sâu các file FCPXML, chúng tôi đã khám phá ra một kho thông tin chỉnh sửa tường minh. Để tận dụng điều này, chúng tôi đang nâng cấp dự án lên một kiến trúc **"Hướng sự kiện"** vững chắc hơn.*
 
--   ✅ **Final Product Generated:** Successfully executed the inference pipeline (`analyze_new_video.py`) which uses the trained model to detect errors in a new video and generates a final, usable **FCPXML To-Do List** with colored markers.
-    - ***Sản phẩm Cuối cùng được Tạo ra:*** *Đã thực thi thành công pipeline suy luận (`analyze_new_video.py`), sử dụng mô hình đã huấn luyện để phát hiện lỗi trong video mới và tạo ra một file **FCPXML To-Do List** cuối cùng, có thể sử dụng được, với các marker được tô màu.*
+**Instead of treating every word as an isolated chunk, the new pipeline will be centered around "Edit Events" extracted directly from FCPXML.** This will provide higher-quality labels and richer context for our AI models.
+***Thay vì coi mỗi từ là một chunk riêng lẻ, pipeline mới sẽ tập trung vào các "Sự kiện Chỉnh sửa" được trích xuất trực tiếp từ FCPXML.** Điều này sẽ cung cấp các nhãn chất lượng cao hơn và ngữ cảnh phong phú hơn cho các mô hình AI của chúng ta.*
 
 ### Next Immediate Step / Bước Tiếp theo:
 
-The project will now focus on **improving the accuracy of the classifier model** by implementing a human-in-the-loop feedback system and experimenting with advanced machine learning techniques.
-*Dự án bây giờ sẽ tập trung vào việc **cải thiện độ chính xác của mô hình phân loại** bằng cách triển khai một hệ thống phản hồi có con người tham gia và thử nghiệm các kỹ thuật học máy nâng cao.*
+We are now implementing the **v3.0 Data Ingestion Pipeline**. This involves:
+*Chúng ta hiện đang hiện thực hóa **Pipeline Nhập liệu v3.0**. Việc này bao gồm:*
+
+1.  **Refactoring the FCPXML Parser** to extract all detailed "Edit Events".
+    - *Tái cấu trúc Bộ phân tích FCPXML để trích xuất tất cả các "Sự kiện Chỉnh sửa" chi tiết.*
+2.  **Implementing the new Database Schema** (v3.0) to store these events.
+    - *Hiện thực hóa Lược đồ CSDL mới (v3.0) để lưu trữ các sự kiện này.*
+3.  **Refactoring the Ingestion Pipeline** (`ingest.py`) to process data based on these events and populate the new database structure.
+    - *Tái cấu trúc Pipeline Nhập liệu (`ingest.py`) để xử lý dữ liệu dựa trên các sự kiện này và điền vào cấu trúc CSDL mới.*
 
 ---
 

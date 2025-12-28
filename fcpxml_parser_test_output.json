@@ -1,0 +1,1350 @@
+{
+  "time_map": [
+    {
+      "type": "asset-clip",
+      "edited_start": 4.033333333333333,
+      "edited_end": 39.199999999999996,
+      "raw_start": 73.66666666666667
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 39.2,
+      "edited_end": 86.83333333333334,
+      "raw_start": 121.26666666666667
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 86.83333333333333,
+      "edited_end": 123.3,
+      "raw_start": 168.9
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 123.3,
+      "edited_end": 216.36666666666667,
+      "raw_start": 206.26666666666668
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 216.36666666666667,
+      "edited_end": 329.03333333333336,
+      "raw_start": 299.8666666666667
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 329.03333333333336,
+      "edited_end": 431.73333333333335,
+      "raw_start": 420.93333333333334
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 431.73333333333335,
+      "edited_end": 477.03333333333336,
+      "raw_start": 524.0333333333333
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 477.03333333333336,
+      "edited_end": 605.8333333333334,
+      "raw_start": 570.1666666666666
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 605.8333333333334,
+      "edited_end": 616.5333333333334,
+      "raw_start": 699.3
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 616.5333333333333,
+      "edited_end": 656.5,
+      "raw_start": 710.4
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 656.5,
+      "edited_end": 805.3333333333334,
+      "raw_start": 752.5
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 805.3333333333334,
+      "edited_end": 1049.0333333333333,
+      "raw_start": 903.8
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 1049.0333333333333,
+      "edited_end": 1099.0333333333333,
+      "raw_start": 1148.9333333333334
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 1099.0333333333333,
+      "edited_end": 1484.1666666666665,
+      "raw_start": 1199.9333333333334
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 1484.1666666666667,
+      "edited_end": 1498.2,
+      "raw_start": 1588.2333333333333
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 1498.2,
+      "edited_end": 1898.3666666666668,
+      "raw_start": 1604.2333333333333
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 1898.3666666666666,
+      "edited_end": 1981.1999999999998,
+      "raw_start": 2015.6666666666667
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 1981.2,
+      "edited_end": 2022.3666666666668,
+      "raw_start": 2099.3
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 2022.3666666666666,
+      "edited_end": 2022.7666666666667,
+      "raw_start": 2140.9666666666667
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 2022.7666666666667,
+      "edited_end": 2051.9,
+      "raw_start": 2142.0666666666666
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 2051.9,
+      "edited_end": 2135.2333333333336,
+      "raw_start": 2185.0333333333333
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 2135.233333333333,
+      "edited_end": 2190.1666666666665,
+      "raw_start": 2270.1
+    },
+    {
+      "type": "asset-clip",
+      "edited_start": 2190.1666666666665,
+      "edited_end": 2245.133333333333,
+      "raw_start": 2325.4
+    }
+  ],
+  "edit_events": [
+    {
+      "start": 4.033333333333333,
+      "end": 39.199999999999996,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "-1.03358 -8.90001",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 4.033333333333333,
+      "end": 39.199999999999996,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 4.033333333333333,
+      "end": 39.199999999999996,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 4.033333333333333,
+      "end": 39.199999999999996,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 39.2,
+      "end": 86.83333333333334,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "1.12601 -7.84426",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 39.2,
+      "end": 86.83333333333334,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 39.2,
+      "end": 86.83333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 39.2,
+      "end": 86.83333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 39.2,
+      "end": 86.83333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 86.83333333333333,
+      "end": 123.3,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.623942 -2.15498",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 86.83333333333333,
+      "end": 123.3,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 86.83333333333333,
+      "end": 123.3,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 86.83333333333333,
+      "end": 123.3,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 86.83333333333333,
+      "end": 123.3,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 123.3,
+      "end": 216.36666666666667,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.623942 -2.15498",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 123.3,
+      "end": 216.36666666666667,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 123.3,
+      "end": 216.36666666666667,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 123.3,
+      "end": 216.36666666666667,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 123.3,
+      "end": 216.36666666666667,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 216.36666666666667,
+      "end": 329.03333333333336,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.623942 -2.15498",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 216.36666666666667,
+      "end": 329.03333333333336,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 216.36666666666667,
+      "end": 329.03333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 216.36666666666667,
+      "end": 329.03333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 216.36666666666667,
+      "end": 329.03333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 329.03333333333336,
+      "end": 431.73333333333335,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.623942 -2.15498",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 329.03333333333336,
+      "end": 431.73333333333335,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 329.03333333333336,
+      "end": 431.73333333333335,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 329.03333333333336,
+      "end": 431.73333333333335,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 329.03333333333336,
+      "end": 431.73333333333335,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 431.73333333333335,
+      "end": 477.03333333333336,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.782303 0.482031",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 431.73333333333335,
+      "end": 477.03333333333336,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 431.73333333333335,
+      "end": 477.03333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 431.73333333333335,
+      "end": 477.03333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 431.73333333333335,
+      "end": 477.03333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 477.03333333333336,
+      "end": 605.8333333333334,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.599308 1.32311",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 477.03333333333336,
+      "end": 605.8333333333334,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 477.03333333333336,
+      "end": 605.8333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 477.03333333333336,
+      "end": 605.8333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 477.03333333333336,
+      "end": 605.8333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 605.8333333333334,
+      "end": 616.5333333333334,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.953568 1.27853",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 605.8333333333334,
+      "end": 616.5333333333334,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 605.8333333333334,
+      "end": 616.5333333333334,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 605.8333333333334,
+      "end": 616.5333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 605.8333333333334,
+      "end": 616.5333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 605.8333333333334,
+      "end": 616.5333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 616.5333333333333,
+      "end": 656.5,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.27672 0.540683",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 616.5333333333333,
+      "end": 656.5,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 616.5333333333333,
+      "end": 656.5,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 616.5333333333333,
+      "end": 656.5,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 616.5333333333333,
+      "end": 656.5,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 616.5333333333333,
+      "end": 656.5,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 656.5,
+      "end": 805.3333333333334,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.565289 0.835118",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 656.5,
+      "end": 805.3333333333334,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 656.5,
+      "end": 805.3333333333334,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 656.5,
+      "end": 805.3333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 656.5,
+      "end": 805.3333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 656.5,
+      "end": 805.3333333333334,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 805.3333333333334,
+      "end": 1049.0333333333333,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.652095 1.50376",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 805.3333333333334,
+      "end": 1049.0333333333333,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 805.3333333333334,
+      "end": 1049.0333333333333,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 805.3333333333334,
+      "end": 1049.0333333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 805.3333333333334,
+      "end": 1049.0333333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 805.3333333333334,
+      "end": 1049.0333333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 1049.0333333333333,
+      "end": 1099.0333333333333,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.431562 2.02459",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 1049.0333333333333,
+      "end": 1099.0333333333333,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 1049.0333333333333,
+      "end": 1099.0333333333333,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 1049.0333333333333,
+      "end": 1099.0333333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 1049.0333333333333,
+      "end": 1099.0333333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 1049.0333333333333,
+      "end": 1099.0333333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 1099.0333333333333,
+      "end": 1484.1666666666665,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.613384 1.30316",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 1099.0333333333333,
+      "end": 1484.1666666666665,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 1099.0333333333333,
+      "end": 1484.1666666666665,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 1099.0333333333333,
+      "end": 1484.1666666666665,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 1099.0333333333333,
+      "end": 1484.1666666666665,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 1099.0333333333333,
+      "end": 1484.1666666666665,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 1484.1666666666667,
+      "end": 1498.2,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 1484.1666666666667,
+      "end": 1498.2,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 1484.1666666666667,
+      "end": 1498.2,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 1484.1666666666667,
+      "end": 1498.2,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 1484.1666666666667,
+      "end": 1498.2,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 1484.1666666666667,
+      "end": 1498.2,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 1498.2,
+      "end": 1898.3666666666668,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 1498.2,
+      "end": 1898.3666666666668,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 1498.2,
+      "end": 1898.3666666666668,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 1498.2,
+      "end": 1898.3666666666668,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 1498.2,
+      "end": 1898.3666666666668,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 1498.2,
+      "end": 1898.3666666666668,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 1898.3666666666666,
+      "end": 1981.1999999999998,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 1898.3666666666666,
+      "end": 1981.1999999999998,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 1898.3666666666666,
+      "end": 1981.1999999999998,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 1898.3666666666666,
+      "end": 1981.1999999999998,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 1898.3666666666666,
+      "end": 1981.1999999999998,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 1898.3666666666666,
+      "end": 1981.1999999999998,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 1981.2,
+      "end": 2022.3666666666668,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 1981.2,
+      "end": 2022.3666666666668,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 1981.2,
+      "end": 2022.3666666666668,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 1981.2,
+      "end": 2022.3666666666668,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 1981.2,
+      "end": 2022.3666666666668,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 1981.2,
+      "end": 2022.3666666666668,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 2022.3666666666666,
+      "end": 2022.7666666666667,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 2022.3666666666666,
+      "end": 2022.7666666666667,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 2022.3666666666666,
+      "end": 2022.7666666666667,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 2022.3666666666666,
+      "end": 2022.7666666666667,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 2022.3666666666666,
+      "end": 2022.7666666666667,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 2022.3666666666666,
+      "end": 2022.7666666666667,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 2022.7666666666667,
+      "end": 2051.9,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 2022.7666666666667,
+      "end": 2051.9,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 2022.7666666666667,
+      "end": 2051.9,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 2022.7666666666667,
+      "end": 2051.9,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 2022.7666666666667,
+      "end": 2051.9,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 2022.7666666666667,
+      "end": 2051.9,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 2051.9,
+      "end": 2135.2333333333336,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 2051.9,
+      "end": 2135.2333333333336,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 2051.9,
+      "end": 2135.2333333333336,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 2051.9,
+      "end": 2135.2333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 2051.9,
+      "end": 2135.2333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 2051.9,
+      "end": 2135.2333333333336,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 2135.233333333333,
+      "end": 2190.1666666666665,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 2135.233333333333,
+      "end": 2190.1666666666665,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 2135.233333333333,
+      "end": 2190.1666666666665,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 2135.233333333333,
+      "end": 2190.1666666666665,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 2135.233333333333,
+      "end": 2190.1666666666665,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 2135.233333333333,
+      "end": 2190.1666666666665,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    },
+    {
+      "start": 2190.1666666666665,
+      "end": 2245.133333333333,
+      "source_tag": "adjust-transform",
+      "type": "transform",
+      "details": {
+        "position": "0.592269 1.29143",
+        "scale": "1.37261 1.37261"
+      }
+    },
+    {
+      "start": 2190.1666666666665,
+      "end": 2245.133333333333,
+      "source_tag": "adjust-volume",
+      "type": "volume",
+      "details": {}
+    },
+    {
+      "start": 2190.1666666666665,
+      "end": 2245.133333333333,
+      "source_tag": "adjust-noiseReduction",
+      "type": "noisereduction",
+      "details": {
+        "amount": "50"
+      }
+    },
+    {
+      "start": 2190.1666666666665,
+      "end": 2245.133333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Compressor",
+        "ref": "r9"
+      }
+    },
+    {
+      "start": 2190.1666666666665,
+      "end": 2245.133333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Channel EQ",
+        "ref": "r10"
+      }
+    },
+    {
+      "start": 2190.1666666666665,
+      "end": 2245.133333333333,
+      "source_tag": "filter-audio",
+      "type": "audio_filter",
+      "details": {
+        "name": "Rumble Reducer",
+        "ref": "r11"
+      }
+    }
+  ]
+}
