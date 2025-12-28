@@ -148,6 +148,30 @@ def extract_events_and_map(file_path: str) -> dict:
     
     return results
 
+
+def convert_edited_to_raw_time(edited_time_sec: float, time_map: list) -> float | None:
+    """
+    Tìm thời gian tương ứng trên file RAW từ một thời điểm trên file EDITED,
+    dựa vào time_map đã được tạo.
+
+    Args:
+        edited_time_sec (float): Thời gian cần chuyển đổi (tính bằng giây).
+        time_map (list): Danh sách các dictionary clip từ hàm extract_events_and_map.
+
+    Returns:
+        float | None: Thời gian tương ứng trên file RAW, hoặc None nếu không tìm thấy.
+    """
+    # Time_map đã được sắp xếp, có thể dùng tìm kiếm nhị phân (bisect) để tối ưu,
+    # nhưng tìm kiếm tuần tự đủ nhanh cho số lượng clip < vài nghìn.
+    for clip_map in time_map:
+        if clip_map['edited_start'] <= edited_time_sec < clip_map['edited_end']:
+            # Tính độ chênh lệch (offset) từ đầu clip đã chỉnh sửa
+            offset_in_clip = edited_time_sec - clip_map['edited_start']
+            # Áp dụng offset vào thời gian bắt đầu của clip raw
+            return clip_map['raw_start'] + offset_in_clip
+    
+    # Trả về None nếu thời gian nằm trong một <gap> hoặc ngoài phạm vi
+    return None
 if __name__ == '__main__':
     # --- Phần Test Nhanh ---
     parser = argparse.ArgumentParser(description="Test FCPXML Event Extractor.")
