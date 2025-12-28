@@ -105,7 +105,7 @@ def ingest_pipeline(source_dir: str, workspace_dir: str):
 if __name__ == "__main__":
     load_dotenv()
     
-    SOURCE_DIR = "./data/Batch_01"
+    SOURCE_DIR = "D:\\IA MEDIA\\Data\\Batch_02"
     WORKSPACE_DIR = "./workspace"
 
     ingest_pipeline(source_dir=SOURCE_DIR, workspace_dir=WORKSPACE_DIR)

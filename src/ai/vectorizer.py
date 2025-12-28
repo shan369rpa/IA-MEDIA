@@ -29,7 +29,7 @@ if not hasattr(torchaudio, 'list_audio_backends'):
 # Biến toàn cục để cache model, tránh tải lại nhiều lần
 # This acts as a simple in-memory cache for the model.
 
-from speechbrain.pretrained import EncoderClassifier
+from speechbrain.inference import EncoderClassifier
 
 _model = None
 _device = None
@@ -64,7 +64,8 @@ def load_embedding_model():
         # Tải model vào thiết bị đã chọn (GPU/CPU)
         classifier = EncoderClassifier.from_hparams(
             source=model_name, 
-            run_opts={"device": device}
+            run_opts={"device": device},
+            savedir="models/speechbrain"
         )
         _model = classifier
         logging.info("Tải model embedding thành công.")
