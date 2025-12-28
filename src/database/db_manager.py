@@ -370,3 +370,28 @@ def get_or_create_sentence(conn, source_id: int, transcript: str, start_ms: int,
         logging.error(f"Lỗi khi get/create sentence: {e}")
         conn.rollback() # Rollback nếu có lỗi
         return None
+    
+def insert_edit_events(conn, events_data: list):
+    """
+    Chèn hàng loạt các sự kiện chỉnh sửa vào bảng 'edit_events'.
+    """
+    if not events_data:
+        return False
+    
+    query = """
+        INSERT INTO "edit_events" (
+            source_id, start_ms, end_ms, event_source, event_type,
+            embedding_clean, embedding_error, details, 
+            audio_path_clean, audio_path_error
+        ) VALUES %s
+    """
+    try:
+        with conn.cursor() as cur:
+            execute_values(cur, query, events_data, page_size=200)
+        conn.commit()
+        logging.info(f"Đã chèn thành công {len(events_data)} bản ghi vào 'edit_events'.")
+        return True
+    except Exception as e:
+        logging.error(f"Lỗi khi chèn dữ liệu vào 'edit_events': {e}")
+        conn.rollback()
+        return False
