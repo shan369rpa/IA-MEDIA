@@ -1,0 +1,54 @@
+# ==============================================================================
+# IA MEDIA - REQUIREMENTS FOR CPU-ONLY ENVIRONMENT (Windows)
+# ==============================================================================
+
+# --- Core Infrastructure & Utils ---
+python-dotenv==1.0.1
+psycopg2-binary==2.9.9
+pgvector==0.2.4
+requests==2.32.3
+tqdm==4.66.4
+
+# --- Media Processing ---
+librosa==0.10.1
+pydub==0.25.1
+ffmpeg-python==0.2.0
+scipy
+soundfile
+
+# --- AI & Vectorization Stack ---
+
+# NOTE: PyTorch stack MUST be installed manually for CPU.
+# torch==2.3.1
+# torchvision==0.18.1
+# torchaudio==2.3.1
+
+# WhisperX and its dependencies (CPU compatible)
+numpy<2.0.0
+pandas<2.3.0
+transformers==4.36.2
+# faster-whisper will automatically use CPU
+faster-whisper==1.0.1
+# pyannote.audio for VAD
+pyannote.audio==3.1.1
+nltk==3.8.1
+av==11.0.0
+# ctranslate2 can be optimized for CPU
+ctranslate2==3.24.1
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+matplotlib
+ipython
+
+# Install WhisperX from git source
+git+https://github.com/m-bain/whisperx.git@d32ec3e3012ec4c0934f4088424c32f3f038b249
+
+# Other AI libraries
+speechbrain==1.0.0
+sentence-transformers==2.2.2
+
+# --- Data Handling & Testing ---
+pytest
+pytest-mock
+jupyter
