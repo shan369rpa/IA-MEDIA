@@ -1,7 +1,7 @@
-10 pip install nvidia-cudnn-cu12
-9 pip install "numpy<2.0.0"
+10) pip install nvidia-cudnn-cu12
+9) pip install "numpy<2.0.0"
 8)pip install pyannote.audio==3.1.1
-7) spip install faster-whisper       
+7) pip install faster-whisper       
 6) pip install transformers==4.36.2
 5) pip install pandas==2.2.2
 4) pip install python-dotenv psycopg2-binary pgvector librosa pydub ffmpeg-python speechbrain sentence-transformers pandas scipy soundfile pytest pytest-mock jupyter
