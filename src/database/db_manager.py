@@ -9,26 +9,103 @@ import numpy as np
 # Cần import kiểu dữ liệu vector từ pgvector.
 from pgvector.psycopg2 import register_vector 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from sshtunnel import SSHTunnelForwarder # <-- IMPORT THƯ VIỆN MỚI
+_server_tunnel = None
+def _start_ssh_tunnel():
+    """
+    Kiểm tra cấu hình .env và khởi tạo đường hầm SSH nếu cần thiết.
+    Sử dụng cache để chỉ mở tunnel một lần.
+    """
+    global _server_tunnel
+    if _server_tunnel and _server_tunnel.is_active:
+        logging.info("Đường hầm SSH đã hoạt động. Tái sử dụng.")
+        return _server_tunnel.local_bind_port
 
+    ssh_host = os.getenv("SSH_HOST")
+    if not ssh_host:
+        # Nếu không có SSH_HOST, hoạt động ở chế độ kết nối trực tiếp
+        logging.info("Không có cấu hình SSH_HOST. Kết nối trực tiếp đến DB.")
+        return None
+
+    try:
+        ssh_user = os.getenv("SSH_USER")
+        ssh_password = os.getenv("SSH_PASSWORD")
+        ssh_pkey = os.getenv("SSH_PRIVATE_KEY_PATH")
+
+        # Cấu hình server tunnel
+        tunnel = SSHTunnelForwarder(
+            (ssh_host, 22), # Host và port của SSH server
+            ssh_username=ssh_user,
+            ssh_password=ssh_password if ssh_password else None,
+            ssh_pkey=ssh_pkey if ssh_pkey else None,
+            remote_bind_address=('127.0.0.1', int(os.getenv("DB_PORT", 5432))), # Đích đến bên trong server
+            local_bind_address=('127.0.0.1', 0) # 0 = để hệ điều hành tự chọn một cổng trống
+        )
+        
+        logging.info(f"Đang mở đường hầm SSH đến {ssh_host}...")
+        tunnel.start()
+        _server_tunnel = tunnel
+        logging.info(f"✅ Đường hầm SSH đã được mở. DB giờ đây có thể truy cập tại: localhost:{tunnel.local_bind_port}")
+        
+        return tunnel.local_bind_port
+
+    except Exception as e:
+        logging.error(f"❌ LỖI: Không thể mở đường hầm SSH: {e}")
+        return None
+
+# def get_db_connection():
+#     """Tạo và trả về một kết nối đến CSDL PostgreSQL."""
+#     load_dotenv()
+#     try:
+#         conn = psycopg2.connect(
+#             host=os.getenv("DB_HOST"),
+#             port=os.getenv("DB_PORT"),
+#             dbname=os.getenv("DB_NAME"),
+#             user=os.getenv("DB_USER"),
+#             password=os.getenv("DB_PASSWORD")
+#         )
+#         logging.info("Kết nối CSDL thành công.")
+#         # Quan trọng: Đăng ký adapter cho kiểu dữ liệu vector
+#         register_vector(conn)
+#         return conn
+#     except psycopg2.OperationalError as e:
+#         logging.error(f"Lỗi kết nối CSDL: {e}")
+#         return None
 def get_db_connection():
-    """Tạo và trả về một kết nối đến CSDL PostgreSQL."""
-    load_dotenv()
+    """
+    Tự động mở đường hầm SSH (nếu được cấu hình) và kết nối đến CSDL.
+    """
+    local_port = _start_ssh_tunnel()
+    
+    db_host = "127.0.0.1" if local_port else os.getenv("DB_HOST")
+    db_port = local_port if local_port else int(os.getenv("DB_PORT", 5432))
+    
     try:
         conn = psycopg2.connect(
-            host=os.getenv("DB_HOST"),
-            port=os.getenv("DB_PORT"),
+            host=db_host,
+            port=db_port,
             dbname=os.getenv("DB_NAME"),
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD")
         )
         logging.info("Kết nối CSDL thành công.")
-        # Quan trọng: Đăng ký adapter cho kiểu dữ liệu vector
+        from pgvector.psycopg2 import register_vector
         register_vector(conn)
         return conn
+        
     except psycopg2.OperationalError as e:
         logging.error(f"Lỗi kết nối CSDL: {e}")
         return None
-
+    
+def close_ssh_tunnel():
+    """Hàm tiện ích để đóng đường hầm khi pipeline kết thúc."""
+    global _server_tunnel
+    if _server_tunnel and _server_tunnel.is_active:
+        logging.info("Đang đóng đường hầm SSH...")
+        _server_tunnel.stop()
+        _server_tunnel = None
+        logging.info("Đã đóng đường hầm SSH.")
+        
 def find_similar_chunks(conn, vector, limit=5):
     """Tìm các chunk có vector gần giống nhất với vector đầu vào."""
     # Prefer words.embedding_clean and embedding_error; return results ordered by distance
@@ -114,7 +191,34 @@ def get_or_create_source(conn, video_name: str) -> int | None:
 #         return False
     
 # src/database/db_manager.py (Thêm vào)
+# Thêm vào src/database/db_manager.py
 
+def insert_words_batch(conn, words_data: list):
+    """
+    Chèn một danh sách (batch) các bản ghi từ vào bảng 'words'.
+    words_data là một list of tuples.
+    """
+    if not words_data:
+        return False
+    
+    query = """
+        INSERT INTO "words" (
+            source_id, parent_event_id, word_text, start_ms, end_ms,
+            language, embedding_clean, embedding_error
+        ) VALUES %s
+        ON CONFLICT DO NOTHING; -- Bỏ qua nếu có lỗi khóa (ví dụ, trùng lặp)
+    """
+    try:
+        with conn.cursor() as cur:
+            execute_values(cur, query, words_data, page_size=500)
+        conn.commit()
+        logging.info(f"Đã chèn thành công {len(words_data)} bản ghi vào bảng 'words'.")
+        return True
+    except Exception as e:
+        logging.error(f"Lỗi khi chèn dữ liệu vào bảng 'words': {e}")
+        conn.rollback()
+        return False
+    
 def get_word_vectors(conn, word_text: str, limit=50):
     """
     Lấy các mẫu vector của một từ cụ thể từ DB.

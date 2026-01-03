@@ -8,6 +8,8 @@ psycopg2-binary==2.9.9
 pgvector==0.2.4
 requests==2.32.3
 tqdm==4.66.4
+sshtunnel
+paramiko<3.0.0
 
 # --- Media Processing ---
 librosa==0.10.1

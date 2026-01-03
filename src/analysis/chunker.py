@@ -55,4 +55,38 @@ def chunk_event(
         logging.error(f"Lỗi khi chunking event {event['type']}: {e}")
         return None, None
 
-# Các hàm cũ có thể xóa hoặc giữ lại để tham khảo
+# Thêm vào src/analysis/chunker.py
+
+def chunk_word_from_event(
+    word_timestamp: dict,
+    event_audio_clean: AudioSegment,
+    event_audio_error: AudioSegment,
+    workspace_dir: str,
+    word_id_str: str # Một chuỗi định danh duy nhất cho từ
+) -> tuple[str | None, str | None]:
+    """
+    Cắt một cặp audio chunk VI MÔ (từ) từ các chunk SỰ KIỆN lớn hơn.
+    Lưu chúng vào một thư mục tạm để vector hóa.
+    """
+    try:
+        temp_dir = os.path.join(workspace_dir, "temp_word_chunks")
+        os.makedirs(temp_dir, exist_ok=True)
+        
+        start_ms = int(word_timestamp['start'] * 1000)
+        end_ms = int(word_timestamp['end'] * 1000)
+
+        # Cắt từ audio của sự kiện
+        word_chunk_clean = event_audio_clean[start_ms:end_ms]
+        word_chunk_error = event_audio_error[start_ms:end_ms]
+
+        # Lưu ra file tạm
+        clean_path = os.path.join(temp_dir, f"clean_{word_id_str}.wav")
+        error_path = os.path.join(temp_dir, f"error_{word_id_str}.wav")
+        
+        word_chunk_clean.export(clean_path, format="wav")
+        word_chunk_error.export(error_path, format="wav")
+        
+        return clean_path, error_path
+    except Exception as e:
+        logging.warning(f"Không thể chunk từ '{word_timestamp.get('word', '')}': {e}")
+        return None, None
