@@ -5,7 +5,6 @@ import os
 import time
 import backend_core
 import fcpxml_utils
-
 st.set_page_config(page_title="IA MEDIA Pro", page_icon="🎛️", layout="wide")
 
 st.title("🎛️ IA MEDIA - Professional Audio Analysis")
@@ -52,9 +51,27 @@ def ui_logger(status_container, log_container, progress_bar):
 # --- TAB 1: NHẬN DIỆN VỚI LOG CHI TIẾT (ĐÃ SỬA LỖI) ---
 with tab1:
     st.subheader("Deep Scan Video")
-    
+    with st.expander("📖 HƯỚNG DẪN SỬ DỤNG", expanded=False):
+        st.markdown(
+        """
+        Detect lỗi với 2 lớp bảo vệ:
+        Lớp 1: SVM Classifier (Dự đoán loại lỗi).
+        Lớp 2: Similarity Check (So với Mean Clean Vector).
+        
+        sensitivity_threshold: Ngưỡng khoảng cách (Distance Threshold).
+        - Thấp (0.1): Rất chặt, chỉ báo lỗi nếu cực kỳ khác biệt (Ít báo động giả, nhưng dễ sót).
+        - Cao (0.5): Rất nhạy, hơi khác tí là báo (Bắt hết lỗi, nhưng nhiều báo động giả).
+        -> Mặc định 0.3 là điểm cân bằng.
+        """
+        )
     col_input, col_log = st.columns([1, 1.5])
-    
+            # Thêm vào cột Input
+    st.markdown("#### ⚙️ Cấu hình Nâng cao")
+    sensitivity = st.slider(
+        "Độ nhạy (Similarity Threshold)", 
+        min_value=0.0, max_value=1.0, value=0.3, step=0.05,
+        help="Càng thấp càng chặt (ít báo lỗi sai). Càng cao càng nhạy (bắt nhiều lỗi hơn)."
+    )
     with col_input:
         input_method = st.radio("Nguồn dữ liệu:", ["Upload File", "Đường dẫn File (Local Path)"])
         video_path = None
@@ -92,7 +109,7 @@ with tab1:
             st.warning("⚠️ Chưa tìm thấy 'Bộ não' (Model). Vui lòng sang **Tab 3: Huấn luyện AI** để train model trước khi phân tích.")
             btn_analyze = st.button("🚀 Kích hoạt AI Engine", disabled=True) # Khóa nút nếu chưa có model
         else:
-            btn_analyze = st.button("🚀 Kích hoạt AI Engine", type="primary", use_container_width=True)
+            btn_analyze = st.button("🚀 Kích hoạt AI Engine", type="primary", width='stretch')
 
     with col_log:
         st.markdown("#### 📟 Live Operations Log")
@@ -112,8 +129,12 @@ with tab1:
             
             try:
                 # Chạy Backend
-                errors, msg = backend_core.detect_errors_in_video(video_path, status_callback=logger_cb)
-                
+                # errors, msg = backend_core.detect_errors_in_video(video_path, status_callback=logger_cb)
+                errors, msg = backend_core.detect_errors_in_video(
+                    video_path, 
+                    status_callback=logger_cb,
+                    sensitivity_threshold=sensitivity # <--- THAM SỐ MỚI
+        )
                 # --- 4. XỬ LÝ KẾT QUẢ TRẢ VỀ (LOGIC QUAN TRỌNG) ---
                 with col_input:
                     # Trường hợp 1: Có lỗi được tìm thấy
@@ -231,19 +252,71 @@ with tab2:
 # (Logic tương tự, tôi sẽ tóm tắt phần gọi hàm)
 with tab3:
     st.header("Huấn luyện Mô hình")
-    if st.button("🧠 Retrain Model"):
-        status_box = st.empty()
-        p_bar = st.progress(0)
-        log_box = st.empty()
-        
-        # Callback đơn giản hơn cho train (chỉ 2 tham số)
-        def train_cb(p, msg):
-            p_bar.progress(p)
-            status_box.info(msg)
-            log_box.code(f"{msg}")
+    
+    tab_train, tab_bench = st.tabs(["🚀 Huấn luyện (Train)", "📈 Đánh giá Hiệu suất (Benchmark)"])
+    with tab_train:
+        st.info("Huấn luyện model trên TOÀN BỘ dữ liệu để sử dụng thực tế.")
+        if st.button("🧠 Retrain Model"):
+            status_box = st.empty()
+            p_bar = st.progress(0)
+            log_box = st.empty()
+            
+            # Callback đơn giản hơn cho train (chỉ 2 tham số)
+            def train_cb(p, msg):
+                p_bar.progress(p)
+                status_box.info(msg)
+                log_box.code(f"{msg}")
 
-        success, msg = backend_core.train_model_from_csv(status_callback=train_cb)
-        if success: st.balloons()
+            success, msg = backend_core.train_model_from_csv(status_callback=train_cb)
+            if success: st.balloons()
+    # --- SUB-TAB BENCHMARK (MỚI) ---
+    with tab_bench:
+        st.markdown("""
+        **Chức năng:** Kiểm tra xem Model thông minh đến đâu bằng cách cho thi thử.
+        *   Hệ thống sẽ dùng 80% dữ liệu để học và 20% để thi.
+        *   **Precision (Độ chính xác):** Khi AI báo lỗi A, bao nhiêu % là đúng?
+        *   **Recall (Độ nhạy):** AI tìm được bao nhiêu % lỗi A trong thực tế?
+        """)
+        
+        if st.button("📊 Chạy Benchmark"):
+            with st.spinner("Đang chạy kiểm thử trên M2 Ultra..."):
+                success, msg, report_data, fig = backend_core.run_benchmark_test()
+                
+            if success:
+                st.success(msg)
+                
+                # 1. Hiển thị Bảng điểm chi tiết
+                # Chuyển đổi dict thành dataframe đẹp
+                report_df = pd.DataFrame(report_data).transpose()
+                # Format số %
+                report_df['precision'] = report_df['precision'].apply(lambda x: f"{x:.1%}")
+                report_df['recall'] = report_df['recall'].apply(lambda x: f"{x:.1%}")
+                report_df['f1-score'] = report_df['f1-score'].apply(lambda x: f"{x:.1%}")
+                
+                # Tô màu các hàng quan trọng
+                st.markdown("### 🎯 Bảng điểm chi tiết theo Nhãn")
+                st.dataframe(
+                    report_df.style.applymap(
+                        lambda x: "background-color: #d4edda; color: green; font-weight: bold" if isinstance(x, str) and "%" in x and float(x.strip('%')) > 90 else "",
+                        subset=['precision', 'recall', 'f1-score']
+                    )
+                )
+
+                # 2. Hiển thị Confusion Matrix
+                st.markdown("### 🧩 Ma trận nhầm lẫn")
+                st.caption("Trục dọc là Nhãn Thực Tế. Trục ngang là AI Dự Đoán. Đường chéo đậm là tốt.")
+                st.pyplot(fig)
+                
+                # 3. Phân tích nhanh
+                acc = report_data['accuracy']
+                st.metric("Độ chính xác tổng thể (Overall Accuracy)", f"{acc:.1%}")
+                if acc < 0.8:
+                    st.error("⚠️ Model chưa đủ tốt. Cần thu thập thêm dữ liệu cho các nhãn bị sai nhiều.")
+                else:
+                    st.success("✅ Model hoạt động ổn định!")
+
+            else:
+                st.error(f"Lỗi: {msg}")
 # --- TAB 4: QUẢN LÝ & VISUALIZE ---
 with tab4:
     st.header("🔬 Phòng Lab Phân tích (Visual & Stats)")
@@ -263,7 +336,7 @@ with tab4:
             stats.columns = ['Nhãn', 'Số lượng']
             col_s1, col_s2 = st.columns(2)
             with col_s1: st.bar_chart(stats.set_index('Nhãn'))
-            with col_s2: st.dataframe(stats, use_container_width=True)
+            with col_s2: st.dataframe(stats, width='stretch')
 
         st.markdown("---")
         
