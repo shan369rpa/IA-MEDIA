@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<fcpxml version="1.10">
+  <resources>
+    <format id="r1" name="FFVideoFormat1080p23" frameDuration="1001/24000s" width="1920" height="1080"/>
+    <asset id="r2" name="temp_lỗi-1-detect.mov" start="0s" duration="9009/24000s" hasVideo="1" hasAudio="1" format="r1">
+      <media-rep kind="original-media" src="file:///Users/sonpc/Documents/GitHub/IA-MEDIA/temp_lỗi-1-detect.mov"/>
+    </asset>
+  </resources>
+  <library>
+    <event name="IA Media Analysis">
+      <project name="Errors: temp_lỗi-1-detect.mov">
+        <sequence duration="9009/24000s" format="r1" tcStart="0s" tcFormat="NDF">
+          <spine>
+            <asset-clip ref="r2" name="temp_lỗi-1-detect.mov" offset="0s" start="0s" duration="9009/24000s" tcFormat="NDF">
+              <marker start="0/24000s" duration="23023/24000s" value="[error_1] Check audio" completed="0" note="AI Detected"/>
+              <keyword start="0/24000s" duration="23023/24000s" value="AI-error_1" note="Red"/>
+            </asset-clip>
+          </spine>
+        </sequence>
+      </project>
+    </event>
+  </library>
+</fcpxml>

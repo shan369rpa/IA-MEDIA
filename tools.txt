@@ -1,0 +1,7 @@
+python 3.10 bullseye
+extension
+iterm2
+cac extension cua zxc.
+Pylance + Notebook
+DeepSeek-Coder 33B Q4
+uv

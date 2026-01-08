@@ -1,0 +1,15 @@
+# 1. Cài Core AI & Audio (PyTorch sẽ tự nhận diện Mac)
+uv pip install torch torchvision torchaudio
+
+# 2. Cài các thư viện xử lý Media & Data
+uv pip install numpy pandas librosa pydub ffmpeg-python scipy soundfile python-dotenv psycopg2-binary pgvector tqdm
+
+# 3. Cài các thư viện AI phụ trợ
+uv pip install speechbrain sentence-transformers transformers
+
+# 4. Cài WhisperX (Vẫn cài từ source để có bản mới nhất)
+# Lưu ý: WhisperX trên Mac sẽ chạy trên CPU hoặc MPS (cần cấu hình)
+uv pip install git+https://github.com/m-bain/whisperx.git
+
+# 5. Khắc phục lỗi tương thích (nếu có, giống Windows)
+uv pip install "numpy<2.0"
