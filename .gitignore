@@ -11,7 +11,7 @@ logs/*.log
 workspace/chunks/
 workspace/embeddings/
 workspace/audio/
-
+collected_data/
 # Model artifacts
 models/
 *.pt

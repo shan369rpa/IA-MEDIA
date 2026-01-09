@@ -164,90 +164,124 @@ with tab1:
             except Exception as e:
                 st.error(f"🔥 Lỗi hệ thống nghiêm trọng: {e}")
 # --- TAB 2: THU THẬP DỮ LIỆU ---
+# with tab2:
+#     with st.expander("📖 HƯỚNG DẪN SỬ DỤNG - THU THẬP DỮ LIỆU", expanded=False):
+#         st.markdown("""
+#         **Chức năng:** Dạy cho AI biết thế nào là "Lỗi" và thế nào là "Sạch".
+#         *   **Quan trọng:** Dữ liệu càng nhiều, AI càng thông minh.
+#         *   **Định dạng:** Chỉ chấp nhận file âm thanh (`.wav`, `.mp3`) đã được cắt ngắn (2-5 giây).
+#         """)
+
+#     st.subheader("Đóng góp dữ liệu huấn luyện")
+    
+#     # Chia làm 2 cột hoặc 2 tab con để tách biệt rõ ràng
+#     tab_error, tab_clean = st.tabs(["❌ Thu thập MẪU LỖI (Raw)", "✅ Thu thập MẪU SẠCH (Edited)"])
+    
+#     # --- SUB-TAB: THU THẬP LỖI ---
+#     with tab_error:
+#         st.markdown("### Dạy AI nhận biết lỗi")
+#         st.info("Upload các đoạn âm thanh chứa tiếng ồn, tiếng click, vỡ tiếng, v.v.")
+        
+#         col_e1, col_e2 = st.columns(2)
+#         with col_e1:
+#             error_type = st.selectbox(
+#                 "Loại lỗi (Label)", 
+#                 ["error_click (Tiếng Click/Pop)", "error_noise (Nhiễu nền)", "error_plosive (Bụp mic)", "error_clipping (Vỡ tiếng)", "Khác..."]
+#             )
+#             if error_type == "Khác...":
+#                 error_type = st.text_input("Nhập tên lỗi mới (viết liền không dấu)", value="error_custom")
+        
+#         with col_e2:
+#             files_error = st.file_uploader("Chọn file lỗi (.wav)", accept_multiple_files=True, key="u_error")
+            
+#         if st.button("Lưu mẫu LỖI", type="primary"):
+#             if files_error:
+#                 count = 0
+#                 for f in files_error:
+#                     backend_core.save_training_data(f, error_type)
+#                     count += 1
+#                 st.toast(f"Đã lưu {count} mẫu lỗi '{error_type}'!", icon="💾")
+#                 st.success(f"Đã thêm {count} file vào kho dữ liệu LỖI.")
+#             else:
+#                 st.warning("Chưa chọn file nào.")
+
+#  # --- SUB-TAB: THU THẬP SẠCH ---
+#     with tab_clean:
+#         st.markdown("### Dữ liệu đối chứng (Reference)")
+#         st.info("Upload các đoạn âm thanh ĐÃ QUA CHỈNH SỬA (Sạch). Hãy chỉ rõ đây là kết quả sau khi sửa lỗi gì.")
+        
+#         col_c1, col_c2 = st.columns(2)
+#         with col_c1:
+#             # Nâng cấp: Cho phép chọn loại sạch cụ thể
+#             clean_option = st.selectbox(
+#                 "Định loại mẫu Sạch (Clean Context)", 
+#                 [
+#                     "clean_general (Sạch chung/Không rõ nguồn)", 
+#                     "clean_fixed_noise (Đã khử nhiễu nền)", 
+#                     "clean_fixed_click (Đã khử tiếng Click)", 
+#                     "clean_fixed_clipping (Đã sửa Vỡ tiếng)", 
+#                     "clean_fixed_plosive (Đã sửa Bụp mic)",
+#                     "Khác..."
+#                 ]
+#             )
+            
+#             # Xử lý logic lấy tên nhãn
+#             if clean_option == "Khác...":
+#                 clean_label = st.text_input("Nhập tên nhãn sạch mới", value="clean_custom")
+#             else:
+#                 # Lấy phần text trước dấu ngoặc đơn. VD: "clean_fixed_noise"
+#                 clean_label = clean_option.split(" ")[0]
+            
+#             st.caption(f"👉 Nhãn sẽ lưu vào hệ thống: **{clean_label}**")
+        
+#         with col_c2:
+#             files_clean = st.file_uploader("Chọn file sạch (.wav)", accept_multiple_files=True, key="u_clean")
+
+#         if st.button("Lưu mẫu SẠCH", type="primary"):
+#             if files_clean:
+#                 count = 0
+#                 for f in files_clean:
+#                     backend_core.save_training_data(f, clean_label)
+#                     count += 1
+#                 st.toast(f"Đã lưu {count} mẫu '{clean_label}'!", icon="💾")
+#                 st.success(f"Đã thêm {count} file vào kho dữ liệu SẠCH (Loại: {clean_label}).")
+#             else:
+#                 st.warning("Chưa chọn file nào.")
+
+# --- TAB 2: THU THẬP DỮ LIỆU (NÂNG CẤP) ---
 with tab2:
-    with st.expander("📖 HƯỚNG DẪN SỬ DỤNG - THU THẬP DỮ LIỆU", expanded=False):
-        st.markdown("""
-        **Chức năng:** Dạy cho AI biết thế nào là "Lỗi" và thế nào là "Sạch".
-        *   **Quan trọng:** Dữ liệu càng nhiều, AI càng thông minh.
-        *   **Định dạng:** Chỉ chấp nhận file âm thanh (`.wav`, `.mp3`) đã được cắt ngắn (2-5 giây).
-        """)
+    st.header("📥 Thu thập Dữ liệu (Paired Data Collection)")
+    st.info("Hệ thống sẽ tự động đồng bộ hóa (Auto-Align) và trích xuất Difference để phục vụ Data Factory.")
 
-    st.subheader("Đóng góp dữ liệu huấn luyện")
+    col1, col2 = st.columns(2)
     
-    # Chia làm 2 cột hoặc 2 tab con để tách biệt rõ ràng
-    tab_error, tab_clean = st.tabs(["❌ Thu thập MẪU LỖI (Raw)", "✅ Thu thập MẪU SẠCH (Edited)"])
+    with col1:
+        label_input = st.text_input("Tên lỗi (Label)", placeholder="VD: error_click, error_breath...")
+        is_fake = st.checkbox("Đây là mẫu Fake (Giả lập)?", value=False)
+        user_note = st.text_area("Ghi chú thêm", placeholder="VD: Tiếng ho trong phòng kín...")
     
-    # --- SUB-TAB: THU THẬP LỖI ---
-    with tab_error:
-        st.markdown("### Dạy AI nhận biết lỗi")
-        st.info("Upload các đoạn âm thanh chứa tiếng ồn, tiếng click, vỡ tiếng, v.v.")
-        
-        col_e1, col_e2 = st.columns(2)
-        with col_e1:
-            error_type = st.selectbox(
-                "Loại lỗi (Label)", 
-                ["error_click (Tiếng Click/Pop)", "error_noise (Nhiễu nền)", "error_plosive (Bụp mic)", "error_clipping (Vỡ tiếng)", "Khác..."]
-            )
-            if error_type == "Khác...":
-                error_type = st.text_input("Nhập tên lỗi mới (viết liền không dấu)", value="error_custom")
-        
-        with col_e2:
-            files_error = st.file_uploader("Chọn file lỗi (.wav)", accept_multiple_files=True, key="u_error")
-            
-        if st.button("Lưu mẫu LỖI", type="primary"):
-            if files_error:
-                count = 0
-                for f in files_error:
-                    backend_core.save_training_data(f, error_type)
-                    count += 1
-                st.toast(f"Đã lưu {count} mẫu lỗi '{error_type}'!", icon="💾")
-                st.success(f"Đã thêm {count} file vào kho dữ liệu LỖI.")
-            else:
-                st.warning("Chưa chọn file nào.")
-
- # --- SUB-TAB: THU THẬP SẠCH ---
-    with tab_clean:
-        st.markdown("### Dữ liệu đối chứng (Reference)")
-        st.info("Upload các đoạn âm thanh ĐÃ QUA CHỈNH SỬA (Sạch). Hãy chỉ rõ đây là kết quả sau khi sửa lỗi gì.")
-        
-        col_c1, col_c2 = st.columns(2)
-        with col_c1:
-            # Nâng cấp: Cho phép chọn loại sạch cụ thể
-            clean_option = st.selectbox(
-                "Định loại mẫu Sạch (Clean Context)", 
-                [
-                    "clean_general (Sạch chung/Không rõ nguồn)", 
-                    "clean_fixed_noise (Đã khử nhiễu nền)", 
-                    "clean_fixed_click (Đã khử tiếng Click)", 
-                    "clean_fixed_clipping (Đã sửa Vỡ tiếng)", 
-                    "clean_fixed_plosive (Đã sửa Bụp mic)",
-                    "Khác..."
-                ]
-            )
-            
-            # Xử lý logic lấy tên nhãn
-            if clean_option == "Khác...":
-                clean_label = st.text_input("Nhập tên nhãn sạch mới", value="clean_custom")
-            else:
-                # Lấy phần text trước dấu ngoặc đơn. VD: "clean_fixed_noise"
-                clean_label = clean_option.split(" ")[0]
-            
-            st.caption(f"👉 Nhãn sẽ lưu vào hệ thống: **{clean_label}**")
-        
-        with col_c2:
-            files_clean = st.file_uploader("Chọn file sạch (.wav)", accept_multiple_files=True, key="u_clean")
-
-        if st.button("Lưu mẫu SẠCH", type="primary"):
-            if files_clean:
-                count = 0
-                for f in files_clean:
-                    backend_core.save_training_data(f, clean_label)
-                    count += 1
-                st.toast(f"Đã lưu {count} mẫu '{clean_label}'!", icon="💾")
-                st.success(f"Đã thêm {count} file vào kho dữ liệu SẠCH (Loại: {clean_label}).")
-            else:
-                st.warning("Chưa chọn file nào.")
-
+    with col2:
+        st.markdown("#### Upload Cặp File")
+        f_raw = st.file_uploader("1. File Lỗi (Raw)", type=["wav", "mp3", "mov"], key="u_raw")
+        f_clean = st.file_uploader("2. File Sạch (Clean)", type=["wav", "mp3","mov"], key="u_clean")
+    
+    if st.button("💾 Xử lý & Lưu vào Kho (NAS)", type="primary"):
+        if not label_input:
+            st.error("Chưa nhập tên lỗi!")
+        elif not f_raw or not f_clean:
+            st.error("Cần upload đủ cả 2 file Raw và Clean để hệ thống học.")
+        else:
+            with st.spinner("Đang đồng bộ hóa, tính toán Diff và lưu trữ..."):
+                # Gọi hàm backend mới
+                success, msg = backend_core.save_paired_data_v2(
+                    f_raw, f_clean, label_input, is_fake, user_note
+                )
+                
+                if success:
+                    st.success(msg)
+                    st.balloons()
+                else:
+                    st.error(msg)
 # --- TAB 2 & 3: CẬP NHẬT CALLBACK CHO TRAIN ---
 # (Logic tương tự, tôi sẽ tóm tắt phần gọi hàm)
 with tab3:
