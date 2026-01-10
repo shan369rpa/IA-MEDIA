@@ -844,3 +844,179 @@ def save_paired_data_v2(raw_file, clean_file, label, is_fake=False, note=""):
         # Dọn dẹp file tạm
         if os.path.exists(temp_raw): os.remove(temp_raw)
         if os.path.exists(temp_clean): os.remove(temp_clean)
+        
+def generate_comparison_plot_from_obj(raw_obj, clean_obj):
+    """
+    Vẽ biểu đồ so sánh từ đối tượng file upload (trong RAM).
+    """
+    import matplotlib.pyplot as plt
+    
+    try:
+        # Load trực tiếp từ buffer
+        y_raw, sr = librosa.load(raw_obj, sr=16000)
+        y_clean, _ = librosa.load(clean_obj, sr=16000)
+        
+        # Reset con trỏ file về đầu để các hàm khác (như save) dùng lại được
+        raw_obj.seek(0)
+        clean_obj.seek(0)
+        
+        # Auto Align
+        y_raw_aligned, lag = auto_align_audio(y_clean, y_raw)
+        
+        
+        # 2. Tính Envelope (để vẽ nhanh và đẹp)
+        HOP = 256
+        env_clean = get_envelope(y_clean, HOP)
+        env_raw = get_envelope(y_raw_aligned, HOP)
+        
+        # Cắt về cùng độ dài
+        min_len = min(len(env_clean), len(env_raw))
+        env_clean = env_clean[:min_len]
+        env_raw = env_raw[:min_len]
+        
+        # 3. Tính Difference
+        env_diff = np.abs(env_raw - env_clean)
+        
+        # Trục thời gian
+        frames = range(len(env_clean))
+        t = librosa.frames_to_time(frames, sr=sr, hop_length=HOP)
+
+        # 4. Vẽ (Dark Mode)
+        plt.style.use('dark_background')
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 6), sharex=True)
+        fig.patch.set_facecolor(FCP_COLORS["BACKGROUND"])
+        
+        def draw_track(ax, time, env, color, title):
+            ax.set_facecolor(FCP_COLORS["TRACK_BG"])
+            ax.fill_between(time, 0, env, color=color, alpha=0.9)
+            ax.fill_between(time, 0, -env, color=color, alpha=0.9)
+            ax.axhline(0, color=FCP_COLORS["GRID"], linewidth=0.5)
+            ax.set_title(title, color=FCP_COLORS["TEXT"], loc='left', fontsize=9, pad=5)
+            ax.set_ylim(-1, 1)
+            ax.grid(False)
+            for spine in ax.spines.values(): spine.set_visible(False)
+            ax.tick_params(colors=FCP_COLORS["TEXT"], labelsize=7)
+
+        draw_track(ax1, t, env_raw, FCP_COLORS["RAW"], f"SOURCE (Raw - Aligned: {lag} samples)")
+        draw_track(ax2, t, env_clean, FCP_COLORS["CLEAN"], f"PROJECT (Edited)")
+        draw_track(ax3, t, env_diff, FCP_COLORS["ERROR"], "DIFFERENCE (Detected Edits)")
+        
+        ax3.set_xlabel("Time (seconds)", color=FCP_COLORS["TEXT"])
+        plt.tight_layout()
+        
+        return fig, lag
+    except Exception as e:
+        return None, 0
+
+def match_files_by_name(raw_files, clean_files):
+    """
+    Ghép cặp và trả về danh sách: (pairs, unmatched_raw, unmatched_clean)
+    """
+    pairs = []
+    unmatched_raw = []
+    unmatched_clean = []
+    
+    # Helper lấy tên gốc
+    def get_base_name(filename):
+        name = os.path.splitext(filename)[0]
+        # Xóa các hậu tố phổ biến, chữ thường để so sánh không phân biệt hoa thường
+        return name.lower().replace('_raw', '').replace('_clean', '').replace('_edited', '').strip()
+
+    # Tạo map cho file clean: { "ten_base": file_obj }
+    # Lưu ý: Nếu có trùng tên base, file sau sẽ đè file trước (hoặc cần logic xử lý thêm)
+    clean_map = {get_base_name(f.name): f for f in clean_files}
+    matched_clean_names = set()
+
+    # Duyệt file raw để tìm cặp
+    for raw in raw_files:
+        base = get_base_name(raw.name)
+        if base in clean_map:
+            pairs.append((raw, clean_map[base]))
+            matched_clean_names.add(base)
+        else:
+            unmatched_raw.append(raw)
+            
+    # Tìm file clean chưa được ghép
+    for name, f in clean_map.items():
+        if name not in matched_clean_names:
+            unmatched_clean.append(f)
+            
+    return pairs, unmatched_raw, unmatched_clean
+
+import unicodedata
+
+def normalize_unicode(text: str) -> str:
+    """Chuẩn hoá Unicode về NFC"""
+    return unicodedata.normalize("NFC", text)
+
+def auto_organize_local_folder(root_folder: str):
+    """
+    Quét thư mục, chuẩn hóa tên file (lỗi- -> _raw, đã sửa- -> _clean)
+    và di chuyển vào thư mục raw/clean riêng biệt.
+    """
+    if not os.path.exists(root_folder):
+        return False, "Thư mục không tồn tại."
+        
+    raw_dir = os.path.join(root_folder, "raw")
+    clean_dir = os.path.join(root_folder, "clean")
+
+    os.makedirs(raw_dir, exist_ok=True)
+    os.makedirs(clean_dir, exist_ok=True)
+    
+    log = []
+    moved_count = 0
+
+    for root, dirs, files in os.walk(root_folder):
+        # Bỏ qua chính thư mục đích để tránh loop vô hạn
+        if os.path.abspath(root) in [os.path.abspath(raw_dir), os.path.abspath(clean_dir)]:
+            continue
+
+        for filename in files:
+            # Bỏ qua file hệ thống
+            if filename.startswith('.'): continue
+            
+            old_path = os.path.join(root, filename)
+            name, ext = os.path.splitext(filename)
+            norm_name = normalize_unicode(name) # Chuẩn hóa tiếng Việt
+
+            # Logic nhận diện
+            is_raw = norm_name.startswith("lỗi-") or norm_name.endswith("_raw")
+            is_clean = norm_name.startswith("đã sửa-") or norm_name.endswith("_clean")
+
+            if is_raw and is_clean:
+                log.append(f"⚠️ SKIP (Conflict): {filename}")
+                continue
+            if not is_raw and not is_clean:
+                continue
+
+            # Chuẩn hoá tên gốc (Clean Base Name)
+            base = norm_name
+            for p in ["lỗi-", "đã sửa-"]:
+                if base.startswith(p): base = base[len(p):]
+            for s in ["_raw", "_clean"]:
+                if base.endswith(s): base = base[:-len(s)]
+            
+            base = base.strip("-_ ") # Xóa ký tự thừa
+
+            # Tạo tên mới & đường dẫn đích
+            if is_raw:
+                new_name = f"{base}_raw{ext}"
+                target_dir = raw_dir
+            else:
+                new_name = f"{base}_clean{ext}"
+                target_dir = clean_dir
+
+            new_path = os.path.join(target_dir, new_name)
+
+            # Thực hiện di chuyển (Move/Rename)
+            try:
+                if not os.path.exists(new_path):
+                    os.rename(old_path, new_path)
+                    log.append(f"✅ {filename} → {target_dir}/{new_name}")
+                    moved_count += 1
+                else:
+                    log.append(f"⚠️ Tồn tại, bỏ qua: {new_name}")
+            except Exception as e:
+                log.append(f"❌ Lỗi khi di chuyển {filename}: {e}")
+
+    return True, f"Hoàn tất! Đã xử lý {moved_count} file.\n" + "\n".join(log)
