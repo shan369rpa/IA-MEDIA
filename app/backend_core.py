@@ -18,12 +18,25 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 import scipy.signal # Cần thêm thư viện này
 from sklearn.metrics import classification_report, confusion_matrix
 from tqdm import tqdm
+import uuid
 # --- CẤU HÌNH HỆ THỐNG ---
 DATA_CSV = "training_data.csv"
 MODEL_FILE = "error_classifier.pkl"
 DATA_FOLDER = "collected_data" 
+DIFF_BANK_FOLDER = "diff_bank" 
+# --- LOAD CONFIG TỪ ENV ---
+from dotenv import load_dotenv
+load_dotenv()
 
+# Lấy đường dẫn từ env, fallback về thư mục local nếu chưa cấu hình
+# NAS_ROOT = os.getenv("NAS_MOUNT_POINT", "./local_storage")
+# DATA_FOLDER = os.path.join(NAS_ROOT, "collected_data")
+# DATA_CSV = os.path.join(NAS_ROOT, "training_data.csv")
+# DIFF_BANK_FOLDER = os.path.join(NAS_ROOT, "diff_bank")
 # Model 1024 chiều SOTA
+# Tạo thư mục nếu chưa có
+for d in [DATA_FOLDER, DIFF_BANK_FOLDER]:
+    os.makedirs(d, exist_ok=True)
 MODEL_NAME = "facebook/wav2vec2-large-xlsr-53"
 TARGET_SAMPLE_RATE = 16000
 VECTOR_DIM = 1024
@@ -140,104 +153,12 @@ def save_training_data(file_obj, label):
     df.to_csv(DATA_CSV, mode='a', header=not file_exists, index=False)
     
     return True
-# --- TỰ ĐỘNG CHỌN THIẾT BỊ (M2 ULTRA OPTIMIZED) ---
-
-# def load_and_preprocess_audio(audio_path, duration=None):
-#     """
-#     Load audio an toàn hơn cho đa luồng.
-#     """
-#     # Import bên trong hàm để tránh deadlock trên MacOS khi dùng đa luồng
-#     import torchaudio
-#     import torch
-
-#     try:
-#         # Load trực tiếp
-#         waveform, sample_rate = torchaudio.load(audio_path)
-        
-#         # Chuyển Mono
-#         if waveform.shape[0] > 1:
-#             waveform = torch.mean(waveform, dim=0, keepdim=True)
-            
-#         # Resample
-#         if sample_rate != TARGET_SAMPLE_RATE:
-#             resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=TARGET_SAMPLE_RATE)
-#             waveform = resampler(waveform)
-            
-#         # Cắt ngắn
-#         if duration:
-#             max_len = int(duration * TARGET_SAMPLE_RATE)
-#             if waveform.shape[1] > max_len:
-#                 waveform = waveform[:, :max_len]
-                
-#         return waveform.squeeze(), None
-#     except Exception as e:
-#         return None, f"{os.path.basename(audio_path)}: {str(e)}"
-
-# def extract_embeddings_batch(audio_list):
-#     """
-#     Xử lý batch audio, chuẩn hóa shape chặt chẽ để tránh lỗi conv1d.
-#     """
-#     if not audio_list: return np.array([])
-        
-#     cleaned_list = []
-#     for item in audio_list:
-#         # 1. Chuyển về Tensor nếu là Numpy
-#         if isinstance(item, np.ndarray):
-#             item = torch.from_numpy(item)
-            
-#         # 2. Xử lý Shape: Bắt buộc về dạng (Time,)
-#         # Nếu là (Channel, Time) -> Chọn kênh đầu hoặc Mean
-#         if item.dim() > 1:
-#             # Nếu shape là (1, Time) -> squeeze thành (Time,)
-#             if item.shape[0] == 1:
-#                 item = item.squeeze(0)
-#             # Nếu shape là (Time, 1) -> squeeze
-#             elif item.shape[-1] == 1:
-#                 item = item.squeeze(-1)
-#             # Nếu nhiều kênh (2, Time) -> Mean
-#             elif item.shape[0] < 10: # Giả sử channel dim ở đầu
-#                 item = item.mean(dim=0)
-#             # Trường hợp quái dị [1, 4, 16000] -> Flatten hết mức có thể
-#             else:
-#                 item = item.reshape(-1) # Cẩn thận, nhưng tốt hơn là crash
-
-#         cleaned_list.append(item)
-            
-#     if not cleaned_list: return np.array([])
-
-#     try:
-#         inputs = feature_extractor(
-#             cleaned_list, 
-#             sampling_rate=TARGET_SAMPLE_RATE, 
-#             return_tensors="pt", 
-#             padding=True, 
-#             truncation=True, 
-#             max_length=16000 * 10 
-#         )
-#         input_values = inputs.input_values.to(DEVICE)
-        
-#         # FeatureExtractor có thể không trả về attention_mask mặc định
-#         # Nếu có thì dùng, không thì thôi
-#         attention_mask = inputs.get("attention_mask")
-#         if attention_mask is not None:
-#             attention_mask = attention_mask.to(DEVICE)
-        
-#         with torch.no_grad():
-#             if attention_mask is not None:
-#                 outputs = model(input_values, attention_mask=attention_mask)
-#             else:
-#                 outputs = model(input_values)
-        
-#         # Mean Pooling
-#         embeddings = torch.mean(outputs.last_hidden_state, dim=1)
-        
-#         return embeddings.cpu().numpy()
-        
-#     except Exception as e:
-#         print(f"❌ Lỗi Vector hóa Batch: {e}")
-#         return np.array([])
 
 def extract_embeddings_batch(audio_list):
+    """
+    Xử lý batch audio -> Vector 1024.
+    Đã fix lỗi shape [1, 1, 4, ...] bằng cách chuẩn hóa input.
+    """
     if not audio_list: return np.array([])
         
     cleaned_list = []
@@ -554,16 +475,6 @@ def detect_errors_in_video(video_path, status_callback=None, sensitivity_thresho
                 "distance": f"{dist:.2f}"
             })
 
-    
-    # detected_errors = []
-    # for time_start, label in zip(timestamps, predictions):
-    #     if 'clean' not in label.lower():
-    #         detected_errors.append({
-    #             "start": time_start,
-    #             "duration": WINDOW_SIZE,
-    #             "label": label
-    #         })
-            
     report(100, "✅ Hoàn tất phân tích!", f"Tìm thấy {len(detected_errors)} lỗi tiềm năng.")
     return detected_errors, "Hoàn tất."
 
@@ -836,6 +747,7 @@ def load_and_preprocess_audio(audio_path, target_duration=1.0, truncate=True):
         if sample_rate != TARGET_SAMPLE_RATE:
             resampler = torchaudio.transforms.Resample(orig_freq=sample_rate, new_freq=TARGET_SAMPLE_RATE)
             waveform = resampler(waveform)
+            
         if truncate:
             # 3. SMART PADDING (QUAN TRỌNG)
             # Mục tiêu: 1 giây = 16000 mẫu
@@ -844,7 +756,7 @@ def load_and_preprocess_audio(audio_path, target_duration=1.0, truncate=True):
             
             if current_len < target_len:
                 # Tính lượng cần đệm
-                print("đệm")
+                # print("đệm")
                 padding_needed = target_len - current_len
                 pad_left = padding_needed // 2
                 pad_right = padding_needed - pad_left
@@ -862,3 +774,252 @@ def load_and_preprocess_audio(audio_path, target_duration=1.0, truncate=True):
         return waveform.reshape(-1), None # Force flatten thành 1D
     except Exception as e:
         return None, f"Process Error: {str(e)}"
+
+def save_paired_data_v2(raw_file, clean_file, label, is_fake=False, note=""):
+    """
+    Lưu cặp file Raw/Clean, tự động Align, tạo Diff và ghi metadata.
+    """
+    uid = uuid.uuid4().hex
+    timestamp = int(time.time())
+    base_name = f"{uid}_{label}"
+    
+    # Tạo thư mục con cho label để gọn gàng (VD: collected_data/error_click/)
+    label_dir = os.path.join(DATA_FOLDER, label)
+    os.makedirs(label_dir, exist_ok=True)
+
+    # 1. Lưu file gốc tạm thời để xử lý
+    # Lưu ý: raw_file là object Streamlit UploadedFile
+    temp_raw = f"temp_raw_{uid}.wav"
+    temp_clean = f"temp_clean_{uid}.wav"
+    
+    with open(temp_raw, "wb") as f: f.write(raw_file.getbuffer())
+    with open(temp_clean, "wb") as f: f.write(clean_file.getbuffer())
+    
+    try:
+        # 2. Load và Auto-Align (Dùng hàm đã có)
+        y_raw, sr = librosa.load(temp_raw, sr=16000)
+        y_clean, _ = librosa.load(temp_clean, sr=16000)
+        
+        # Align
+        y_raw_aligned, lag = auto_align_audio(y_clean, y_raw)
+        
+        # 3. Tính Diff (Raw - Clean)
+        # Cắt về cùng độ dài
+        min_len = min(len(y_clean), len(y_raw_aligned))
+        y_clean = y_clean[:min_len]
+        y_raw_aligned = y_raw_aligned[:min_len]
+        
+        y_diff = y_raw_aligned - y_clean
+        
+        # 4. Lưu 3 file vật lý vào NAS
+        path_raw = os.path.join(label_dir, f"{base_name}_raw.wav")
+        path_clean = os.path.join(label_dir, f"{base_name}_clean.wav")
+        path_diff = os.path.join(DIFF_BANK_FOLDER, f"{base_name}_diff.wav") # Lưu Diff vào kho riêng
+        
+        import soundfile as sf
+        sf.write(path_raw, y_raw_aligned, sr)
+        sf.write(path_clean, y_clean, sr)
+        sf.write(path_diff, y_diff, sr)
+        
+        # 5. Cập nhật CSV
+        new_row = pd.DataFrame([{
+            "uid": uid,
+            "timestamp": timestamp,
+            "label": label,
+            "is_fake": is_fake,
+            "path_raw": path_raw,
+            "path_clean": path_clean,
+            "path_diff": path_diff,
+            "note": note,
+            "lag_samples": lag
+        }])
+        
+        if not os.path.isfile(DATA_CSV):
+            new_row.to_csv(DATA_CSV, index=False)
+        else:
+            new_row.to_csv(DATA_CSV, mode='a', header=False, index=False)
+            
+        return True, f"Đã lưu bộ 3 file. Diff được lưu tại kho: {path_diff}"
+
+    except Exception as e:
+        return False, f"Lỗi xử lý audio: {str(e)}"
+    finally:
+        # Dọn dẹp file tạm
+        if os.path.exists(temp_raw): os.remove(temp_raw)
+        if os.path.exists(temp_clean): os.remove(temp_clean)
+        
+def generate_comparison_plot_from_obj(raw_obj, clean_obj):
+    """
+    Vẽ biểu đồ so sánh từ đối tượng file upload (trong RAM).
+    """
+    import matplotlib.pyplot as plt
+    
+    try:
+        # Load trực tiếp từ buffer
+        y_raw, sr = librosa.load(raw_obj, sr=16000)
+        y_clean, _ = librosa.load(clean_obj, sr=16000)
+        
+        # Reset con trỏ file về đầu để các hàm khác (như save) dùng lại được
+        raw_obj.seek(0)
+        clean_obj.seek(0)
+        
+        # Auto Align
+        y_raw_aligned, lag = auto_align_audio(y_clean, y_raw)
+        
+        
+        # 2. Tính Envelope (để vẽ nhanh và đẹp)
+        HOP = 256
+        env_clean = get_envelope(y_clean, HOP)
+        env_raw = get_envelope(y_raw_aligned, HOP)
+        
+        # Cắt về cùng độ dài
+        min_len = min(len(env_clean), len(env_raw))
+        env_clean = env_clean[:min_len]
+        env_raw = env_raw[:min_len]
+        
+        # 3. Tính Difference
+        env_diff = np.abs(env_raw - env_clean)
+        
+        # Trục thời gian
+        frames = range(len(env_clean))
+        t = librosa.frames_to_time(frames, sr=sr, hop_length=HOP)
+
+        # 4. Vẽ (Dark Mode)
+        plt.style.use('dark_background')
+        fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(10, 6), sharex=True)
+        fig.patch.set_facecolor(FCP_COLORS["BACKGROUND"])
+        
+        def draw_track(ax, time, env, color, title):
+            ax.set_facecolor(FCP_COLORS["TRACK_BG"])
+            ax.fill_between(time, 0, env, color=color, alpha=0.9)
+            ax.fill_between(time, 0, -env, color=color, alpha=0.9)
+            ax.axhline(0, color=FCP_COLORS["GRID"], linewidth=0.5)
+            ax.set_title(title, color=FCP_COLORS["TEXT"], loc='left', fontsize=9, pad=5)
+            ax.set_ylim(-1, 1)
+            ax.grid(False)
+            for spine in ax.spines.values(): spine.set_visible(False)
+            ax.tick_params(colors=FCP_COLORS["TEXT"], labelsize=7)
+
+        draw_track(ax1, t, env_raw, FCP_COLORS["RAW"], f"SOURCE (Raw - Aligned: {lag} samples)")
+        draw_track(ax2, t, env_clean, FCP_COLORS["CLEAN"], f"PROJECT (Edited)")
+        draw_track(ax3, t, env_diff, FCP_COLORS["ERROR"], "DIFFERENCE (Detected Edits)")
+        
+        ax3.set_xlabel("Time (seconds)", color=FCP_COLORS["TEXT"])
+        plt.tight_layout()
+        
+        return fig, lag
+    except Exception as e:
+        return None, 0
+
+def match_files_by_name(raw_files, clean_files):
+    """
+    Ghép cặp và trả về danh sách: (pairs, unmatched_raw, unmatched_clean)
+    """
+    pairs = []
+    unmatched_raw = []
+    unmatched_clean = []
+    
+    # Helper lấy tên gốc
+    def get_base_name(filename):
+        name = os.path.splitext(filename)[0]
+        # Xóa các hậu tố phổ biến, chữ thường để so sánh không phân biệt hoa thường
+        return name.lower().replace('_raw', '').replace('_clean', '').replace('_edited', '').strip()
+
+    # Tạo map cho file clean: { "ten_base": file_obj }
+    # Lưu ý: Nếu có trùng tên base, file sau sẽ đè file trước (hoặc cần logic xử lý thêm)
+    clean_map = {get_base_name(f.name): f for f in clean_files}
+    matched_clean_names = set()
+
+    # Duyệt file raw để tìm cặp
+    for raw in raw_files:
+        base = get_base_name(raw.name)
+        if base in clean_map:
+            pairs.append((raw, clean_map[base]))
+            matched_clean_names.add(base)
+        else:
+            unmatched_raw.append(raw)
+            
+    # Tìm file clean chưa được ghép
+    for name, f in clean_map.items():
+        if name not in matched_clean_names:
+            unmatched_clean.append(f)
+            
+    return pairs, unmatched_raw, unmatched_clean
+
+import unicodedata
+
+def normalize_unicode(text: str) -> str:
+    """Chuẩn hoá Unicode về NFC"""
+    return unicodedata.normalize("NFC", text)
+
+def auto_organize_local_folder(root_folder: str):
+    """
+    Quét thư mục, chuẩn hóa tên file (lỗi- -> _raw, đã sửa- -> _clean)
+    và di chuyển vào thư mục raw/clean riêng biệt.
+    """
+    if not os.path.exists(root_folder):
+        return False, "Thư mục không tồn tại."
+        
+    raw_dir = os.path.join(root_folder, "raw")
+    clean_dir = os.path.join(root_folder, "clean")
+
+    os.makedirs(raw_dir, exist_ok=True)
+    os.makedirs(clean_dir, exist_ok=True)
+    
+    log = []
+    moved_count = 0
+
+    for root, dirs, files in os.walk(root_folder):
+        # Bỏ qua chính thư mục đích để tránh loop vô hạn
+        if os.path.abspath(root) in [os.path.abspath(raw_dir), os.path.abspath(clean_dir)]:
+            continue
+
+        for filename in files:
+            # Bỏ qua file hệ thống
+            if filename.startswith('.'): continue
+            
+            old_path = os.path.join(root, filename)
+            name, ext = os.path.splitext(filename)
+            norm_name = normalize_unicode(name) # Chuẩn hóa tiếng Việt
+
+            # Logic nhận diện
+            is_raw = norm_name.startswith("lỗi-") or norm_name.endswith("_raw")
+            is_clean = norm_name.startswith("đã sửa-") or norm_name.endswith("_clean")
+
+            if is_raw and is_clean:
+                log.append(f"⚠️ SKIP (Conflict): {filename}")
+                continue
+            if not is_raw and not is_clean:
+                continue
+
+            # Chuẩn hoá tên gốc (Clean Base Name)
+            base = norm_name
+            for p in ["lỗi-", "đã sửa-"]:
+                if base.startswith(p): base = base[len(p):]
+            for s in ["_raw", "_clean"]:
+                if base.endswith(s): base = base[:-len(s)]
+            
+            base = base.strip("-_ ") # Xóa ký tự thừa
+
+            # Tạo tên mới & đường dẫn đích
+            if is_raw:
+                new_name = f"{base}_raw{ext}"
+                target_dir = raw_dir
+            else:
+                new_name = f"{base}_clean{ext}"
+                target_dir = clean_dir
+
+            new_path = os.path.join(target_dir, new_name)
+
+            # Thực hiện di chuyển (Move/Rename)
+            try:
+                if not os.path.exists(new_path):
+                    os.rename(old_path, new_path)
+                    log.append(f"✅ {filename} → {target_dir}/{new_name}")
+                    moved_count += 1
+                else:
+                    log.append(f"⚠️ Tồn tại, bỏ qua: {new_name}")
+            except Exception as e:
+                log.append(f"❌ Lỗi khi di chuyển {filename}: {e}")
+
+    return True, f"Hoàn tất! Đã xử lý {moved_count} file.\n" + "\n".join(log)

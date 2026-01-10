@@ -1,0 +1,63 @@
+Thu thập dữ liệu:
+Nâng cấp thành nạp dữ liệu theo cặp clean-error cho từng mẫu, nhằm đáp ứng nhu cầu trích xuất difference cho chức năng Data Factory.
+Thêm phân loại (sample fake/real) khi import.
+Data Factory:
+Subfuntion 1: Chọn label
+hiển thị các label đã có trong hệ thống dưới dạng dropdown.
+Button chọn label.
+  - Function: Hiển thị các mẫu tương ứng với label đã chọn dưới dạng So sánh Sóng âm (FCP Style) cho từng mẫu một.
+    (Chỉ áp dụng cho các mẫu có type là sample real) (có thêm chức năng expand collapse trên giao diện cho từng mẫu đề phòng muốn xem chi tiết).
+Subfuntion 2: Nạp video background.
+Thêm chức năng nạp video background từ local vào hệ thống, -> dán đường dẫn video vào ô input.
+Kiểm tra video có hợp lệ không (có âm thanh, định dạng đúng).
+Nếu hợp lệ, tách âm thanh từ video, nạp vào RAM.
+Chuyển đổi âm thanh về định dạng chuẩn (16kHz, mono).
+Hiển thị sóng âm của đoạn âm thanh đã nạp.
+Lưu đoạn âm thanh vào hệ thống với type là background.
+Kiểm tra đạt chuẩn chất lượng (SNR, độ dài tối thiểu,có bị chồng lỗi với label hiện tại hay không).
+UI: cho input số lượng bg muốn nạp.
+Tính toán max số bg có thể nạp dựa trên độ dài video đề phòng số bg nhâpj từ input vượt quá độ dài video có thể sinh.
+button start nạp bg.
+Hiển thị tiến trình nạp bg.
+Cắt video thành số lượng bg tương ứng.
+Subfuntion 3: Cấy lỗi tạo fake sample từ background.
+Dropdown chọn thuật toán cấy lỗi(hiện thêm giải thích cho từng thuật toán khi hover chuột).
+1/Trộn (Mix): Synthesized_Error = bg_sample + (Diff_Audio * scale_factor).
+scale_factor: Random từ 0.5 đến 1.5 để mô phỏng lỗi to/nhỏ khác nhau.
+Position: Dịch chuyển vị trí của Diff ngẫu nhiên trong 1s đó.
+2/Time Stretching (Co dãn thời gian): Làm cho tiếng lỗi nhanh hơn hoặc chậm hơn một chút (±10%)
+3/Frequency Shift (Dịch tần số): Làm cho tiếng nhiễu trầm hơn hoặc bổng hơn một chút.
+4/Room Impulse Response (Giả lập phòng): Đây là kỹ thuật cao cấp. Bạn lấy tiếng nhiễu, áp dụng hiệu ứng vang (Reverb) của một căn phòng khác vào. Giúp model học được tiếng ho trong phòng nhỏ khác với tiếng ho trong thiền đường lớn.
+5/Feature Grafting:
+ Ý tưởng như sau:
+  Thay vì trộn thô (Raw = BG + Noise), chúng ta sẽ dùng toán học để hòa trộn đặc trưng của Lỗi vào Nền, khiến cho Lỗi nghe như "tự nhiên sinh ra" từ môi trường đó.
+  Quy trình Toán học:
+  Phân rã (Decomposition):
+  Dùng biến đổi STFT (Short-Time Fourier Transform) để chuyển cả Nền (Background) và Lỗi (Diff) sang miền Tần số-Thời gian (Spectrogram).
+  Tách Lỗi thành 2 thành phần: Cường độ (Magnitude) và Pha (Phase).
+  Thích nghi Môi trường (Environment Adaptation):
+  Tính toán Hồ sơ tiếng ồn (Noise Profile) của Nền (ví dụ: mật độ năng lượng ở các dải tần).
+  Biến đổi phổ của Lỗi (Spectral Shaping): Dùng toán để điều chỉnh đường cong EQ của Lỗi sao cho nó khớp với "màu âm" của Nền.
+  Ví dụ: Nếu nền là tiếng phòng thu ấm, tiếng "Click" sẽ bị lọc bớt trebe chói. Nếu nền là tiếng ngoài trời loãng, tiếng "Click" sẽ được làm mỏng đi.
+  Công thức: New_Error_Mag = Error_Mag * (BG_Noise_Profile / Average_Noise_Profile).
+  Cấy ghép (Grafting):
+  Thay vì cộng trực tiếp biên độ (dễ gây clipping hoặc nghe giả), chúng ta cộng trong miền phổ (Spectral Addition) hoặc dùng kỹ thuật Masking.
+  Masking: Chỉ thay thế những tần số mà tại đó năng lượng của Lỗi lớn hơn Nền (Che lấp).
+  Tái tạo (Reconstruction):
+  Dùng biến đổi ngược (Inverse STFT) để đưa tín hiệu tổng hợp trở lại dạng âm thanh .wav.
+  Hoàn toàn khả thi với thư viện librosa và scipy mà chúng ta đang có.
+6/ suffle (Suffle các kĩ thuật trên với tỉ lệ xấp xỉ nhau).
+Kiểm tra chất lượng mẫu, phân loại thành 5 mức độ (rất tốt, tốt, trung bình, kém, rất kém).
+Subfuntion 4: Nạp mẫu vào kho.
+Selected box theo chất lượng fake sample đã tạo.
+Button nạp mẫu vào kho.
+Hiển thị tiến trình nạp mẫu.
+Lưu mẫu vào hệ thống với đầy đủ thông tin bao gồm cả chất lượng và loại mẫu (fake/real).
+
+Huấn luyện AI:
+Chức năng huấn luyện AI chỉ lấy dữ liệu lỗi để training vì chúng ta nhận diện lỗi.
+Sau này các mẫu clean sẽ được dùng để train chức năng tự động sửa lỗi (auto-correction).
+Chức năng Deep Scan Video:
+Button quét từng phần, sẽ quét và phân tích từng 60s 1 và hiển thị lên màn hình bằng sóng waveforms cũng như thông tin kết quả để sao cho người dùng biết được phần nào của video có lỗi. Ví dụ tô màu phần bị lỗi thành màu đỏ trên sóng waveforms
+Button tiếp tục quét sẽ
+Button quét toàn bộ(xuất fcpxml).
