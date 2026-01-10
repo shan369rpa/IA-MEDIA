@@ -12,6 +12,7 @@ workspace/chunks/
 workspace/embeddings/
 workspace/audio/
 collected_data/
+diff_bank/
 # Model artifacts
 models/
 *.pt

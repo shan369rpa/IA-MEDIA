@@ -18,6 +18,7 @@ from sklearn.metrics import classification_report, accuracy_score, confusion_mat
 import scipy.signal # Cần thêm thư viện này
 from sklearn.metrics import classification_report, confusion_matrix
 from tqdm import tqdm
+import uuid
 # --- CẤU HÌNH HỆ THỐNG ---
 DATA_CSV = "training_data.csv"
 MODEL_FILE = "error_classifier.pkl"
@@ -778,8 +779,9 @@ def save_paired_data_v2(raw_file, clean_file, label, is_fake=False, note=""):
     """
     Lưu cặp file Raw/Clean, tự động Align, tạo Diff và ghi metadata.
     """
+    uid = uuid.uuid4().hex
     timestamp = int(time.time())
-    base_name = f"{timestamp}_{label}"
+    base_name = f"{uid}_{label}"
     
     # Tạo thư mục con cho label để gọn gàng (VD: collected_data/error_click/)
     label_dir = os.path.join(DATA_FOLDER, label)
@@ -787,8 +789,8 @@ def save_paired_data_v2(raw_file, clean_file, label, is_fake=False, note=""):
 
     # 1. Lưu file gốc tạm thời để xử lý
     # Lưu ý: raw_file là object Streamlit UploadedFile
-    temp_raw = f"temp_raw_{timestamp}.wav"
-    temp_clean = f"temp_clean_{timestamp}.wav"
+    temp_raw = f"temp_raw_{uid}.wav"
+    temp_clean = f"temp_clean_{uid}.wav"
     
     with open(temp_raw, "wb") as f: f.write(raw_file.getbuffer())
     with open(temp_clean, "wb") as f: f.write(clean_file.getbuffer())
@@ -821,6 +823,7 @@ def save_paired_data_v2(raw_file, clean_file, label, is_fake=False, note=""):
         
         # 5. Cập nhật CSV
         new_row = pd.DataFrame([{
+            "uid": uid,
             "timestamp": timestamp,
             "label": label,
             "is_fake": is_fake,

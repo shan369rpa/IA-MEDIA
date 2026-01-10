@@ -1,216 +1,110 @@
-filepath,label
-collected_data/lỗi-1-1.mp3,error_loi_1
-collected_data/lỗi-1-2.mp3,error_loi_1
-collected_data/lỗi-1-3.mp3,error_loi_1
-collected_data/lỗi-1-4.mp3,error_loi_1
-collected_data/lỗi-1-5.mp3,error_loi_1
-collected_data/lỗi-1-6.mp3,error_loi_1
-collected_data/lỗi-1-7.mp3,error_loi_1
-collected_data/lỗi-1-8.mp3,error_loi_1
-collected_data/lỗi-1-9.mp3,error_loi_1
-collected_data/lỗi-1-10.mp3,error_loi_1
-collected_data/đã sửa-1-1.mp3,clean_general
-collected_data/đã sửa-1-2.mp3,clean_general
-collected_data/đã sửa-1-3.mp3,clean_general
-collected_data/đã sửa-1-4.mp3,clean_general
-collected_data/đã sửa-1-5.mp3,clean_general
-collected_data/đã sửa-1-6.mp3,clean_general
-collected_data/đã sửa-1-7.mp3,clean_general
-collected_data/đã sửa-1-8.mp3,clean_general
-collected_data/đã sửa-1-9.mp3,clean_general
-collected_data/đã sửa-1-10.mp3,clean_general
-collected_data/1767879197_lỗi-1-12.mov,error_loi_1
-collected_data/1767879197_lỗi-1-13.mov,error_loi_1
-collected_data/1767879197_lỗi-1-14.mov,error_loi_1
-collected_data/1767879197_lỗi-1-15.mov,error_loi_1
-collected_data/1767879197_lỗi-1-16.mov,error_loi_1
-collected_data/1767879197_lỗi-1-17.mov,error_loi_1
-collected_data/1767879197_lỗi-1-18.mov,error_loi_1
-collected_data/1767879197_lỗi-1-19.mov,error_loi_1
-collected_data/1767879197_lỗi-1-20.mov,error_loi_1
-collected_data/1767879197_lỗi-1-21.mov,error_loi_1
-collected_data/1767879197_lỗi-1-22.mov,error_loi_1
-collected_data/1767879197_lỗi-1-23-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-24-Đ.mov,error_loi_1
-collected_data/1767879197_lỗi-1-25-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-26-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-27-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-28-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-29-G.mov,error_loi_1
-collected_data/1767879197_lôi-1-30-R.mov,error_loi_1
-collected_data/1767879197_lỗi-1-31-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-32-G.mov,error_loi_1
-collected_data/1767879197_lỗi-1-33-G.mov,error_loi_1
-collected_data/1767879252_đã sửa-1-12.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-13.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-14.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-15.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-16.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-17.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-18.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-19.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-20.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-21.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-22.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-23-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-24-Đ.mov,clean_loi_1
-collected_data/1767879252_đã sữa-1-25-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-26-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-27-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-28-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-29-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-30-R.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-31-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-32-G.mov,clean_loi_1
-collected_data/1767879252_đã sửa-1-33-G.mov,clean_loi_1
-collected_data/1767929572_lỗi-1-11-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-34-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-35-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-36-G.mov,error_loi_1
-collected_data/1767929572_lôi-1-37-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-38-D.mov,error_loi_1
-collected_data/1767929572_lỗi-1-39-G.mov,error_loi_1
-collected_data/1767929572_lôi-1-40-R.mov,error_loi_1
-collected_data/1767929572_lỗi-1-41-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-42-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-43-Đ.mov,error_loi_1
-collected_data/1767929572_lỗi-1-44-G.mov,error_loi_1
-collected_data/1767929572_lôi-1-45-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-45-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-47-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-48-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-49-Đ.mov,error_loi_1
-collected_data/1767929572_lỗi-1-50-G.mov,error_loi_1
-collected_data/1767929572_lỗi-1-51-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-52-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-53-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-54-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-55-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-56-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-57-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-58-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-59-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-60-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-61-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-62-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-63-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-64-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-65-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-66-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-67-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-68-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-69-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-70-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-71-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-72-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-73-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-74-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-75-N.mov,error_loi_1
-collected_data/1767929572_lỗi-1-76-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-77-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-78-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-79-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-80-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-81-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-82-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-83-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-84-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-85-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-86-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-87-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-88-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-89-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-90-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-91-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-92-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-93-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-94-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-95-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-96-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-97-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-98-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-99-N.mov,error_loi_1
-collected_data/1767929573_lỗi-1-100-N.mov,error_loi_1
-collected_data/1767929613_đã sửa-1-11-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-34-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-35-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-36-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-37-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-38-D.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-39-G.mov,clean_loi_1
-collected_data/1767929613_đã sữa-1-40-R.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-41-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-42-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-43-Đ.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-44-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-45-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-46-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-47-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-48-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-49-Đ.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-50-G.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-51-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-52-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-53-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-54-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-55-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-56-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-57-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-58-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-59-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-60-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-61-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-62-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-63-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-64-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-65-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-66-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-67-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-68-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-69-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-70-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-71-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-72-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-73-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-74-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-75-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-76-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-77-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-78-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-79-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-80-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-81-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-82-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-83-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-84-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-85-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-86-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-87-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-88-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-89-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-90-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-91-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-92-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-93-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-94-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-95-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-96-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-97-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-98-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-99-N.mov,clean_loi_1
-collected_data/1767929613_đã sửa-1-100-N.mov,clean_loi_1
-1767966031,error_1_test,False,collected_data/error_1_test/1767966031_error_1_test_raw.wav,collected_data/error_1_test/1767966031_error_1_test_clean.wav,diff_bank/1767966031_error_1_test_diff.wav,,0
-1767966136,error_loi_1_test,False,collected_data/error_loi_1_test/1767966136_error_loi_1_test_raw.wav,collected_data/error_loi_1_test/1767966136_error_loi_1_test_clean.wav,diff_bank/1767966136_error_loi_1_test_diff.wav,,0
-1767966331,error_loi_1_test,False,collected_data/error_loi_1_test/1767966331_error_loi_1_test_raw.wav,collected_data/error_loi_1_test/1767966331_error_loi_1_test_clean.wav,diff_bank/1767966331_error_loi_1_test_diff.wav,,0
-1767967360,error_loi_1_test,False,collected_data/error_loi_1_test/1767967360_error_loi_1_test_raw.wav,collected_data/error_loi_1_test/1767967360_error_loi_1_test_clean.wav,diff_bank/1767967360_error_loi_1_test_diff.wav,,0
-1767968420,error_loi_1_D,False,collected_data/error_loi_1_D/1767968420_error_loi_1_D_raw.wav,collected_data/error_loi_1_D/1767968420_error_loi_1_D_clean.wav,diff_bank/1767968420_error_loi_1_D_diff.wav,,0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
-1768011005,nhon_dau_cau,False,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_raw.wav,collected_data/nhon_dau_cau/1768011005_nhon_dau_cau_clean.wav,diff_bank/1768011005_nhon_dau_cau_diff.wav,"Nhọn đầu câu, loại cao, dày.",0
+1768029364,error_1,False,collected_data/error_1/1768029364_error_1_raw.wav,collected_data/error_1/1768029364_error_1_clean.wav,diff_bank/1768029364_error_1_diff.wav,,0
+1768029492,error_1,False,collected_data/error_1/1768029492_error_1_raw.wav,collected_data/error_1/1768029492_error_1_clean.wav,diff_bank/1768029492_error_1_diff.wav,,0
+1768029553,error_1,False,collected_data/error_1/1768029553_error_1_raw.wav,collected_data/error_1/1768029553_error_1_clean.wav,diff_bank/1768029553_error_1_diff.wav,,0
+1768029557,error_1,False,collected_data/error_1/1768029557_error_1_raw.wav,collected_data/error_1/1768029557_error_1_clean.wav,diff_bank/1768029557_error_1_diff.wav,,0
+1768029562,error_1,False,collected_data/error_1/1768029562_error_1_raw.wav,collected_data/error_1/1768029562_error_1_clean.wav,diff_bank/1768029562_error_1_diff.wav,,0
+1768029566,error_1,False,collected_data/error_1/1768029566_error_1_raw.wav,collected_data/error_1/1768029566_error_1_clean.wav,diff_bank/1768029566_error_1_diff.wav,,0
+1768029574,error_1,False,collected_data/error_1/1768029574_error_1_raw.wav,collected_data/error_1/1768029574_error_1_clean.wav,diff_bank/1768029574_error_1_diff.wav,,0
+1768029575,error_1,False,collected_data/error_1/1768029575_error_1_raw.wav,collected_data/error_1/1768029575_error_1_clean.wav,diff_bank/1768029575_error_1_diff.wav,,0
+1768029581,error_1,False,collected_data/error_1/1768029581_error_1_raw.wav,collected_data/error_1/1768029581_error_1_clean.wav,diff_bank/1768029581_error_1_diff.wav,,0
+1768029583,error_1,False,collected_data/error_1/1768029583_error_1_raw.wav,collected_data/error_1/1768029583_error_1_clean.wav,diff_bank/1768029583_error_1_diff.wav,,0
+cc6e5b7ccfac477a91703ca5cf29ca5e,1768029989,error_1,False,collected_data/error_1/cc6e5b7ccfac477a91703ca5cf29ca5e_error_1_raw.wav,collected_data/error_1/cc6e5b7ccfac477a91703ca5cf29ca5e_error_1_clean.wav,diff_bank/cc6e5b7ccfac477a91703ca5cf29ca5e_error_1_diff.wav,,0
+04061d2ad1d74650958168fddfbf01be,1768029990,error_1,False,collected_data/error_1/04061d2ad1d74650958168fddfbf01be_error_1_raw.wav,collected_data/error_1/04061d2ad1d74650958168fddfbf01be_error_1_clean.wav,diff_bank/04061d2ad1d74650958168fddfbf01be_error_1_diff.wav,,0
+70a5aa1b5ca84b8e8fdbcebf84936445,1768029990,error_1,False,collected_data/error_1/70a5aa1b5ca84b8e8fdbcebf84936445_error_1_raw.wav,collected_data/error_1/70a5aa1b5ca84b8e8fdbcebf84936445_error_1_clean.wav,diff_bank/70a5aa1b5ca84b8e8fdbcebf84936445_error_1_diff.wav,,0
+11c42e8892ab4c42a67ab0f7805006c1,1768029990,error_1,False,collected_data/error_1/11c42e8892ab4c42a67ab0f7805006c1_error_1_raw.wav,collected_data/error_1/11c42e8892ab4c42a67ab0f7805006c1_error_1_clean.wav,diff_bank/11c42e8892ab4c42a67ab0f7805006c1_error_1_diff.wav,,0
+be447f46822249afaded9a81bd07c602,1768029990,error_1,False,collected_data/error_1/be447f46822249afaded9a81bd07c602_error_1_raw.wav,collected_data/error_1/be447f46822249afaded9a81bd07c602_error_1_clean.wav,diff_bank/be447f46822249afaded9a81bd07c602_error_1_diff.wav,,0
+7d43e30b8b5f491d92101fc750af8f6d,1768029990,error_1,False,collected_data/error_1/7d43e30b8b5f491d92101fc750af8f6d_error_1_raw.wav,collected_data/error_1/7d43e30b8b5f491d92101fc750af8f6d_error_1_clean.wav,diff_bank/7d43e30b8b5f491d92101fc750af8f6d_error_1_diff.wav,,0
+5acce9731dc147abbf695f1af95a6867,1768029990,error_1,False,collected_data/error_1/5acce9731dc147abbf695f1af95a6867_error_1_raw.wav,collected_data/error_1/5acce9731dc147abbf695f1af95a6867_error_1_clean.wav,diff_bank/5acce9731dc147abbf695f1af95a6867_error_1_diff.wav,,0
+de31b1091cb64cdc918d1a2a7f84708b,1768029990,error_1,False,collected_data/error_1/de31b1091cb64cdc918d1a2a7f84708b_error_1_raw.wav,collected_data/error_1/de31b1091cb64cdc918d1a2a7f84708b_error_1_clean.wav,diff_bank/de31b1091cb64cdc918d1a2a7f84708b_error_1_diff.wav,,0
+30229207b88b47b0acab293dbbd4794a,1768029990,error_1,False,collected_data/error_1/30229207b88b47b0acab293dbbd4794a_error_1_raw.wav,collected_data/error_1/30229207b88b47b0acab293dbbd4794a_error_1_clean.wav,diff_bank/30229207b88b47b0acab293dbbd4794a_error_1_diff.wav,,0
+5fc6974ca0a249868b6ef58d71e569b2,1768029990,error_1,False,collected_data/error_1/5fc6974ca0a249868b6ef58d71e569b2_error_1_raw.wav,collected_data/error_1/5fc6974ca0a249868b6ef58d71e569b2_error_1_clean.wav,diff_bank/5fc6974ca0a249868b6ef58d71e569b2_error_1_diff.wav,,0
+b184c3478b55476bb2c2c24c8449576c,1768029990,error_1,False,collected_data/error_1/b184c3478b55476bb2c2c24c8449576c_error_1_raw.wav,collected_data/error_1/b184c3478b55476bb2c2c24c8449576c_error_1_clean.wav,diff_bank/b184c3478b55476bb2c2c24c8449576c_error_1_diff.wav,,0
+464003852e094aa487345cba60a7484e,1768029990,error_1,False,collected_data/error_1/464003852e094aa487345cba60a7484e_error_1_raw.wav,collected_data/error_1/464003852e094aa487345cba60a7484e_error_1_clean.wav,diff_bank/464003852e094aa487345cba60a7484e_error_1_diff.wav,,0
+73761344b8544d908380bac089f95c07,1768029990,error_1,False,collected_data/error_1/73761344b8544d908380bac089f95c07_error_1_raw.wav,collected_data/error_1/73761344b8544d908380bac089f95c07_error_1_clean.wav,diff_bank/73761344b8544d908380bac089f95c07_error_1_diff.wav,,0
+4f7277ce552a4419b160c9ee12a3932e,1768029990,error_1,False,collected_data/error_1/4f7277ce552a4419b160c9ee12a3932e_error_1_raw.wav,collected_data/error_1/4f7277ce552a4419b160c9ee12a3932e_error_1_clean.wav,diff_bank/4f7277ce552a4419b160c9ee12a3932e_error_1_diff.wav,,0
+eb96d7f56e6e49f0a36f1ab042cd6f1d,1768029990,error_1,False,collected_data/error_1/eb96d7f56e6e49f0a36f1ab042cd6f1d_error_1_raw.wav,collected_data/error_1/eb96d7f56e6e49f0a36f1ab042cd6f1d_error_1_clean.wav,diff_bank/eb96d7f56e6e49f0a36f1ab042cd6f1d_error_1_diff.wav,,0
+49acbc6b59b44517a510819ed643e30a,1768029990,error_1,False,collected_data/error_1/49acbc6b59b44517a510819ed643e30a_error_1_raw.wav,collected_data/error_1/49acbc6b59b44517a510819ed643e30a_error_1_clean.wav,diff_bank/49acbc6b59b44517a510819ed643e30a_error_1_diff.wav,,0
+ac03e652b7a4425cb17585bd79f04547,1768029990,error_1,False,collected_data/error_1/ac03e652b7a4425cb17585bd79f04547_error_1_raw.wav,collected_data/error_1/ac03e652b7a4425cb17585bd79f04547_error_1_clean.wav,diff_bank/ac03e652b7a4425cb17585bd79f04547_error_1_diff.wav,,0
+11744d806ff74c1394dad4e49011611c,1768029991,error_1,False,collected_data/error_1/11744d806ff74c1394dad4e49011611c_error_1_raw.wav,collected_data/error_1/11744d806ff74c1394dad4e49011611c_error_1_clean.wav,diff_bank/11744d806ff74c1394dad4e49011611c_error_1_diff.wav,,0
+37ff7dd0ada94dd3b713da364fd9f485,1768029991,error_1,False,collected_data/error_1/37ff7dd0ada94dd3b713da364fd9f485_error_1_raw.wav,collected_data/error_1/37ff7dd0ada94dd3b713da364fd9f485_error_1_clean.wav,diff_bank/37ff7dd0ada94dd3b713da364fd9f485_error_1_diff.wav,,0
+48c90745b9854830b1134648e3bb820c,1768029991,error_1,False,collected_data/error_1/48c90745b9854830b1134648e3bb820c_error_1_raw.wav,collected_data/error_1/48c90745b9854830b1134648e3bb820c_error_1_clean.wav,diff_bank/48c90745b9854830b1134648e3bb820c_error_1_diff.wav,,0
+630e30f55bd14b18a28bccef8ee4abfe,1768029991,error_1,False,collected_data/error_1/630e30f55bd14b18a28bccef8ee4abfe_error_1_raw.wav,collected_data/error_1/630e30f55bd14b18a28bccef8ee4abfe_error_1_clean.wav,diff_bank/630e30f55bd14b18a28bccef8ee4abfe_error_1_diff.wav,,0
+a77d8282e472419da27d0fab6f4e34b8,1768029991,error_1,False,collected_data/error_1/a77d8282e472419da27d0fab6f4e34b8_error_1_raw.wav,collected_data/error_1/a77d8282e472419da27d0fab6f4e34b8_error_1_clean.wav,diff_bank/a77d8282e472419da27d0fab6f4e34b8_error_1_diff.wav,,0
+959b4d5e75664858ab8d2212f9df0287,1768029991,error_1,False,collected_data/error_1/959b4d5e75664858ab8d2212f9df0287_error_1_raw.wav,collected_data/error_1/959b4d5e75664858ab8d2212f9df0287_error_1_clean.wav,diff_bank/959b4d5e75664858ab8d2212f9df0287_error_1_diff.wav,,0
+cd8b7b309b73439c8bed1e0498694b9d,1768029991,error_1,False,collected_data/error_1/cd8b7b309b73439c8bed1e0498694b9d_error_1_raw.wav,collected_data/error_1/cd8b7b309b73439c8bed1e0498694b9d_error_1_clean.wav,diff_bank/cd8b7b309b73439c8bed1e0498694b9d_error_1_diff.wav,,0
+9ba28a0dca264164ae9f495389eb49fb,1768029991,error_1,False,collected_data/error_1/9ba28a0dca264164ae9f495389eb49fb_error_1_raw.wav,collected_data/error_1/9ba28a0dca264164ae9f495389eb49fb_error_1_clean.wav,diff_bank/9ba28a0dca264164ae9f495389eb49fb_error_1_diff.wav,,0
+08c5a1b3caba48b786f1b1c6a51b9ecb,1768029992,error_1,False,collected_data/error_1/08c5a1b3caba48b786f1b1c6a51b9ecb_error_1_raw.wav,collected_data/error_1/08c5a1b3caba48b786f1b1c6a51b9ecb_error_1_clean.wav,diff_bank/08c5a1b3caba48b786f1b1c6a51b9ecb_error_1_diff.wav,,0
+22dde55c9cc64548b8f9e747c2e483b6,1768029992,error_1,False,collected_data/error_1/22dde55c9cc64548b8f9e747c2e483b6_error_1_raw.wav,collected_data/error_1/22dde55c9cc64548b8f9e747c2e483b6_error_1_clean.wav,diff_bank/22dde55c9cc64548b8f9e747c2e483b6_error_1_diff.wav,,0
+5cfe81d1e91d483597da0a0c3c78d057,1768029992,error_1,False,collected_data/error_1/5cfe81d1e91d483597da0a0c3c78d057_error_1_raw.wav,collected_data/error_1/5cfe81d1e91d483597da0a0c3c78d057_error_1_clean.wav,diff_bank/5cfe81d1e91d483597da0a0c3c78d057_error_1_diff.wav,,0
+ea7d81b2f7f44a9793027ea8c2199129,1768029992,error_1,False,collected_data/error_1/ea7d81b2f7f44a9793027ea8c2199129_error_1_raw.wav,collected_data/error_1/ea7d81b2f7f44a9793027ea8c2199129_error_1_clean.wav,diff_bank/ea7d81b2f7f44a9793027ea8c2199129_error_1_diff.wav,,0
+d81a49df29f24364a72740f99727251d,1768029992,error_1,False,collected_data/error_1/d81a49df29f24364a72740f99727251d_error_1_raw.wav,collected_data/error_1/d81a49df29f24364a72740f99727251d_error_1_clean.wav,diff_bank/d81a49df29f24364a72740f99727251d_error_1_diff.wav,,0
+a7b326e11f5c415887ae1d35840073b1,1768029992,error_1,False,collected_data/error_1/a7b326e11f5c415887ae1d35840073b1_error_1_raw.wav,collected_data/error_1/a7b326e11f5c415887ae1d35840073b1_error_1_clean.wav,diff_bank/a7b326e11f5c415887ae1d35840073b1_error_1_diff.wav,,0
+ce55220c194646739195a42e0f9aaa47,1768029992,error_1,False,collected_data/error_1/ce55220c194646739195a42e0f9aaa47_error_1_raw.wav,collected_data/error_1/ce55220c194646739195a42e0f9aaa47_error_1_clean.wav,diff_bank/ce55220c194646739195a42e0f9aaa47_error_1_diff.wav,,0
+52e7fc514f644acf8e0088f0fb34b12e,1768029993,error_1,False,collected_data/error_1/52e7fc514f644acf8e0088f0fb34b12e_error_1_raw.wav,collected_data/error_1/52e7fc514f644acf8e0088f0fb34b12e_error_1_clean.wav,diff_bank/52e7fc514f644acf8e0088f0fb34b12e_error_1_diff.wav,,0
+259601412dfc4c1e8e06e66d08be860d,1768029993,error_1,False,collected_data/error_1/259601412dfc4c1e8e06e66d08be860d_error_1_raw.wav,collected_data/error_1/259601412dfc4c1e8e06e66d08be860d_error_1_clean.wav,diff_bank/259601412dfc4c1e8e06e66d08be860d_error_1_diff.wav,,0
+f40d42c789224c8193ecb5ada8d04b8e,1768029993,error_1,False,collected_data/error_1/f40d42c789224c8193ecb5ada8d04b8e_error_1_raw.wav,collected_data/error_1/f40d42c789224c8193ecb5ada8d04b8e_error_1_clean.wav,diff_bank/f40d42c789224c8193ecb5ada8d04b8e_error_1_diff.wav,,0
+1b961c6cf62944e5a3a4a0c7dac8e864,1768029993,error_1,False,collected_data/error_1/1b961c6cf62944e5a3a4a0c7dac8e864_error_1_raw.wav,collected_data/error_1/1b961c6cf62944e5a3a4a0c7dac8e864_error_1_clean.wav,diff_bank/1b961c6cf62944e5a3a4a0c7dac8e864_error_1_diff.wav,,0
+4c6e8764d360415f9b733ab7b66c1fc9,1768029993,error_1,False,collected_data/error_1/4c6e8764d360415f9b733ab7b66c1fc9_error_1_raw.wav,collected_data/error_1/4c6e8764d360415f9b733ab7b66c1fc9_error_1_clean.wav,diff_bank/4c6e8764d360415f9b733ab7b66c1fc9_error_1_diff.wav,,0
+7b897bfcc0a742179f276567cdc20b94,1768029993,error_1,False,collected_data/error_1/7b897bfcc0a742179f276567cdc20b94_error_1_raw.wav,collected_data/error_1/7b897bfcc0a742179f276567cdc20b94_error_1_clean.wav,diff_bank/7b897bfcc0a742179f276567cdc20b94_error_1_diff.wav,,0
+fe9dfcfec29e499bb9488936fc7bdaf3,1768029993,error_1,False,collected_data/error_1/fe9dfcfec29e499bb9488936fc7bdaf3_error_1_raw.wav,collected_data/error_1/fe9dfcfec29e499bb9488936fc7bdaf3_error_1_clean.wav,diff_bank/fe9dfcfec29e499bb9488936fc7bdaf3_error_1_diff.wav,,0
+eb85966f3187422697f704611852a74d,1768029993,error_1,False,collected_data/error_1/eb85966f3187422697f704611852a74d_error_1_raw.wav,collected_data/error_1/eb85966f3187422697f704611852a74d_error_1_clean.wav,diff_bank/eb85966f3187422697f704611852a74d_error_1_diff.wav,,0
+4b8941e1643c4f36aa0208919491722a,1768029994,error_1,False,collected_data/error_1/4b8941e1643c4f36aa0208919491722a_error_1_raw.wav,collected_data/error_1/4b8941e1643c4f36aa0208919491722a_error_1_clean.wav,diff_bank/4b8941e1643c4f36aa0208919491722a_error_1_diff.wav,,0
+fe1caa35495542d0a1a37754e29f0cc9,1768029994,error_1,False,collected_data/error_1/fe1caa35495542d0a1a37754e29f0cc9_error_1_raw.wav,collected_data/error_1/fe1caa35495542d0a1a37754e29f0cc9_error_1_clean.wav,diff_bank/fe1caa35495542d0a1a37754e29f0cc9_error_1_diff.wav,,0
+cbf641ffd7d44a29822238bcdb2dbebe,1768029994,error_1,False,collected_data/error_1/cbf641ffd7d44a29822238bcdb2dbebe_error_1_raw.wav,collected_data/error_1/cbf641ffd7d44a29822238bcdb2dbebe_error_1_clean.wav,diff_bank/cbf641ffd7d44a29822238bcdb2dbebe_error_1_diff.wav,,0
+76a6269a5e2644908a78edfe773e9137,1768029994,error_1,False,collected_data/error_1/76a6269a5e2644908a78edfe773e9137_error_1_raw.wav,collected_data/error_1/76a6269a5e2644908a78edfe773e9137_error_1_clean.wav,diff_bank/76a6269a5e2644908a78edfe773e9137_error_1_diff.wav,,0
+b8127cbf0de1479f9d0f4b969afe5f83,1768029994,error_1,False,collected_data/error_1/b8127cbf0de1479f9d0f4b969afe5f83_error_1_raw.wav,collected_data/error_1/b8127cbf0de1479f9d0f4b969afe5f83_error_1_clean.wav,diff_bank/b8127cbf0de1479f9d0f4b969afe5f83_error_1_diff.wav,,-1037
+202f537ff9374647812136d48ccea86b,1768029994,error_1,False,collected_data/error_1/202f537ff9374647812136d48ccea86b_error_1_raw.wav,collected_data/error_1/202f537ff9374647812136d48ccea86b_error_1_clean.wav,diff_bank/202f537ff9374647812136d48ccea86b_error_1_diff.wav,,1037
+063e5b9cb91b41b7a290c1af6ee2f11c,1768029994,error_1,False,collected_data/error_1/063e5b9cb91b41b7a290c1af6ee2f11c_error_1_raw.wav,collected_data/error_1/063e5b9cb91b41b7a290c1af6ee2f11c_error_1_clean.wav,diff_bank/063e5b9cb91b41b7a290c1af6ee2f11c_error_1_diff.wav,,0
+38dd5465ca8e4135a7692670fb66bf2a,1768029995,error_1,False,collected_data/error_1/38dd5465ca8e4135a7692670fb66bf2a_error_1_raw.wav,collected_data/error_1/38dd5465ca8e4135a7692670fb66bf2a_error_1_clean.wav,diff_bank/38dd5465ca8e4135a7692670fb66bf2a_error_1_diff.wav,,0
+e2baa52dc49d49f389edb5115bc0ca4a,1768029995,error_1,False,collected_data/error_1/e2baa52dc49d49f389edb5115bc0ca4a_error_1_raw.wav,collected_data/error_1/e2baa52dc49d49f389edb5115bc0ca4a_error_1_clean.wav,diff_bank/e2baa52dc49d49f389edb5115bc0ca4a_error_1_diff.wav,,0
+c6c7a0962bec4a90816ffd8d759c8a53,1768029995,error_1,False,collected_data/error_1/c6c7a0962bec4a90816ffd8d759c8a53_error_1_raw.wav,collected_data/error_1/c6c7a0962bec4a90816ffd8d759c8a53_error_1_clean.wav,diff_bank/c6c7a0962bec4a90816ffd8d759c8a53_error_1_diff.wav,,0
+41065bc25df84286a4cd4a87af02253c,1768029995,error_1,False,collected_data/error_1/41065bc25df84286a4cd4a87af02253c_error_1_raw.wav,collected_data/error_1/41065bc25df84286a4cd4a87af02253c_error_1_clean.wav,diff_bank/41065bc25df84286a4cd4a87af02253c_error_1_diff.wav,,0
+ab360beac5574519b4b848cb77e4bcac,1768029995,error_1,False,collected_data/error_1/ab360beac5574519b4b848cb77e4bcac_error_1_raw.wav,collected_data/error_1/ab360beac5574519b4b848cb77e4bcac_error_1_clean.wav,diff_bank/ab360beac5574519b4b848cb77e4bcac_error_1_diff.wav,,0
+642783ccb0e245fba424184d6244420e,1768029995,error_1,False,collected_data/error_1/642783ccb0e245fba424184d6244420e_error_1_raw.wav,collected_data/error_1/642783ccb0e245fba424184d6244420e_error_1_clean.wav,diff_bank/642783ccb0e245fba424184d6244420e_error_1_diff.wav,,0
+0be20ed4e5e248d98aa2872eb1bc43f3,1768029995,error_1,False,collected_data/error_1/0be20ed4e5e248d98aa2872eb1bc43f3_error_1_raw.wav,collected_data/error_1/0be20ed4e5e248d98aa2872eb1bc43f3_error_1_clean.wav,diff_bank/0be20ed4e5e248d98aa2872eb1bc43f3_error_1_diff.wav,,0
+45ae8ed778a5439bba81ed8e0bcc5088,1768029995,error_1,False,collected_data/error_1/45ae8ed778a5439bba81ed8e0bcc5088_error_1_raw.wav,collected_data/error_1/45ae8ed778a5439bba81ed8e0bcc5088_error_1_clean.wav,diff_bank/45ae8ed778a5439bba81ed8e0bcc5088_error_1_diff.wav,,0
+c74daec967be4a3f87ef5bb541e92b46,1768029996,error_1,False,collected_data/error_1/c74daec967be4a3f87ef5bb541e92b46_error_1_raw.wav,collected_data/error_1/c74daec967be4a3f87ef5bb541e92b46_error_1_clean.wav,diff_bank/c74daec967be4a3f87ef5bb541e92b46_error_1_diff.wav,,0
+814c8238372f4f73aa7eac550ded4234,1768029996,error_1,False,collected_data/error_1/814c8238372f4f73aa7eac550ded4234_error_1_raw.wav,collected_data/error_1/814c8238372f4f73aa7eac550ded4234_error_1_clean.wav,diff_bank/814c8238372f4f73aa7eac550ded4234_error_1_diff.wav,,0
+403a35731b4d4fceb875587044b180b3,1768029996,error_1,False,collected_data/error_1/403a35731b4d4fceb875587044b180b3_error_1_raw.wav,collected_data/error_1/403a35731b4d4fceb875587044b180b3_error_1_clean.wav,diff_bank/403a35731b4d4fceb875587044b180b3_error_1_diff.wav,,0
+c18ad3d5345b459286b6974e53004de8,1768029996,error_1,False,collected_data/error_1/c18ad3d5345b459286b6974e53004de8_error_1_raw.wav,collected_data/error_1/c18ad3d5345b459286b6974e53004de8_error_1_clean.wav,diff_bank/c18ad3d5345b459286b6974e53004de8_error_1_diff.wav,,0
+89dead16cdb546b1b9fe5b1bb41483a3,1768029996,error_1,False,collected_data/error_1/89dead16cdb546b1b9fe5b1bb41483a3_error_1_raw.wav,collected_data/error_1/89dead16cdb546b1b9fe5b1bb41483a3_error_1_clean.wav,diff_bank/89dead16cdb546b1b9fe5b1bb41483a3_error_1_diff.wav,,0
+1e95042de2d74691b9c90d294157059f,1768029996,error_1,False,collected_data/error_1/1e95042de2d74691b9c90d294157059f_error_1_raw.wav,collected_data/error_1/1e95042de2d74691b9c90d294157059f_error_1_clean.wav,diff_bank/1e95042de2d74691b9c90d294157059f_error_1_diff.wav,,0
+a9254ec336ee4bbda2179ae2b44376f8,1768029996,error_1,False,collected_data/error_1/a9254ec336ee4bbda2179ae2b44376f8_error_1_raw.wav,collected_data/error_1/a9254ec336ee4bbda2179ae2b44376f8_error_1_clean.wav,diff_bank/a9254ec336ee4bbda2179ae2b44376f8_error_1_diff.wav,,0
+ff3ab3c4fbba44a1ba3d6d8613d610f9,1768029996,error_1,False,collected_data/error_1/ff3ab3c4fbba44a1ba3d6d8613d610f9_error_1_raw.wav,collected_data/error_1/ff3ab3c4fbba44a1ba3d6d8613d610f9_error_1_clean.wav,diff_bank/ff3ab3c4fbba44a1ba3d6d8613d610f9_error_1_diff.wav,,0
+0ff4f245ff9c44f4b12a65c234b91c39,1768029997,error_1,False,collected_data/error_1/0ff4f245ff9c44f4b12a65c234b91c39_error_1_raw.wav,collected_data/error_1/0ff4f245ff9c44f4b12a65c234b91c39_error_1_clean.wav,diff_bank/0ff4f245ff9c44f4b12a65c234b91c39_error_1_diff.wav,,0
+f12d915a99eb4076b8c5bc9e461efcf7,1768029997,error_1,False,collected_data/error_1/f12d915a99eb4076b8c5bc9e461efcf7_error_1_raw.wav,collected_data/error_1/f12d915a99eb4076b8c5bc9e461efcf7_error_1_clean.wav,diff_bank/f12d915a99eb4076b8c5bc9e461efcf7_error_1_diff.wav,,0
+7f6d298bbd9842a9990368399e619558,1768029997,error_1,False,collected_data/error_1/7f6d298bbd9842a9990368399e619558_error_1_raw.wav,collected_data/error_1/7f6d298bbd9842a9990368399e619558_error_1_clean.wav,diff_bank/7f6d298bbd9842a9990368399e619558_error_1_diff.wav,,0
+578a213aae1b4d1f9ee4021231c2499b,1768029997,error_1,False,collected_data/error_1/578a213aae1b4d1f9ee4021231c2499b_error_1_raw.wav,collected_data/error_1/578a213aae1b4d1f9ee4021231c2499b_error_1_clean.wav,diff_bank/578a213aae1b4d1f9ee4021231c2499b_error_1_diff.wav,,0
+463eb9d2b1dc44b9b5ce39cc3d825009,1768029997,error_1,False,collected_data/error_1/463eb9d2b1dc44b9b5ce39cc3d825009_error_1_raw.wav,collected_data/error_1/463eb9d2b1dc44b9b5ce39cc3d825009_error_1_clean.wav,diff_bank/463eb9d2b1dc44b9b5ce39cc3d825009_error_1_diff.wav,,0
+167466ee68b240d288b7be95549d5909,1768029997,error_1,False,collected_data/error_1/167466ee68b240d288b7be95549d5909_error_1_raw.wav,collected_data/error_1/167466ee68b240d288b7be95549d5909_error_1_clean.wav,diff_bank/167466ee68b240d288b7be95549d5909_error_1_diff.wav,,0
+c97ca99a30074fe999d36802d39671c2,1768029997,error_1,False,collected_data/error_1/c97ca99a30074fe999d36802d39671c2_error_1_raw.wav,collected_data/error_1/c97ca99a30074fe999d36802d39671c2_error_1_clean.wav,diff_bank/c97ca99a30074fe999d36802d39671c2_error_1_diff.wav,,0
+ec3fe5a179b8467591beac3f36801ac6,1768029997,error_1,False,collected_data/error_1/ec3fe5a179b8467591beac3f36801ac6_error_1_raw.wav,collected_data/error_1/ec3fe5a179b8467591beac3f36801ac6_error_1_clean.wav,diff_bank/ec3fe5a179b8467591beac3f36801ac6_error_1_diff.wav,,0
+2439747c58c347838acedf756f5d22e3,1768029998,error_1,False,collected_data/error_1/2439747c58c347838acedf756f5d22e3_error_1_raw.wav,collected_data/error_1/2439747c58c347838acedf756f5d22e3_error_1_clean.wav,diff_bank/2439747c58c347838acedf756f5d22e3_error_1_diff.wav,,0
+ccbd3a4def4d4c309431cc0ae6bf3608,1768029998,error_1,False,collected_data/error_1/ccbd3a4def4d4c309431cc0ae6bf3608_error_1_raw.wav,collected_data/error_1/ccbd3a4def4d4c309431cc0ae6bf3608_error_1_clean.wav,diff_bank/ccbd3a4def4d4c309431cc0ae6bf3608_error_1_diff.wav,,0
+72d7fad441474ae3b6e5e9ab271e1cd8,1768029998,error_1,False,collected_data/error_1/72d7fad441474ae3b6e5e9ab271e1cd8_error_1_raw.wav,collected_data/error_1/72d7fad441474ae3b6e5e9ab271e1cd8_error_1_clean.wav,diff_bank/72d7fad441474ae3b6e5e9ab271e1cd8_error_1_diff.wav,,0
+a029aa9bef694be0822e7d8bb2be125d,1768029998,error_1,False,collected_data/error_1/a029aa9bef694be0822e7d8bb2be125d_error_1_raw.wav,collected_data/error_1/a029aa9bef694be0822e7d8bb2be125d_error_1_clean.wav,diff_bank/a029aa9bef694be0822e7d8bb2be125d_error_1_diff.wav,,0
+d6a8fac9a15949bc9d97aeb16aa1c44b,1768029998,error_1,False,collected_data/error_1/d6a8fac9a15949bc9d97aeb16aa1c44b_error_1_raw.wav,collected_data/error_1/d6a8fac9a15949bc9d97aeb16aa1c44b_error_1_clean.wav,diff_bank/d6a8fac9a15949bc9d97aeb16aa1c44b_error_1_diff.wav,,0
+92e2fa48828e4568b3f37fd513813374,1768029998,error_1,False,collected_data/error_1/92e2fa48828e4568b3f37fd513813374_error_1_raw.wav,collected_data/error_1/92e2fa48828e4568b3f37fd513813374_error_1_clean.wav,diff_bank/92e2fa48828e4568b3f37fd513813374_error_1_diff.wav,,0
+686d686b5c204f429478e753080dbf7c,1768029998,error_1,False,collected_data/error_1/686d686b5c204f429478e753080dbf7c_error_1_raw.wav,collected_data/error_1/686d686b5c204f429478e753080dbf7c_error_1_clean.wav,diff_bank/686d686b5c204f429478e753080dbf7c_error_1_diff.wav,,0
+21523a904f244134a730bd12b694a305,1768029998,error_1,False,collected_data/error_1/21523a904f244134a730bd12b694a305_error_1_raw.wav,collected_data/error_1/21523a904f244134a730bd12b694a305_error_1_clean.wav,diff_bank/21523a904f244134a730bd12b694a305_error_1_diff.wav,,0
+2a3d3fd68b0c4325a497b566e8b8062c,1768029999,error_1,False,collected_data/error_1/2a3d3fd68b0c4325a497b566e8b8062c_error_1_raw.wav,collected_data/error_1/2a3d3fd68b0c4325a497b566e8b8062c_error_1_clean.wav,diff_bank/2a3d3fd68b0c4325a497b566e8b8062c_error_1_diff.wav,,0
+71494180cad64a6cacffce0cf6c01f03,1768029999,error_1,False,collected_data/error_1/71494180cad64a6cacffce0cf6c01f03_error_1_raw.wav,collected_data/error_1/71494180cad64a6cacffce0cf6c01f03_error_1_clean.wav,diff_bank/71494180cad64a6cacffce0cf6c01f03_error_1_diff.wav,,0
+df040b39b1ad45918d35afb9b18be204,1768029999,error_1,False,collected_data/error_1/df040b39b1ad45918d35afb9b18be204_error_1_raw.wav,collected_data/error_1/df040b39b1ad45918d35afb9b18be204_error_1_clean.wav,diff_bank/df040b39b1ad45918d35afb9b18be204_error_1_diff.wav,,0
+2fca558d61d44873bb273eff654ca7ed,1768029999,error_1,False,collected_data/error_1/2fca558d61d44873bb273eff654ca7ed_error_1_raw.wav,collected_data/error_1/2fca558d61d44873bb273eff654ca7ed_error_1_clean.wav,diff_bank/2fca558d61d44873bb273eff654ca7ed_error_1_diff.wav,,0
+a05e9d849b7849cc88cac9c55b02e0a3,1768029999,error_1,False,collected_data/error_1/a05e9d849b7849cc88cac9c55b02e0a3_error_1_raw.wav,collected_data/error_1/a05e9d849b7849cc88cac9c55b02e0a3_error_1_clean.wav,diff_bank/a05e9d849b7849cc88cac9c55b02e0a3_error_1_diff.wav,,0
+213bbc02501642adb9e909e552633898,1768029999,error_1,False,collected_data/error_1/213bbc02501642adb9e909e552633898_error_1_raw.wav,collected_data/error_1/213bbc02501642adb9e909e552633898_error_1_clean.wav,diff_bank/213bbc02501642adb9e909e552633898_error_1_diff.wav,,0
+470c427dfe2847d68193112289bccb74,1768029999,error_1,False,collected_data/error_1/470c427dfe2847d68193112289bccb74_error_1_raw.wav,collected_data/error_1/470c427dfe2847d68193112289bccb74_error_1_clean.wav,diff_bank/470c427dfe2847d68193112289bccb74_error_1_diff.wav,,0
+6affac37639440d6b9213ef0eec62370,1768029999,error_1,False,collected_data/error_1/6affac37639440d6b9213ef0eec62370_error_1_raw.wav,collected_data/error_1/6affac37639440d6b9213ef0eec62370_error_1_clean.wav,diff_bank/6affac37639440d6b9213ef0eec62370_error_1_diff.wav,,0
+dba5c098c92f4712829f217fa76fe46b,1768030000,error_1,False,collected_data/error_1/dba5c098c92f4712829f217fa76fe46b_error_1_raw.wav,collected_data/error_1/dba5c098c92f4712829f217fa76fe46b_error_1_clean.wav,diff_bank/dba5c098c92f4712829f217fa76fe46b_error_1_diff.wav,,0
+ab720b89d24c4486ac2e904a0e554fd8,1768030000,error_1,False,collected_data/error_1/ab720b89d24c4486ac2e904a0e554fd8_error_1_raw.wav,collected_data/error_1/ab720b89d24c4486ac2e904a0e554fd8_error_1_clean.wav,diff_bank/ab720b89d24c4486ac2e904a0e554fd8_error_1_diff.wav,,0
+9bc1d29d903c43a1af3075c2f1a02200,1768030000,error_1,False,collected_data/error_1/9bc1d29d903c43a1af3075c2f1a02200_error_1_raw.wav,collected_data/error_1/9bc1d29d903c43a1af3075c2f1a02200_error_1_clean.wav,diff_bank/9bc1d29d903c43a1af3075c2f1a02200_error_1_diff.wav,,0
+c9f24c84837f48cb80f8e22c331387f9,1768030000,error_1,False,collected_data/error_1/c9f24c84837f48cb80f8e22c331387f9_error_1_raw.wav,collected_data/error_1/c9f24c84837f48cb80f8e22c331387f9_error_1_clean.wav,diff_bank/c9f24c84837f48cb80f8e22c331387f9_error_1_diff.wav,,0
+772b5c88bcb448aab53fcb8cbaef946f,1768030000,error_1,False,collected_data/error_1/772b5c88bcb448aab53fcb8cbaef946f_error_1_raw.wav,collected_data/error_1/772b5c88bcb448aab53fcb8cbaef946f_error_1_clean.wav,diff_bank/772b5c88bcb448aab53fcb8cbaef946f_error_1_diff.wav,,0
+a9aed07f62e9433185f365bb82a69042,1768030000,error_1,False,collected_data/error_1/a9aed07f62e9433185f365bb82a69042_error_1_raw.wav,collected_data/error_1/a9aed07f62e9433185f365bb82a69042_error_1_clean.wav,diff_bank/a9aed07f62e9433185f365bb82a69042_error_1_diff.wav,,0
+2d9b75d8eac9428eb92c5ec8f4558edb,1768030000,error_1,False,collected_data/error_1/2d9b75d8eac9428eb92c5ec8f4558edb_error_1_raw.wav,collected_data/error_1/2d9b75d8eac9428eb92c5ec8f4558edb_error_1_clean.wav,diff_bank/2d9b75d8eac9428eb92c5ec8f4558edb_error_1_diff.wav,,0
+25b7e0efffaf4cc0aece3be7813579d9,1768030001,error_1,False,collected_data/error_1/25b7e0efffaf4cc0aece3be7813579d9_error_1_raw.wav,collected_data/error_1/25b7e0efffaf4cc0aece3be7813579d9_error_1_clean.wav,diff_bank/25b7e0efffaf4cc0aece3be7813579d9_error_1_diff.wav,,0
+e6ec6dca0bd649df89346dee6bca81fd,1768030001,error_1,False,collected_data/error_1/e6ec6dca0bd649df89346dee6bca81fd_error_1_raw.wav,collected_data/error_1/e6ec6dca0bd649df89346dee6bca81fd_error_1_clean.wav,diff_bank/e6ec6dca0bd649df89346dee6bca81fd_error_1_diff.wav,,0
+50d2117303484e348ef66c756941d820,1768030001,error_1,False,collected_data/error_1/50d2117303484e348ef66c756941d820_error_1_raw.wav,collected_data/error_1/50d2117303484e348ef66c756941d820_error_1_clean.wav,diff_bank/50d2117303484e348ef66c756941d820_error_1_diff.wav,,0
+629426b903fa482e9b27027fe5889cba,1768030001,error_1,False,collected_data/error_1/629426b903fa482e9b27027fe5889cba_error_1_raw.wav,collected_data/error_1/629426b903fa482e9b27027fe5889cba_error_1_clean.wav,diff_bank/629426b903fa482e9b27027fe5889cba_error_1_diff.wav,,0
+2de348e1211343bfa55bbfd6c779a5fd,1768030001,error_1,False,collected_data/error_1/2de348e1211343bfa55bbfd6c779a5fd_error_1_raw.wav,collected_data/error_1/2de348e1211343bfa55bbfd6c779a5fd_error_1_clean.wav,diff_bank/2de348e1211343bfa55bbfd6c779a5fd_error_1_diff.wav,,0
+66c173aa5d4a4e61a5b9a9d1569186e1,1768030001,error_1,False,collected_data/error_1/66c173aa5d4a4e61a5b9a9d1569186e1_error_1_raw.wav,collected_data/error_1/66c173aa5d4a4e61a5b9a9d1569186e1_error_1_clean.wav,diff_bank/66c173aa5d4a4e61a5b9a9d1569186e1_error_1_diff.wav,,0
