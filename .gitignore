@@ -15,7 +15,7 @@ workspace/audio/
 collected_data/
 diff_bank/
 background_bank/
-training_data.csv
+*.csv
 # Model artifacts
 models/
 *.pt
