@@ -8,6 +8,7 @@ logs/
 logs/*.log
 *.pkl
 app/prompt.xml
+
 # Audio/chunk/embedding storage (large binary outputs)
 workspace/chunks/
 workspace/embeddings/
@@ -15,7 +16,8 @@ workspace/audio/
 collected_data/
 diff_bank/
 background_bank/
-training_data.csv
+# Data files
+*.csv
 # Model artifacts
 models/
 *.pt
