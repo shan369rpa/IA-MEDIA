@@ -1,9 +1,12 @@
 # app_ui.py
+import librosa
 import streamlit as st
 import pandas as pd
 import os
 import time
 import backend_core
+import io
+
 # import fcpxml_utils
 import data_factory # Module vừa tạo
 import random
@@ -12,12 +15,15 @@ st.set_page_config(page_title="IA MEDIA Pro", page_icon="🎛️", layout="wide"
 st.title("🎛️ IA MEDIA - Professional Audio Analysis")
 st.markdown("---")
 
-tab1, tab2, tab3, tab4,tab5 = st.tabs([
+tab1, tab2, tab3, tab4,tab5,tab6,tab7,tab8 = st.tabs([
     "🔍 1. Phân tích & Log Chi tiết", 
     "📥 2. Thu thập Dữ liệu", 
     "🧠 3. Huấn luyện AI", 
     "📊 4. Phòng Lab",
-    "🏭 5. Data Factory"
+    "🏭 5. Data Factory",
+    "🎧 6. De-click Tool",
+    "🎞️ 7. Ghép Audio (Merger)", # Tab mới
+    "⚙️ 8. Cài đặt & Hỗ trợ"
 ])
 
 # --- HÀM UI LOGGING CHUYÊN NGHIỆP ---
@@ -225,7 +231,7 @@ with tab2:
     with col_upload:
         # Hỗ trợ nhiều định dạng
         accepted_types = ["wav", "mp3", "mp4", "mov", "m4a"]
-        files_raw = st.file_uploader("1. Danh sách file LỖI (Raw)", type=accepted_types, accept_multiple_files=True, key="u_raw_multi")
+        files_raw = st.file_uploader("1. Danh sách file LỖI (Raw)", type=accepted_types, accept_multiple_files=True,key="u_raw_multi")
         files_clean = st.file_uploader("2. Danh sách file SẠCH (Clean)", type=accepted_types, accept_multiple_files=True, key="u_clean_multi")
 
     st.markdown("---")
@@ -831,7 +837,476 @@ with tab5:
                     status_text.text(f"Đang xử lý mẫu gốc {i+1}/{len(diff_sources)}...")
                 
                 st.success(f"🎉 Hoàn tất! Đã sinh và lưu {success_count} mẫu mới vào kho.")
-# Footer
+# --- TAB 6: COMPARATOR PRO (NÂNG CẤP MULTI-MODEL) ---
+
+# --- TAB 6: COMPARATOR PRO (FULL FEATURES) ---
+# --- TAB 6: COMPARATOR PRO (FULL FEATURES) ---
+with tab6:
+    st.header("🔬 Comparator Pro - So sánh Đa Mô hình")
+    st.caption("Công cụ đối chiếu sự khác biệt giữa các phiên bản Video (Raw, Edited, AI) trên trục thời gian thực.")
+
+    # ==================================================
+    # 1. SETTINGS (SIDEBAR)
+    # ==================================================
+    with st.sidebar:
+        st.markdown("---")
+        st.markdown("### 🎨 Tab 6 Visuals")
+        
+        # A. Kiểu sóng
+        wave_style = st.radio(
+            "Kiểu sóng", 
+            ["Bipolar (Đối xứng)", "Unipolar (Envelope)"],
+            index=0, 
+            key="t6_style",
+            help="Bipolar: Hiển thị cả pha âm/dương. Unipolar: Chỉ hiển thị độ lớn biên độ."
+        )
+        wave_style_code = "bipolar" if "Bipolar" in wave_style else "unipolar"
+        
+        # B. Màu sắc
+        st.markdown("**Màu sắc hiển thị**")
+        sync_color = st.checkbox("Đồng bộ 1 màu (Unified)", value=False, key="t6_sync")
+        
+        colors_override = {}
+        if sync_color:
+            uni_color = st.color_picker("Màu chung", "#3cc2ea", key="t6_c_uni")
+            colors_override = {"RAW": uni_color, "HUMAN": uni_color, "AI_BASE": uni_color}
+        else:
+            c1, c2, c3 = st.columns(3)
+            with c1: c_raw = st.color_picker("Raw", "#64d2ff", key="t6_c_raw")
+            with c2: c_hum = st.color_picker("Edited", "#3cc2ea", key="t6_c_hum")
+            with c3: c_ai  = st.color_picker("AI", "#F9C74F", key="t6_c_ai")
+            colors_override = {"RAW": c_raw, "HUMAN": c_hum, "AI_BASE": c_ai}
+
+        # C. Zoom Slider
+        st.markdown("---")
+        st.markdown("**🔍 Local Zoom (Trong đoạn đang quét)**")
+        zoom_range = st.slider(
+            "Phạm vi hiển thị", 
+            0.0, 1.0, (0.0, 1.0), 
+            key="t6_zoom",
+            help="Kéo để zoom vào một phần cụ thể của đoạn video đang được load."
+        )
+
+        # [MỚI] D. Cấu hình Hiển thị
+        st.markdown("---")
+        st.markdown("**👁️ Hiển thị**")
+        show_diff_channels = st.checkbox(
+            "Hiển thị kênh Diff (Sai số)", 
+            value=True, 
+            help="Bỏ chọn để ẩn các biểu đồ màu đỏ/cam, chỉ hiện sóng âm gốc."
+        )
+    # ==================================================
+    # 2. INPUT AREA (Lưu file temp để seek)
+    # ==================================================
+    with st.expander("📂 Nguồn Dữ liệu (Input)", expanded=True):
+        c1, c2 = st.columns(2)
+        with c1: 
+            raw_up = st.file_uploader("1. Video Gốc (Raw)", type=["mp4","wav","mov","mp3"], key="t6_u_raw")
+        with c2: 
+            edit_up = st.file_uploader("2. Video Đã Sửa (Edited)", type=["mp4","wav","mov","mp3"], key="t6_u_edit")
+        
+        st.markdown("---")
+        ai_ups = st.file_uploader(
+            "3. Các Mẫu AI (Upload nhiều file để so sánh các thuật toán)", 
+            type=["mp4","wav","mov","mp3"], 
+            accept_multiple_files=True, 
+            key="t6_u_ai"
+        )
+
+    # Hàm lưu temp để Librosa seek được
+    def save_temp(uploaded_file):
+        if uploaded_file is None: return None
+        # Tạo tên file an toàn
+        safe_name = "".join(x for x in uploaded_file.name if x.isalnum() or x in "._- ")
+        path = f"temp_t6_{safe_name}"
+        with open(path, "wb") as f: f.write(uploaded_file.getbuffer())
+        return path
+
+    p_raw = save_temp(raw_up)
+    p_edit = save_temp(edit_up)
+    
+    p_ais = []
+    ai_names = []
+    if ai_ups:
+        for f in ai_ups:
+            p_ais.append(save_temp(f))
+            ai_names.append(f.name)
+
+    # ==================================================
+    # 3. CONTROL PANEL
+    # ==================================================
+    if p_raw and p_edit:
+        st.markdown("---")
+        # State Management
+        if 't6_cursor' not in st.session_state: st.session_state.t6_cursor = 0.0
+        if 't6_hunting' not in st.session_state: st.session_state.t6_hunting = False
+
+        c_ctrl1, c_ctrl2, c_ctrl3 = st.columns([1.5, 1, 2]) # Điều chỉnh layout
+        
+        with c_ctrl1: 
+            hunt_mode = st.selectbox(
+                "Tiêu chí Săn lỗi", 
+                ["Raw vs Human", "Raw vs AI", "Human vs AI"],
+                key="t6_hunt_mode",
+                help="Raw vs Human: Tìm chỗ Editor đã sửa.\nHuman vs AI: Tìm chỗ AI làm sai so với Editor."
+            )
+        with c_ctrl2: 
+            scan_len = st.selectbox("Độ dài quét (s)", [10, 30, 60], index=2, key="t6_len")
+            diff_thres = st.number_input("Ngưỡng Diff", 0.001, 0.5, 0.02, step=0.005, format="%.3f", key="t6_thres")
+        
+        # ACTION BUTTONS
+        with c_ctrl3:
+            b1, b2, b3 = st.columns(3)
+            with b1: 
+                if st.button("⏮️ Về đầu (0s)"):
+                    st.session_state.t6_cursor = 0.0
+                    st.session_state.t6_hunting = False
+                    st.rerun()
+            with b2:
+                if st.button(f"⏩ Tiếp (+{scan_len}s)"):
+                    st.session_state.t6_cursor += scan_len
+                    st.session_state.t6_hunting = False
+                    st.rerun()
+            with b3:
+                if st.button(f"🔍 Tự động Săn", type="primary"):
+                    st.session_state.t6_hunting = True
+                    st.rerun()
+
+        # ==================================================
+        # 4. ENGINE & VISUALIZATION
+        # ==================================================
+        status_box = st.empty()
+        viz_box = st.empty()
+        audio_container = st.container()
+        
+        should_render = True
+        
+        # --- LOGIC SĂN LÙNG (AUTO HUNT) ---
+        if st.session_state.t6_hunting:
+            p_bar = st.progress(0)
+            max_limit = st.session_state.t6_cursor + 3600 # Giới hạn quét tối đa 1 tiếng
+            
+            # Logic fallback cho AI path khi săn (lấy file đầu tiên)
+            p_ai_hunt = p_ais[0] if p_ais else None
+
+            while st.session_state.t6_cursor < max_limit:
+                curr = st.session_state.t6_cursor
+                status_box.info(f"🤖 Đang quét đoạn: **{int(curr//60)}p {int(curr%60)}s**... (Tìm Diff > {diff_thres})")
+                
+                # Scan Backend
+                is_diff, y_raw, y_edit, y_ai, sr, score = backend_core.scan_for_difference_v2(
+                    p_raw, p_edit, p_ai_hunt, 
+                    start_time=curr, duration=scan_len, threshold=diff_thres,
+                    hunt_mode=hunt_mode
+                )
+                
+                if y_raw is None: # Hết video hoặc lỗi
+                    status_box.warning("🏁 Đã quét hết video hoặc gặp lỗi đọc file.")
+                    st.session_state.t6_hunting = False
+                    should_render = False
+                    p_bar.empty()
+                    break
+                
+                if is_diff: # TÌM THẤY!
+                    status_box.success(f"🚨 **PHÁT HIỆN KHÁC BIỆT!** Tại **{int(curr)}s** (Score: {score:.4f})")
+                    st.session_state.t6_hunting = False # Dừng săn
+                    p_bar.empty()
+                    break # Thoát vòng lặp để vẽ
+                
+                # Không thấy -> Nhảy tiếp
+                st.session_state.t6_cursor += scan_len
+                p_bar.progress((int(curr) % 600) / 600)
+            
+            if st.session_state.t6_hunting: # Vẫn True nghĩa là hết loop ko thấy
+                status_box.warning(f"🏁 Đã quét {max_limit/60} phút mà không thấy lỗi nào vượt ngưỡng {diff_thres}.")
+                st.session_state.t6_hunting = False
+
+        # --- LOGIC RENDER (HIỂN THỊ) ---
+        if should_render and not st.session_state.t6_hunting:
+            curr_t = st.session_state.t6_cursor
+            
+            # Load lại dữ liệu để vẽ (nếu không phải vừa săn xong)
+            # Threshold âm để luôn lấy dữ liệu
+            _, y_raw_orig, y_edit, _, sr, _ = backend_core.scan_for_difference_v2(
+                p_raw, p_edit, None, 
+                start_time=curr_t, duration=scan_len, threshold=-1.0
+            )
+
+            if y_raw_orig is not None and len(y_raw_orig) > 0:
+                # --- XỬ LÝ ZOOM CỤC BỘ ---
+                total_len = len(y_edit)
+                idx_start = int(zoom_range[0] * total_len)
+                idx_end = int(zoom_range[1] * total_len)
+                
+                # Cắt view (Slice)
+                # Lưu ý: y_raw_orig từ scan_for_difference_v2 đã được load nhưng CHƯA align với các file AI khác
+                # Nên ta load lại từ đầu cho sạch logic multi-track
+                
+                # 1. Load Raw & Edited Segment
+                y_edit_seg, _ = librosa.load(p_edit, sr=16000, offset=curr_t, duration=scan_len)
+                y_raw_seg, _ = librosa.load(p_raw, sr=16000, offset=curr_t, duration=scan_len)
+                
+                # Auto Align Raw theo Edited (Mốc chuẩn)
+                y_raw_aligned, _ = backend_core.auto_align_audio(y_edit_seg, y_raw_seg)
+
+                # 2. Load & Auto-Align AI Files (Nhiều file)
+                ai_tracks_seg = {}
+                for i, p_ai in enumerate(p_ais):
+                    try:
+                        y_ai_seg, _ = librosa.load(p_ai, sr=16000, offset=curr_t, duration=scan_len)
+                        # Align theo Edited
+                        y_ai_aligned, _ = backend_core.auto_align_audio(y_edit_seg, y_ai_seg)
+                        ai_tracks_seg[ai_names[i]] = y_ai_aligned
+                    except: pass
+
+                # 3. Apply Zoom Slice
+                idx_start_seg = int(zoom_range[0] * len(y_edit_seg))
+                idx_end_seg = int(zoom_range[1] * len(y_edit_seg))
+
+                y_raw_view = y_raw_aligned[idx_start_seg:idx_end_seg]
+                y_edit_view = y_edit_seg[idx_start_seg:idx_end_seg]
+                ai_tracks_view = {k: v[idx_start_seg:idx_end_seg] for k, v in ai_tracks_seg.items()}
+                
+                # Tính thời gian thực tế để hiển thị
+                view_start_time = curr_t + (zoom_range[0] * scan_len)
+                view_duration = (zoom_range[1] - zoom_range[0]) * scan_len
+                
+                status_box.info(f"📍 Đang hiển thị: **{int(view_start_time//60)}p {int(view_start_time%60)}s** (Độ dài view: {view_duration:.1f}s)")
+
+                # 4. Vẽ Biểu đồ
+                with st.spinner("Đang render đồ họa 4K..."):
+                    fig = backend_core.plot_pro_analysis_view(
+                        y_raw_view, y_edit_view, 
+                        ai_tracks_dict=ai_tracks_view, 
+                        sr=sr, 
+                        view_mode=wave_style_code,
+                        colors_override=colors_override,
+                          show_diff=show_diff_channels # <--- TRUYỀN THAM SỐ MỚI
+                    )
+                    viz_box.pyplot(fig)
+                
+                # 5. Audio Players (Nghe thử đoạn đang Zoom)
+                import soundfile as sf
+                
+                # Tạo container cuộn nếu có nhiều file AI
+                with audio_container:
+                    st.markdown("##### 🎧 Nghe kiểm tra (Đoạn đang Zoom)")
+                    
+                    # Tính toán số cột: Raw + Edited + Các file AI
+                    num_ai = len(ai_tracks_view)
+                    cols = st.columns(2 + num_ai)
+                    
+                    # Cột 1: Raw
+                    with cols[0]:
+                        st.markdown("**:blue[1. Raw (Aligned)]**")
+                        sf.write("temp_t6_raw.wav", y_raw_view, sr)
+                        st.audio("temp_t6_raw.wav", format="audio/wav")
+                        
+                    # Cột 2: Edited
+                    with cols[1]:
+                        st.markdown("**:green[2. Edited (Target)]**")
+                        sf.write("temp_t6_edit.wav", y_edit_view, sr)
+                        st.audio("temp_t6_edit.wav", format="audio/wav")
+                        
+                    # Các cột AI
+                    for i, (name, data) in enumerate(ai_tracks_view.items()):
+                        with cols[2 + i]:
+                            st.markdown(f"**:orange[3.{i+1} AI: {name}]**")
+                            path = f"temp_t6_ai_{i}.wav"
+                            sf.write(path, data, sr)
+                            st.audio(path, format="audio/wav")
+                
+                # 6. Download Ảnh
+                import io
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png", dpi=150, bbox_inches='tight', facecolor='#0A0A1A')
+                st.download_button("⬇️ Tải Ảnh Báo Cáo (PNG)", buf.getvalue(), "report.png", "image/png")
+
+            else:
+                st.error("Không có dữ liệu tại vị trí này (File lỗi hoặc hết video).")
+    else:
+        st.info("👋 Vui lòng upload ít nhất file Raw và Edited để bắt đầu.")
+
+# --- TAB 7: AUDIO MERGER (GHÉP FILE) ---
+with tab7:
+    st.header("🎞️ Audio Merger - Ghép Nối Đa Định Dạng")
+    st.caption("Công cụ trích xuất audio từ nhiều video/audio file và ghép thành một track duy nhất để kiểm tra liên tục.")
+
+    # 1. Cấu hình & Input
+    with st.container():
+        c_conf, c_upload = st.columns([1, 2])
+        
+        with c_conf:
+            st.subheader("⚙️ Cấu hình")
+            silence_gap = st.number_input(
+                "Khoảng lặng giữa các clip (ms)", 
+                min_value=0, max_value=5000, value=500, step=100,
+                help="Thời gian nghỉ giữa 2 file âm thanh nối tiếp nhau."
+            )
+            target_sr = st.selectbox(
+                "Tần số mẫu (Sample Rate)", 
+                [16000, 24000, 44100, 48000], 
+                index=0,
+                help="16000Hz là chuẩn cho Model AI. 44100Hz là chuẩn nghe nhạc."
+            )
+
+        with c_upload:
+            st.subheader("📂 Upload Files")
+            uploaded_files = st.file_uploader(
+                "Chọn nhiều file (MP3, MOV, MP4, WAV...)", 
+                accept_multiple_files=True,
+                type=None # Chấp nhận mọi đuôi file
+            )
+            
+            if uploaded_files:
+                st.info(f"Đã chọn {len(uploaded_files)} file.")
+
+    # 2. Xử lý & Kết quả
+    st.markdown("---")
+    
+    if st.button("🔗 Bắt đầu Ghép Nối", type="primary", disabled=not uploaded_files):
+        with st.status("Đang xử lý...", expanded=True) as status:
+            st.write("Đang tải dữ liệu và chuẩn hóa định dạng...")
+            
+            # Gọi Backend
+            out_path, count, errs = backend_core.merge_audio_files(
+                uploaded_files, 
+                silence_ms=silence_gap, 
+                sample_rate=target_sr
+            )
+            
+            if out_path and os.path.exists(out_path):
+                status.update(label="✅ Ghép nối hoàn tất!", state="complete", expanded=False)
+                
+                # Hiển thị thông báo
+                st.success(f"Đã ghép thành công **{count}/{len(uploaded_files)}** file.")
+                
+                if errs:
+                    with st.expander("⚠️ Các file lỗi (bỏ qua)", expanded=False):
+                        for e in errs: st.write(f"- {e}")
+
+                # Hiển thị Player & Download
+                col_res1, col_res2 = st.columns([2, 1])
+                
+                with col_res1:
+                    st.markdown("#### 🎧 Nghe thử kết quả")
+                    st.audio(out_path, format="audio/wav")
+                    
+                with col_res2:
+                    st.markdown("#### ⬇️ Tải về")
+                    with open(out_path, "rb") as f:
+                        file_data = f.read()
+                        st.download_button(
+                            label="Download Merged Audio (.wav)",
+                            data=file_data,
+                            file_name=f"merged_audio_{len(uploaded_files)}_clips.wav",
+                            mime="audio/wav"
+                        )
+            else:
+                status.update(label="Thất bại", state="error")
+                st.error("Có lỗi xảy ra trong quá trình xử lý.")
+                if errs: st.write(errs)
+
+# --- TAB 8: OVERLAY COMPARATOR (FCP STYLE V2) ---
+with tab8:
+    st.header("🎞️ Overlay Comparator - So sánh Chồng lớp")
+    st.caption("Xem sự khác biệt trực quan ngay trên sóng âm gốc (giống giao diện Render của Final Cut Pro).")
+
+    # 1. INPUT AREA (Tái sử dụng logic lưu file temp của Tab 6)
+    with st.expander("📂 Nguồn Dữ liệu", expanded=True):
+        c1, c2 = st.columns(2)
+        with c1: 
+            raw_up_t8 = st.file_uploader("1. Video Gốc (Raw Base)", type=["mp4","wav","mov","mp3"], key="t8_u_raw")
+        with c2: 
+            edit_up_t8 = st.file_uploader("2. Video Đã Sửa (Edited)", type=["mp4","wav","mov","mp3"], key="t8_u_edit")
+        
+        ai_ups_t8 = st.file_uploader("3. Các Mẫu AI (Optional)", type=["mp4","wav","mov","mp3"], accept_multiple_files=True, key="t8_u_ai")
+
+    # Hàm lưu temp (Tái sử dụng code cũ hoặc viết lại)
+    def save_temp_t8(uploaded_file):
+        if uploaded_file is None: return None
+        path = f"temp_t8_{uploaded_file.name}"
+        with open(path, "wb") as f: f.write(uploaded_file.getbuffer())
+        return path
+
+    p_raw_t8 = save_temp_t8(raw_up_t8)
+    p_edit_t8 = save_temp_t8(edit_up_t8)
+    
+    # Tạo danh sách các file để so sánh
+    # Dictionary: { "Label hiển thị": "Đường dẫn file" }
+    compare_targets = {}
+    if p_edit_t8: compare_targets["Human Edited"] = p_edit_t8
+    if ai_ups_t8:
+        for f in ai_ups_t8:
+            compare_targets[f"AI: {f.name}"] = save_temp_t8(f)
+
+    # 2. CONTROL & VISUALIZATION
+    if p_raw_t8 and compare_targets:
+        st.markdown("---")
+        
+        # State Management
+        if 't8_cursor' not in st.session_state: st.session_state.t8_cursor = 0.0
+        
+        # --- Toolbar ---
+        c_sel, c_zoom, c_nav = st.columns([2, 1, 2])
+        
+        with c_sel:
+            # Dropdown chọn đối tượng so sánh
+            target_key = st.selectbox("🎯 So sánh Raw với:", list(compare_targets.keys()), index=0)
+            target_path = compare_targets[target_key]
+            
+            # Checkbox hiện Diff (Thực chất là bật/tắt tô đỏ)
+            show_diff_overlay = st.checkbox("Hiển thị vùng Khác biệt (Tô đỏ)", value=True)
+            diff_sensitivity = st.slider("Độ nhạy Diff", 0.0, 0.2, 0.02, step=0.01) if show_diff_overlay else 0.0
+
+        with c_zoom:
+            scan_len_t8 = st.selectbox("Zoom (Độ dài)", [10, 30, 60], index=1, key="t8_len")
+            
+        with c_nav:
+            # Navigation
+            b_prev, b_next = st.columns(2)
+            if b_prev.button("⬅️ Trước", key="t8_prev"):
+                st.session_state.t8_cursor = max(0.0, st.session_state.t8_cursor - scan_len_t8)
+            if b_next.button("Tiếp ➡️", key="t8_next"):
+                st.session_state.t8_cursor += scan_len_t8
+
+        # --- RENDER ---
+        current_time = st.session_state.t8_cursor
+        st.info(f"📍 Đang xem đoạn: **{int(current_time//60)}p {int(current_time%60)}s**")
+        y_raw_data, _ = librosa.load(p_raw_t8, sr=16000, offset=current_time, duration=scan_len_t8)
+        y_target_data, _ = librosa.load(target_path, sr=16000, offset=current_time, duration=scan_len_t8)
+
+        fig = backend_core.plot_overlay_diff_view(
+            y_raw=y_raw_data,     # Truyền đúng array
+            y_target=y_target_data, # Truyền đúng array
+            sr=16000,
+            threshold=diff_sensitivity if show_diff_overlay else 1.0, 
+            title=f"RAW vs {target_key.upper()}"
+        )
+        
+        st.pyplot(fig, use_container_width=True)
+
+        # Audio Player (Nghe kiểm chứng)
+        import soundfile as sf
+        y_raw_seg, sr = librosa.load(p_raw_t8, sr=16000, offset=current_time, duration=scan_len_t8)
+        y_target_seg, _ = librosa.load(target_path, sr=16000, offset=current_time, duration=scan_len_t8)
+        
+        # Lưu temp để play
+        sf.write("t8_raw_seg.wav", y_raw_seg, sr)
+        sf.write("t8_target_seg.wav", y_target_seg, sr)
+
+        c_play1, c_play2 = st.columns(2)
+        with c_play1:
+            st.caption("🔈 Raw Source")
+            st.audio("t8_raw_seg.wav")
+        with c_play2:
+            st.caption(f"🔈 {target_key}")
+            st.audio("t8_target_seg.wav")
+
+    else:
+        st.info("Vui lòng Upload file Raw và ít nhất 1 file Edited/AI để so sánh.")
+        
+# --- FOOTER ---
 st.markdown("---")
 st.caption("IA MEDIA Project - Developed for Zen Master Thich Nhat Hanh's Dharma Talks Restoration.")
 

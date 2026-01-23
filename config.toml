@@ -1,0 +1,2 @@
+[server]
+maxUploadSize = 10000  # Tăng lên 10GB (đơn vị là MB)

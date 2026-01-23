@@ -20,6 +20,7 @@ import scipy.signal # Cần thêm thư viện này
 from sklearn.metrics import classification_report, confusion_matrix
 from tqdm import tqdm
 import uuid
+from pydub import AudioSegment
 # --- CẤU HÌNH HỆ THỐNG ---
 DATA_CSV = "training_data.csv"
 MODEL_FILE = "error_classifier.pkl"
@@ -45,7 +46,7 @@ VECTOR_DIM = 1024
 
 # --- CẤU HÌNH MÀU SẮC FCP ---
 FCP_COLORS = {
-    "BACKGROUND": "#1e1e1e", "TRACK_BG": "#262626", "TEXT": "#d1d1d1",
+    "BACKGROUND": "#1d3453", "TRACK_BG": "#262626", "TEXT": "#d1d1d1",
     "GRID": "#3b3b3b", "CLEAN": "#3cc2ea", "RAW": "#64d2ff", "ERROR": "#ff5e5e"
 }
 import torch
@@ -445,25 +446,45 @@ def get_data_stats():
     stats.columns = ['Loại Lỗi', 'Số lượng mẫu']
     return stats
 
-def auto_align_audio(y_clean, y_raw):
-    """Đồng bộ hóa tín hiệu Raw khớp với Clean dùng Cross-Correlation."""
-    # Dùng FFT để tính nhanh
-    correlation = scipy.signal.correlate(y_raw, y_clean, mode='full', method='fft')
-    lags = scipy.signal.correlation_lags(len(y_raw), len(y_clean), mode='full')
+def auto_align_audio(y_ref, y_target):
+    """
+    Đồng bộ hóa y_target để khớp nhất với y_ref (Mốc chuẩn).
+    Sử dụng FFT Cross-Correlation để tìm độ trễ (lag) chính xác.
+    """
+    # An toàn dữ liệu
+    if len(y_ref) == 0 or len(y_target) == 0: 
+        return y_target, 0
+
+    # 1. Chuẩn hóa độ dài để tính Correlation (Lấy min)
+    n = min(len(y_ref), len(y_target))
+    ref_slice = y_ref[:n]
+    target_slice = y_target[:n]
+
+    # 2. Tính Correlation
+    correlation = scipy.signal.correlate(target_slice, ref_slice, mode='full', method='fft')
+    lags = scipy.signal.correlation_lags(len(target_slice), len(ref_slice), mode='full')
+    
+    # 3. Tìm vị trí khớp nhất (Peak)
     lag = lags[np.argmax(correlation)]
 
-    y_raw_aligned = np.zeros_like(y_clean)
-    
-    # Shift tín hiệu
-    if lag > 0:
-        take_len = min(len(y_raw) - lag, len(y_clean))
-        y_raw_aligned[:take_len] = y_raw[lag : lag + take_len]
-    else:
-        start_idx = abs(lag)
-        take_len = min(len(y_raw), len(y_clean) - start_idx)
-        y_raw_aligned[start_idx : start_idx + take_len] = y_raw[:take_len]
+    # 4. Thực hiện dịch chuyển (Shift) & Cắt gọt (Trim/Pad)
+    y_aligned = np.zeros_like(y_ref) # Tạo khung theo độ dài Reference
 
-    return y_raw_aligned, lag
+    if lag > 0:
+        # Target bị trễ (nằm sau Ref) -> Kéo về trước (Cắt đầu Target)
+        # Chỉ lấy phần chồng lấp hợp lệ
+        take_len = min(len(y_target) - lag, len(y_ref))
+        if take_len > 0:
+            y_aligned[:take_len] = y_target[lag : lag + take_len]
+    else:
+        # Target bị sớm (nằm trước Ref) -> Đẩy ra sau (Đệm đầu bằng 0)
+        start_idx = abs(lag)
+        # Chỉ lấy phần chồng lấp
+        take_len = min(len(y_target), len(y_ref) - start_idx)
+        if take_len > 0:
+            y_aligned[start_idx : start_idx + take_len] = y_target[:take_len]
+
+    return y_aligned, lag
 
 def get_envelope(y, resolution=256):
     """Tính đường bao để vẽ waveform đặc."""
@@ -1204,6 +1225,388 @@ def plot_interactive_waveform(y, sr, errors, start_time):
     start_fmt = f"{int(start_time//60):02}:{int(start_time%60):02}"
     end_fmt = f"{int((start_time+len(y)/sr)//60):02}:{int((start_time+len(y)/sr)%60):02}"
     ax.text(0, 0.9, f"Time: {start_fmt} - {end_fmt}", color="white", transform=ax.transAxes, fontsize=8, alpha=0.5)
+
+    plt.tight_layout()
+    return fig
+
+# --- THÊM VÀO backend_core.py ---
+# [Cập nhật trong backend_core.py]
+# --- [PHẦN CẬP NHẬT CHO TAB 6] ---
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import scipy.signal
+
+# Cấu hình màu sắc chuẩn Final Cut Pro (Dark Mode)
+FCP_COLORS = {
+    "BG": "#1e1e1e",
+    "TRACK_BG": "#262626", 
+    "TEXT": "#d1d1d1",
+    "GRID": "#3b3b3b",
+    "RAW": "#64d2ff",       # Xanh dương nhạt (Source)
+    "HUMAN": "#3cc2ea",     # Xanh ngọc (Edited)
+    "AI": "#d4af37",        # Vàng kim (Prediction)
+    "DIFF_RH": "#ff5e5e",   # Đỏ (Raw vs Human) - Lỗi Editor sửa
+    "DIFF_RA": "#bd93f9",   # Tím (Raw vs AI) - Lỗi AI sửa
+    "DIFF_HA": "#ff9f0a"    # Cam (Human vs AI) - Sai số của AI
+}
+
+# --- [PHẦN CẬP NHẬT CHO TAB 6: COMPARATOR PRO] ---
+import matplotlib.pyplot as plt
+import scipy.signal
+
+# Cấu hình màu sắc mặc định (Dark Mode)
+DEFAULT_THEME = {
+    "BG_MAIN": "#0A0A1A", "BG_TRACK": "#14142A", "TEXT": "#E0E0E0", "GRID": "#FFFFFF",
+    "RAW": "#4EA8DE",       # Light Blue
+    "HUMAN": "#48BFE3",     # Cyan
+    "AI_BASE": "#F9C74F",   # Gold 
+    "DIFF_CORE": "#FF5E5E", # Red (Raw vs Human)
+    "DIFF_RA": "#FF5E5E",   # Purple (Raw vs AI)
+    "DIFF_HA": "#FF5E5E"    # Orange (Human vs AI)
+}
+
+def auto_align_audio(y_ref, y_target):
+    """Đồng bộ hóa y_target khớp với y_ref dùng Cross-Correlation."""
+    if len(y_ref) == 0 or len(y_target) == 0: return y_target, 0
+    
+    # Lấy mẫu nhỏ để tính cho nhanh nếu file quá dài
+    calc_len = min(len(y_ref), len(y_target), 16000 * 60) 
+    
+    correlation = scipy.signal.correlate(y_target[:calc_len], y_ref[:calc_len], mode='full', method='fft')
+    lags = scipy.signal.correlation_lags(len(y_target[:calc_len]), len(y_ref[:calc_len]), mode='full')
+    lag = lags[np.argmax(correlation)]
+
+    y_aligned = np.zeros_like(y_ref)
+    
+    if lag > 0:
+        take_len = min(len(y_target) - lag, len(y_ref))
+        if take_len > 0: y_aligned[:take_len] = y_target[lag : lag + take_len]
+    else:
+        start_idx = abs(lag)
+        take_len = min(len(y_target), len(y_ref) - start_idx)
+        if take_len > 0: y_aligned[start_idx : start_idx + take_len] = y_target[:take_len]
+
+    return y_aligned, lag
+# [Thay thế hàm này trong backend_core.py]
+
+def scan_for_difference_v2(
+    raw_path, edited_path, ai_path=None,  # <--- Phải có ai_path ở đây
+    start_time=0, duration=60.0, 
+    threshold=0.02, 
+    hunt_mode="Raw vs Human"
+):
+    """
+    Quét và so sánh các luồng audio. Tự động align tất cả theo Edited.
+    """
+    import librosa 
+    import numpy as np
+
+    try:
+        # 1. Load Audio (Lazy Loading)
+        y_edited, sr = librosa.load(edited_path, sr=16000, offset=start_time, duration=duration)
+        y_raw, _ = librosa.load(raw_path, sr=16000, offset=start_time, duration=duration)
+        
+        y_ai = None
+        if ai_path and os.path.exists(ai_path):
+            try:
+                y_ai, _ = librosa.load(ai_path, sr=16000, offset=start_time, duration=duration)
+            except: pass
+
+        if len(y_edited) == 0: return False, None, None, None, None, 0.0
+
+        # 2. Cắt về cùng độ dài (theo Edited làm chuẩn)
+        min_len = len(y_edited)
+        y_raw = y_raw[:min_len]
+        if y_ai is not None: 
+            y_ai = y_ai[:min_len]
+        
+        # Pad nếu Raw ngắn hơn (hiếm)
+        if len(y_raw) < min_len:
+            y_raw = np.pad(y_raw, (0, min_len - len(y_raw)))
+
+        # 3. Auto-Align
+        y_raw_aligned, _ = auto_align_audio(y_edited, y_raw)
+        
+        y_ai_aligned = None
+        if y_ai is not None:
+            y_ai_aligned, _ = auto_align_audio(y_edited, y_ai)
+
+        # 4. Tính toán Diff Score
+        diff_score = 0.0
+        
+        if hunt_mode == "Raw vs Human":
+            diff_signal = np.abs(y_raw_aligned - y_edited)
+        elif hunt_mode == "Raw vs AI" and y_ai_aligned is not None:
+            diff_signal = np.abs(y_raw_aligned - y_ai_aligned)
+        elif hunt_mode == "Human vs AI" and y_ai_aligned is not None:
+            diff_signal = np.abs(y_edited - y_ai_aligned)
+        else:
+            diff_signal = np.abs(y_raw_aligned - y_edited)
+
+        diff_score = np.mean(diff_signal)
+        found = diff_score > threshold
+        
+        # Trả về đủ 6 giá trị
+        return found, y_raw_aligned, y_edited, y_ai_aligned, sr, diff_score
+
+    except Exception as e:
+        print(f"Scan error: {e}")
+        # Trả về fallback để không crash UI
+        return False, None, None, None, 16000, 0.0
+
+def plot_pro_analysis_view(
+    y_raw, y_edited, 
+    ai_tracks_dict=None, 
+    sr=16000, 
+    view_mode="bipolar",
+    colors_override=None,
+    show_diff=True # <--- THAM SỐ MỚI (Mặc định hiện)
+):
+    """
+    Vẽ biểu đồ Pro Stack View. 
+    Hỗ trợ ẩn/hiện Diff để tiết kiệm không gian.
+    """
+    import matplotlib.pyplot as plt
+    
+    # 1. Áp dụng màu sắc
+    THEME = DEFAULT_THEME.copy()
+    if colors_override:
+        THEME.update(colors_override)
+
+    # 2. Chuẩn bị dữ liệu (Cắt bằng nhau)
+    min_len = min(len(y_raw), len(y_edited))
+    if ai_tracks_dict:
+        for y_ai in ai_tracks_dict.values():
+            min_len = min(min_len, len(y_ai))
+            
+    y_raw = y_raw[:min_len]
+    y_edited = y_edited[:min_len]
+    
+    # 3. Xây dựng danh sách biểu đồ (Plot Configs)
+    plot_configs = []
+    
+    # --- Nhóm 1: Ground Truth ---
+    plot_configs.append({"data": y_raw, "label": "1. SOURCE (Raw)", "color": THEME["RAW"], "type": "wave"})
+    plot_configs.append({"data": y_edited, "label": "2. TARGET (Edited)", "color": THEME["HUMAN"], "type": "wave"})
+    
+    # Chỉ thêm Diff nếu show_diff = True
+    if show_diff:
+        diff_rh = np.abs(y_raw - y_edited)
+        plot_configs.append({"data": diff_rh, "label": "DIFF: Raw vs Human", "color": THEME["DIFF_CORE"], "type": "diff"})
+    
+    # --- Nhóm 2: AI Models ---
+    if ai_tracks_dict:
+        for idx, (name, y_ai) in enumerate(ai_tracks_dict.items()):
+            y_ai_cut = y_ai[:min_len]
+            
+            # Luôn thêm track AI Waveform
+            plot_configs.append({"data": y_ai_cut, "label": f"AI: {name}", "color": THEME["AI_BASE"], "type": "wave"})
+            
+            # Chỉ thêm Diff của AI nếu show_diff = True
+            if show_diff:
+                diff_ra = np.abs(y_raw - y_ai_cut)
+                diff_ha = np.abs(y_edited - y_ai_cut)
+                plot_configs.append({"data": diff_ra, "label": f"DIFF: Raw vs {name}", "color": THEME["DIFF_RA"], "type": "diff"})
+                plot_configs.append({"data": diff_ha, "label": f"ERR: Human vs {name}", "color": THEME["DIFF_HA"], "type": "diff"})
+
+    # 4. Tính chiều cao ảnh ĐỘNG (Dynamic Height)
+    # Mỗi biểu đồ cao khoảng 2.5 inch
+    fig_h = len(plot_configs) * 2.5
+    
+    # Khởi tạo Figure
+    fig, axs = plt.subplots(len(plot_configs), 1, figsize=(20, fig_h), sharex=True)
+    if len(plot_configs) == 1: axs = [axs]
+    
+    fig.patch.set_facecolor(THEME["BG_MAIN"])
+    times = np.linspace(0, len(y_raw)/sr, num=len(y_raw))
+
+    # 5. Vòng lặp Vẽ
+    for i, ax in enumerate(axs):
+        cfg = plot_configs[i]
+        data = cfg["data"]
+        
+        ax.set_facecolor(THEME["BG_TRACK"])
+        
+        # Vẽ sóng (Bipolar / Unipolar)
+        if view_mode == "bipolar":
+            ax.fill_between(times, data, color=cfg["color"], alpha=0.9, linewidth=0)
+            if cfg["type"] == "wave":
+                ax.fill_between(times, -data, color=cfg["color"], alpha=0.9, linewidth=0)
+            ax.set_ylim(-1.05, 1.05) if cfg["type"] == "wave" else ax.set_ylim(0, 1.05)
+        else: # Unipolar
+            abs_data = np.abs(data)
+            ax.fill_between(times, abs_data, color=cfg["color"], alpha=0.9, linewidth=0)
+            ax.set_ylim(0, 1.05)
+
+        # Style Trục
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.axhline(0, color=THEME["GRID"], alpha=0.2, linewidth=0.5)
+        ax.set_yticks([])
+        
+        # Label
+        ax.text(0.005, 0.85, cfg["label"], transform=ax.transAxes, color="white", fontsize=12, fontweight='bold', bbox=dict(facecolor=THEME["BG_MAIN"], alpha=0.7, edgecolor='none'))
+
+        # RMS Stats (Chỉ hiện nếu là Diff)
+        if cfg["type"] == "diff":
+            rms = np.sqrt(np.mean(data**2))
+            bg_score = "#2ecc71" if rms < 0.05 else "#e74c3c"
+            ax.text(0.99, 0.85, f"RMS Error: {rms:.4f}", transform=ax.transAxes, color="white", ha='right', fontsize=10, fontweight='bold', bbox=dict(facecolor=bg_score, alpha=0.9, edgecolor='none'))
+
+        # Trục thời gian (Chỉ hiện ở biểu đồ cuối cùng)
+        if i == len(axs) - 1:
+            ax.tick_params(axis='x', colors=THEME["TEXT"], labelsize=10)
+            ax.set_xlabel("Time (seconds)", color=THEME["TEXT"], fontsize=12)
+        else:
+            ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+
+    plt.subplots_adjust(hspace=0.05, left=0.01, right=0.99, top=0.98, bottom=0.05)
+    return fig
+
+# [Thêm vào backend_core.py]
+
+def merge_audio_files(uploaded_files, silence_ms=500, sample_rate=16000):
+    """
+    Nhận danh sách file upload (Audio/Video), trích xuất audio,
+    chuẩn hóa và ghép lại thành 1 file duy nhất.
+    """
+    combined = AudioSegment.empty()
+    # Tạo đoạn im lặng
+    silence = AudioSegment.silent(duration=silence_ms)
+    
+    processed_count = 0
+    errors = []
+
+    # Tạo thư mục temp để xử lý ffmpeg an toàn
+    temp_dir = "temp_merge_processing"
+    os.makedirs(temp_dir, exist_ok=True)
+
+    try:
+        for i, uploaded_file in enumerate(uploaded_files):
+            try:
+                # 1. Lưu file tạm (Pydub/FFmpeg cần đường dẫn thực tế để xử lý video tốt nhất)
+                # Giữ nguyên đuôi file gốc (mp3, mov...) để ffmpeg nhận diện codec
+                ext = os.path.splitext(uploaded_file.name)[1]
+                temp_path = os.path.join(temp_dir, f"input_{i}{ext}")
+                
+                with open(temp_path, "wb") as f:
+                    f.write(uploaded_file.getbuffer())
+                
+                # 2. Load Audio (Tự động extract từ video nếu là mov/mp4)
+                audio = AudioSegment.from_file(temp_path)
+                
+                # 3. Chuẩn hóa (Bắt buộc để ghép không bị lỗi)
+                audio = audio.set_frame_rate(sample_rate).set_channels(1)
+                
+                # 4. Ghép nối
+                combined += audio + silence
+                processed_count += 1
+                
+                # Xóa file tạm ngay
+                os.remove(temp_path)
+                
+            except Exception as e:
+                errors.append(f"{uploaded_file.name}: {str(e)}")
+
+        # 5. Xuất file kết quả
+        output_filename = f"merged_output_{int(time.time())}.wav"
+        output_path = os.path.join(temp_dir, output_filename)
+        
+        # Export
+        combined.export(output_path, format="wav")
+        
+        return output_path, processed_count, errors
+
+    except Exception as e:
+        return None, 0, [str(e)]
+    
+# [Thêm vào backend_core.py]
+
+def plot_overlay_diff_view(
+    y_raw, y_target, sr=16000, 
+    threshold=0.01, # Ngưỡng để coi là có sự khác biệt (để tránh nhiễu nhỏ tô đỏ cả bài)
+    title="Comparison Overlay"
+):
+    """
+    Vẽ Waveform của Raw, và tô đỏ những đoạn khác biệt so với Target.
+    Phong cách FCP: Nền tối, Sóng xanh, Đỉnh đỏ.
+    """
+    import matplotlib.pyplot as plt
+    
+    # 1. Align & Chuẩn bị dữ liệu
+    min_len = min(len(y_raw), len(y_target))
+    y_raw = y_raw[:min_len]
+    y_target = y_target[:min_len]
+    
+    # Auto-Align Target theo Raw (Vì Raw là gốc hiển thị)
+    y_target_aligned, _ = auto_align_audio(y_raw, y_target)
+    
+    # 2. Tính toán Diff
+    diff_signal = np.abs(y_raw - y_target_aligned)
+    
+    # Tạo mask: Những điểm nào có sự khác biệt lớn hơn ngưỡng
+    # (Làm mịn mask một chút để không bị đốm đỏ liti)
+    frame_size = 512
+    diff_envelope = np.array([np.max(diff_signal[i:i+frame_size]) for i in range(0, len(diff_signal), frame_size)])
+    # Nội suy mask về độ dài gốc
+    mask_indices = np.arange(len(diff_envelope)) * frame_size
+    diff_mask_interpolated = np.interp(np.arange(len(y_raw)), mask_indices, diff_envelope)
+    
+    is_diff = diff_mask_interpolated > threshold
+
+    # 3. Setup Giao diện FCP
+    plt.style.use('dark_background')
+    FCP_BG = "#1e1e1e" # Màu nền FCP
+    FCP_WAVE_BLUE = "#5898d4" # Màu sóng xanh FCP (Raw/Normal)
+    FCP_WAVE_RED = "#ff3b30"  # Màu sóng đỏ (Error/Diff)
+    FCP_GRID = "#464646"
+
+    fig, ax = plt.subplots(figsize=(18, 5))
+    fig.patch.set_facecolor(FCP_BG)
+    ax.set_facecolor(FCP_BG)
+
+    # Trục thời gian
+    times = np.linspace(0, len(y_raw)/sr, num=len(y_raw))
+    
+    # Downsample để vẽ nhanh nếu file dài
+    step = 1 if len(y_raw) < 16000*30 else 10
+    t_plot = times[::step]
+    y_plot = y_raw[::step]
+    mask_plot = is_diff[::step]
+
+    # 4. VẼ LỚP 1: Sóng Raw bình thường (Màu Xanh)
+    ax.fill_between(t_plot, y_plot, color=FCP_WAVE_BLUE, alpha=0.9, linewidth=0)
+    ax.fill_between(t_plot, -y_plot, color=FCP_WAVE_BLUE, alpha=0.9, linewidth=0) # Đối xứng
+
+    # 5. VẼ LỚP 2: Overlay Diff (Màu Đỏ)
+    # Chỉ vẽ đè lên những chỗ có mask_plot = True
+    # Dùng 'where' để chỉ tô vùng lỗi
+    ax.fill_between(t_plot, y_plot, where=mask_plot, color=FCP_WAVE_RED, alpha=1.0, linewidth=0)
+    ax.fill_between(t_plot, -y_plot, where=mask_plot, color=FCP_WAVE_RED, alpha=1.0, linewidth=0)
+
+    # 6. Trang trí giống ảnh mẫu
+    ax.axhline(0, color=FCP_GRID, linewidth=0.5, alpha=0.5) # Đường Zero mờ
+    # Kẻ lưới dọc (thời gian)
+    ax.grid(True, axis='x', color=FCP_GRID, linestyle='-', linewidth=0.5, alpha=0.5)
+    ax.grid(False, axis='y')
+    
+    # Tắt viền trục
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(True)
+    ax.spines['bottom'].set_color(FCP_GRID)
+    
+    # Ẩn trục Y, chỉ hiện trục X (Thời gian)
+    ax.set_yticks([])
+    ax.tick_params(axis='x', colors="#999999", labelsize=9)
+    ax.set_xlabel("Timecode", color="#999999", fontsize=10)
+    
+    # Title nằm gọn bên trái
+    ax.text(0, 1.05, f"▶ {title}", transform=ax.transAxes, 
+            color="white", fontsize=11, fontweight='bold')
 
     plt.tight_layout()
     return fig
